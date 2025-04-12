@@ -1,0 +1,436 @@
+<div class="container-fluid">
+  <app-nav></app-nav>
+</div>
+
+<div class="container-flui mt-3">
+  <div class="row g-2 position-relative">
+    <div class="col-md-2 mb-2 position-relative sidebar-wrapper">
+      <div class="card border-0 p-0 shadow">
+        <div class="card-body p-2">
+          <app-asset-manager-side-bar></app-asset-manager-side-bar>
+        </div>
+        <!-- <button *ngIf="closeButton" class="toggle-icon-btn d-none d-md-block" (click)="toggleSidebar()">
+          <i class="bi" [ngClass]="isSidebarOpen ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+        </button> -->
+      </div>
+    </div>
+    <!-- <button *ngIf="!isSidebarOpen && closeButton" class="toggle-icon-btn-collapsed d-none d-md-block"
+      (click)="toggleSidebar()">
+      <i class="bi bi-chevron-right"></i>
+    </button> -->
+    <div class="pad col-md-10">
+      <div class="card py-1 border-0">
+        <div class="card-body py-1">
+          <div class="row mb-2 align-items-center">
+            <div class="col-md-3">
+              <span class="fw-bold text-danger">
+                Interview Schedule
+                <span class="badge badge-light  badge bg-danger text-white">{{totalRecords}}</span>
+              </span>
+            </div>
+            <div class="col-md-9 d-flex justify-content-end align-items-center">
+              <input type="search" class="form-control form-control-sm search-input" placeholder="search"
+                [formControl]="searchQuery" aria-level="Search"
+                style="max-width: 150px; margin-right: 20px; font-size: 13px;">
+              <!-- <i class="fa fa-search"></i> -->
+              <button type="button" (click)="toggleOffcanvas()" class="btn btn-sm custom-bg text-light">
+                Filter Options
+              </button>
+            </div>
+          </div>
+          <div class="scroll-container p-0">
+            <table class="table table-striped table-hover table-bordered">
+              <thead class="custom-bg">
+                <tr class="text-light">
+                  <th *ngFor="let col of columns" class="small-header sticky-col"
+                    [ngClass]="{'text-center': col.center}">
+                    {{ col.label }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngIf="rows.length > 0; else noData">
+                <tr *ngFor="let row of rows">
+                  <td *ngFor="let col of columns" class="small-header"
+                    [ngClass]="{'text-uppercase': col.uppercase, 'text-center': col.center}">
+
+                    <ng-container *ngIf="col.key === 'status'; else default">
+                      <span *ngIf="row.status === 'OnGoing'" class="custom-text fw-bold">OnGoing</span>
+                      <span *ngIf="row.status === 'Rejected'" class="text-danger fw-bold">Rejected</span>
+                      <span *ngIf="row.status === 'Approved'" class="text-success fw-bold">Approved</span>
+                      <span *ngIf="row.status === 'Pending'" class="text-warning fw-bold">Pending</span>
+                      <span *ngIf="row.status === 'Cancelled'" class="text-orange-dark fw-bold">Cancelled</span>
+                      <span *ngIf="row.status === 'Hold'" class="text-orange-dark fw-bold">Hold</span>
+                    </ng-container>
+
+                    <!-- 
+                    1001 = '',
+                    1002 = '',
+                    1003 = ''
+                     -->
+                    <ng-template #default>
+                      <ng-container *ngIf="col.key === 'employeeid'; else normal">
+                        <button *ngIf="row.status === 'Pending'"
+                          class="border-none bg-success text-white custom-action-btn px-2"
+                          (click)="handleAction(row.employeeid)">
+                          Schedule
+                        </button>
+
+                        <button *ngIf="row.status !== 'Pending'"
+                          class="border-none custom-bg text-white custom-action-btn px-2"
+                          (click)="viewAction(row.employeeid)">
+                          View
+                        </button>
+
+                      </ng-container>
+
+                      <!-- <ng-template #normal>
+                        {{ row[col.key] }}
+                      </ng-template> -->
+                      <ng-template #normal>
+                        <span [innerHTML]="highlightMatch(row[col.key])"></span>
+                      </ng-template>
+                    </ng-template>
+                  </td>
+                </tr>
+              </tbody>
+
+              <ng-template #noData>
+                <tbody>
+                  <tr>
+                    <td [attr.colspan]="columns.length + 1" class="p-0">
+                      <div class="bg-white d-flex justify-content-center align-items-center py-4">
+                        <div>
+                          <img
+                            src="https://assets-v2.lottiefiles.com/a/92920ca4-1174-11ee-9d90-63f3a87b4e3d/xxNZvglgy1.gif"
+                            width="150px" height="150px" alt="No data available">
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </ng-template>
+              
+              
+            </table>
+          </div>
+          <hr *ngIf="rows.length > 0" class="custom-hr mb-2 mt-1">
+
+          <div class="d-flex justify-content-between align-items-center mt-1" *ngIf="rows.length > 0">
+            <span class="small badge bg-secondary text-white">
+              Showing {{ startIndex }} to {{ endIndex }} of {{ totalRecords }} Records
+            </span>
+
+            <ul class="pagination pagination-sm mb-1">
+              <!-- Previous Page Button -->
+              <li class="page-item">
+                <button type="button" class="border-none text-white custom-action-btn px-2 py-1 mr-2"
+                  (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
+                  [class.disabled]="currentPage === 1"
+                  [ngClass]="{'custom-bg': currentPage > 1, 'bg-secondary': currentPage === 1}">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+              </li>
+
+              <!-- Page Number Display -->
+              <li class="page-item mr-2 d-none d-md-block">
+                <span class="px-3 py-1 small text-dark fw-bold border rounded bg-light">
+                  Page {{ currentPage }} of {{ totalPages }}
+                </span>
+              </li>
+
+              <!-- Next Page Button -->
+              <li class="page-item">
+                <button type="button" class="border-none text-white custom-action-btn px-2 py-1 mr-2"
+                  (click)="changePage(currentPage + 1)" [disabled]="currentPage >= totalPages"
+                  [class.disabled]="currentPage >= totalPages"
+                  [ngClass]="{'custom-bg': currentPage < totalPages, 'bg-secondary': currentPage >= totalPages}">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+
+
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- loader -->
+<div class="loader attDnceLoadr" *ngIf="">
+  <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
+</div>
+
+
+<div class="offcanvas-right" [class.show]="isOpen">
+  <div class="offcanvas-header">
+    <h5 class="custom-text fw-bold">Filter </h5>
+    <button type="button" class="close" (click)="closeOffcanvas()" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container mt-3">
+    <!-- Name Filter -->
+    <div class="form-group">
+      <label for="nameFilter">Select Name</label>
+      <select class="form-control form-control-sm" id="nameFilter">
+        <option value="">Select</option>
+        <option value="rajender">Rajender</option>
+        <option value="sisisha">Sirisha</option>
+        <option value="anusha">Anusha</option>
+        <option value="durga">Durga</option>
+      </select>
+    </div>
+
+    <!-- Date Filter -->
+    <div class="form-group">
+      <label for="dateFilter">Select Date</label>
+      <input type="date" class="form-control form-control-sm" id="dateFilter">
+    </div>
+
+    <!-- Category Filter -->
+    <div class="form-group">
+      <label for="categoryFilter">Category</label>
+      <select class="form-control form-control-sm" id="categoryFilter">
+        <option value="">Select</option>
+        <option value="category1">Category 1</option>
+        <option value="category2">Category 2</option>
+        <option value="category3">Category 3</option>
+      </select>
+    </div>
+
+    <!-- Buttons -->
+    <div class="form-group">
+      <div class="row">
+        <div class="col-6">
+          <button class="btn btn-sm custom-bg text-light w-100" (click)="applyFilter()">Filter</button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-sm btn-danger w-100" (click)="closeOffcanvas()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<ng-template #interviewDialog>
+  <div class="animate-zoom">
+    <div class="">
+      <div class="d-flex justify-content-between">
+        <h5 class="fw-bold">Schedule Interview</h5>
+        <span class="Hover cursor-pointer" (click)="close()">
+          <i class="bi bi-x-circle fs-1 fs-4"></i>
+        </span>
+      </div>
+      <hr class="custom-hr mt-0 mb-2">
+
+      <form [formGroup]="addNewRoundForm" (ngSubmit)="onSubmit()">
+        <div class="row mt-3 mb-3">
+          <div class="col-md-6 position-relative">
+            <label for="interviewBy" class="form-label">
+              Interviewed By <span class="text-danger">*</span>
+            </label>
+            <input type="text" placeholder="Search interviewer" class="form-control form-control-sm"
+              formControlName="interviewBy" [value]="selectedInterviewerName || ''"
+              (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
+              autocomplete="off">
+
+            <ul *ngIf="showDropdown && interviewedByList.length > 0"
+              class="dropdown-menu show w-100 position-absolute custom-scroll">
+              <li *ngFor="let item of interviewedByList" (click)="selectInterviewer(item)"
+                class="dropdown-item cursor-pointer">
+                {{ item?.name }}
+              </li>
+            </ul>
+            <div *ngIf="addNewRoundForm.get('interviewBy')?.touched && addNewRoundForm.get('interviewBy')?.invalid"
+              class="text-danger fs-custom">
+              Interviewed By is required
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label for="roundTitle" class="form-label">Location <span class="text-danger">*</span></label>
+            <!-- <input type="text" id="roundTitle" class="form-control form-control-sm" placeholder="Enter round title"
+                    formControlName="roundTitle"> -->
+            <select class="form-control" formControlName="locationId" name="" id="">
+              <option value="">select</option>
+              <option *ngFor="let item of interviewLocationData" [value]="item?.id">{{ item?.name }}</option>
+            </select>
+            <div class="text-danger fs-custom"
+              *ngIf="addNewRoundForm.get('locationTd')?.hasError('required') && addNewRoundForm.get('locationId')?.touched">
+              Round title is required.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
+            <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
+              formControlName="interviewDate" autocomplete="off" [bsConfig]="{
+            adaptivePosition: true,
+            showWeekNumbers: false,
+            isAnimated: true,
+            containerClass: colorTheme,
+            customTodayClass: 'custom-today-class',
+            dateInputFormat: 'YYYY-MM-DD'
+            }" bsDatepicker required />
+            <div class="fs-custom text-danger"
+              *ngIf="addNewRoundForm.get('interviewDate')?.hasError('required') && addNewRoundForm.get('interviewDate')?.touched">
+              Date is required.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="time" class="form-label">Time <span class="text-danger">*</span></label>
+            <input type="time" id="time" class="form-control form-control-sm" formControlName="interviewTime">
+            <div class="fs-custom text-danger"
+              *ngIf="addNewRoundForm.get('interviewTime')?.hasError('required') && addNewRoundForm.get('interviewTime')?.touched">
+              Time is required.
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+
+          <div class="col-md-6">
+            <label for="interviewerName" class="form-label">Interview Mode<span class="text-danger">*</span></label>
+            <select formControlName="mode" class="form-control form-control-sm">
+              <option value="">Select</option>
+              <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>
+            </select>
+            <div
+              *ngIf="addNewRoundForm.get('mode')?.touched && addNewRoundForm.get('mode')?.invalid"
+              class="text-danger fs-custom">
+              Interview Round is required
+            </div>
+          </div>
+          <div class="col-md-6 mt-4">
+            <button type="submit" class="btn text-white custom-bg w-100">Submit</button>
+          </div>
+        </div>
+
+        <div class="row">
+
+        </div>
+      </form>
+
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+<div class="loader attDnceLoadr" *ngIf="isLoading">
+  <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
+</div>
+
+
+
+<ng-template #aboutCandidateDialog>
+  <div class="animate-zoom">
+    <div class="container">
+      <div class="row mb-2 align-items-center">
+        <div class="col-md-10">
+          <span class="fw-bold custom-text mr-2">Interview Details</span>
+          <span class="badge custom-bg text-white">
+            {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+          </span>
+
+          <!-- <span>{{ candidateData?.candidatePersonalInformationDetails?.email }}</span> -->
+        </div>
+        <div class="col-md-2 d-flex justify-content-end align-items-center">
+          <span class="cursor-pointer Hover" (click)="close()">
+            <i class="bi bi-x-circle"></i>
+          </span>
+        </div>
+      </div>
+
+      <!-- <hr class="m-0 p-0 text-dark border mb-2"> -->
+      <hr class="custom-hr mb-2">
+
+
+      <div *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName; else noCandidateData"
+        class="scroll-container">
+        <div class="card p-2 mb-3">
+          <div class="table-container">
+            <table class="custom-table">
+              <thead>
+                <tr>
+                  <th class="custom-th small-header">Round</th>
+                  <th class="custom-th small-header">Interview Date</th>
+                  <th class="custom-th small-header">Interview Time</th>
+                  <th class="custom-th small-header">Interviewer ID</th>
+                  <th class="custom-th small-header">Round Name</th>
+                  <th class="custom-th small-header">Location</th>
+                  <th class="custom-th small-header">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let exp of candidateData.candidateInterviewDetails">
+                  <td class="custom-td small-header">{{ exp.roundNo }}</td>
+                  <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
+                  <td class="custom-td small-header">{{ exp.interviewTime }}</td>
+                  <td class="custom-td small-header">{{ exp.interviewBy }}</td>
+                  <td class="custom-td small-header">{{ exp.level }}</td>
+                  <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
+                  <td class="custom-td small-header text-single-line">
+                    <button (click)="cancelInterview(exp.interviewScheduleId)" *ngIf="exp.status === 1001"
+                      class="btn btn-sm btn-danger border-0 px-2 py-1 text-white mr-2">
+                      Cancel
+                    </button>
+                    <button (click)="rescheduleInterview(employeeId)" *ngIf="exp.status === 1001 && !exp.interviewTime"
+                      class="btn btn-sm btn-info border-0 px-2 py-1 text-white">
+                      Schedule 
+                    </button>
+                    <button (click)="rescheduleInterview(employeeId)" *ngIf="exp.status === 1002 || exp.status == 1006"
+                      class="btn btn-sm btn-warning border-0 px-2 py-1 text-white">
+                      Reschedule
+                    </button>
+
+                    <button *ngIf="exp.status === 1004" class="btn btn-sm btn-success border-0 px-2 py-1 text-white"
+                      disabled>
+                      Completed
+                    </button>
+                    <button *ngIf="exp.status === 1005" class="btn btn-sm btn-info border-0 px-2 py-1 text-white"
+                      disabled>
+                      Rejected
+                    </button>
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- Show message if no interview details are available -->
+          <div *ngIf="!candidateData?.candidateInterviewDetails?.length" class="text-muted text-center">
+            No interview details available.
+          </div>
+        </div>
+
+      </div>
+
+
+      <ng-template #noCandidateData>
+        <div class="alert alert-warning text-center">
+          No Candidate data available.
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>

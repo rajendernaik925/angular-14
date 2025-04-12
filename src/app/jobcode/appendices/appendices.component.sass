@@ -1,0 +1,39 @@
+.fw-bold
+  font-weight: bold
+.custom-bg
+  background-color :#0072BC
+
+
+
+
+
+$offcanvas-width: 300px
+$offcanvas-bg: white
+$offcanvas-shadow: -2px 0 5px rgba(0, 0, 0, 0.2)
+$offcanvas-transition: right 0.3s ease-in-out
+$z-index-offcanvas: 1050
+
+.offcanvas-right
+  position: fixed
+  top: 0
+  right: -$offcanvas-width
+  width: $offcanvas-width
+  height: 100%
+  background-color: $offcanvas-bg
+  box-shadow: $offcanvas-shadow
+  transition: $offcanvas-transition
+  z-index: $z-index-offcanvas
+  overflow-y: auto
+
+  &.show
+    right: 0
+
+.offcanvas-header
+  padding: 1rem
+  border-bottom: 1px solid #dee2e6
+  display: flex
+  justify-content: space-between
+  align-items: center
+
+.offcanvas-body
+  padding: 1rem

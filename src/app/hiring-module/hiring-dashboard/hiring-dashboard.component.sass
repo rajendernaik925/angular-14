@@ -1,0 +1,116 @@
+.col-md-2
+  padding-right: 0  
+.border-red
+  border: 1px solid red
+.border-custom
+  border: 1px solid #0072BC 
+.border-green
+  border: 1px solid green  
+.bg-green
+  background: green 
+.bg-custom
+  background: #0072BC
+.pad
+  padding-right: 0  
+.chart-container
+  display: flex
+  justify-content: space-around
+  flex-wrap: wrap
+
+.chart
+  width: 100%
+  height: 320px
+  min-width: 300px
+.cursor-pointer
+  cursor: pointer 
+
+
+
+$card-hover-scale: 1.02
+$card-hover-translateY: -5px
+$card-shadow-hover: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2)
+
+.dashboard-card
+  transition: transform 0.3s ease, box-shadow 0.3s ease
+  cursor: pointer
+
+  &:hover
+    transform: translateY($card-hover-translateY) scale($card-hover-scale)
+    box-shadow: $card-shadow-hover
+
+  .card-body
+    text-align: center
+
+    .card-title
+      text-transform: uppercase
+      font-weight: 600
+      font-size: 0.875rem
+
+    .display-5
+      font-size: 2.5rem
+      font-weight: 700
+
+    p
+      font-size: 0.75rem
+      margin-bottom: 0
+
+
+.scroll-container
+  max-height: calc(100vh - 140px)
+  overflow-y: scroll
+  display: block
+  max-width: 100%
+  position: relative
+
+
+
+
+
+
+.toggle-icon-btn
+  position: absolute
+  top: 15px
+  right: -12px
+  z-index: 1050
+  background-color: #0072bc
+  color: white
+  border: none
+  border-radius: 50%
+  width: 28px
+  height: 28px
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)
+  cursor: pointer
+  transition: all 0.3s ease
+
+  i
+    font-size: 14px
+
+  &:hover
+    background-color: darken(#0072bc, 10%)
+.toggle-icon-btn-collapsed
+  position: absolute
+  top: 15px
+  left: 20px
+  transform: translateX(-50%)
+  z-index: 1050
+  background-color: #0072bc
+  color: white
+  border: none
+  border-radius: 50%
+  width: 28px
+  height: 28px
+  display: flex
+  align-items: center
+  justify-content: center
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)
+  cursor: pointer
+  transition: all 0.3s ease
+
+  i
+    font-size: 14px
+
+  &:hover
+    background-color: darken(#0072bc, 10%)

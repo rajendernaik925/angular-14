@@ -1,0 +1,60 @@
+<div class="card vh-100 py-1 border-0">
+    <div class="card-body py-1">
+        <div class="row mb-2 align-items-center">
+            <div class="col-md-3">
+                <span class="fw-bold text-danger">
+                    <img src="../../../assets/img/icons/company-name.png" width="200" height="50" alt="Company Logo">
+                </span>
+            </div>
+            <div class="col-md-9 d-flex justify-content-end align-items-center gap-2">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBHf--60OfT0X5oAd-1fmIUKyxDWV6mxBlqaVUK-9Z2CgHp9VwbH4ChXw6PbtmVZb_aGQ&usqp=CAU"
+                    width="40" height="40" alt="Profile Image">
+                <div class="dropdown">
+                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Rajender
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#">Profile</a>
+                        <a class="dropdown-item" href="#">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="d-flex align-items-center gap-2">
+            <h4 class="fw-bold mb-0 mr-4">Reporting Manager</h4>
+            <div class="col-md-3 mb-3">
+                <div class="card border-0 p-1 bg-dark shadow border-radius">
+                    <div class="card-body p-1 d-flex align-items-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
+                            width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-white">Chiranjeevi</span>
+                            <span class="text-muted small text-white">Sr. Project Manager</span>
+                            <span class="text-muted small text-white">Ex: 12 years</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0 mr-4">Teams</h5>
+        </div>
+        <div class="mt-4 mt-4-custom d-flex flex-wrap gap-3 justify-content-start">
+            <div class="team-card cursor-pointer p-1 shadow border-radius mr-2 cursor-pointer" 
+                *ngFor="let team of teams; let i = index" 
+                [ngClass]="{'bg-dark text-white': selectedTeamIndex === i}" 
+                (click)="trackingPage(i)">
+        
+                <div class="card-body p-1 d-flex align-items-center">
+                    <span class="fw-bold">{{ team.name }}</span>
+                </div>
+            </div>
+        </div>
+        <hr>
+          
+    </div>
+</div>

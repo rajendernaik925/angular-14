@@ -98,6 +98,34 @@ import { AssetRequestFormComponent } from './components/asset-request-form/asset
 import { AssetItAdminComponent } from './components/asset-it-admin/asset-it-admin.component';
 import { QRManagementComponent } from './qrmanagement/qrmanagement.component';
 import { ConfirmationLetterComponent } from './HR/confirmation-letter/confirmation-letter.component';
+import { JobcodeComponent } from './jobcode/jobcode.component';
+import { VacancyComponent } from './jobcode/vacancy/vacancy.component';
+import { JobDetailComponent } from './jobcode/job-detail/job-detail.component';
+import { NonFunctionalComponent } from './jobcode/non-functional/non-functional.component';
+import { AppendicesComponent } from './jobcode/appendices/appendices.component';
+import { UseCaseComponent } from './jobcode/use-case/use-case.component';
+import { SideBarComponent } from './jobcode/side-bar/side-bar.component';
+import { TrackingComponent } from './jobcode/tracking/tracking.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { personalInfoComponent } from './candidate-details/personal-info/personal-info.component';
+import { HiringLoginComponent } from './candidate-details/hiring-login/hiring-login.component';
+import { HiringDashboardComponent } from './hiring-module/hiring-dashboard/hiring-dashboard.component';
+import { ProfileListComponent } from './hiring-module/shortlisted/shortlisted.component';
+import { InterviewScheduleComponent } from './hiring-module/interview-schedule/interview-schedule.component';
+import { InterviewProcessComponent } from './hiring-module/interview-process/interview-process.component';
+import { InterviewProcessedComponent } from './hiring-module/interview-processed/interview-processed.component';
+import { HoldComponent } from './hiring-module/hold/hold.component';
+import { RejectedComponent } from './hiring-module/rejected/rejected.component';
+import { OfferLetterComponent } from './hiring-module/offer-letter/offer-letter.component';
+import { EmployeeCodeComponent } from './hiring-module/employee-code/employee-code.component';
+import { assetManagerSideBarComponent } from './hiring-module/side-bar/side-bar.component';
+import { RegistrationComponent } from './workforce-management/registration/registration.component';
+import { FieldEmployeesComponent } from './workforce-management/field-employees/field-employees.component';
+import { FieldworkHrmsComponent } from './workforce-management/fieldwork-hrms/fieldwork-hrms.component';
+import { FieldworkDashboardComponent } from './workforce-management/fieldwork-dashboard/fieldwork-dashboard.component';
+import { FieldWorkSideBarComponent } from './workforce-management/side-bar/side-bar.component';
+import { OrganogramComponent } from './organogram/organogram/organogram.component';
+import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
  
   
 @NgModule({
@@ -144,7 +172,34 @@ import { ConfirmationLetterComponent } from './HR/confirmation-letter/confirmati
      VaccineRegComponent, 
      MomentDatePipe,
      InOutTimeBarComponent, 
-     HomepageComponent, HRpoliciesComponent, NoRightClickDirective, AnnouncementsComponent, SaturdayPolicyComponent, EmployeeLetterComponent, ReviewLetterComponent, EmployeeHikeLetterComponent, HikeReviewLetterComponent, PayslipsuploadsComponent, FamilyDetailsComponent, MastercreationComponent, LeavequotaComponent, IdcardComponent, UtilitiesComponent, PromotionLetterComponent,WorksheetComponent, BulkUploadComponent, AssethistoryComponent, AssetDataComponent, AssetmainComponent, SidebarComponent, EmployeeAssertModuleComponent, AssetRequestFormComponent, AssetItAdminComponent, QRManagementComponent, ConfirmationLetterComponent 
+     HomepageComponent, HRpoliciesComponent, NoRightClickDirective, AnnouncementsComponent, SaturdayPolicyComponent, EmployeeLetterComponent, ReviewLetterComponent, EmployeeHikeLetterComponent, HikeReviewLetterComponent, PayslipsuploadsComponent, FamilyDetailsComponent, MastercreationComponent, LeavequotaComponent, IdcardComponent, UtilitiesComponent, PromotionLetterComponent,WorksheetComponent, BulkUploadComponent, AssethistoryComponent, AssetDataComponent, AssetmainComponent, SidebarComponent, EmployeeAssertModuleComponent, AssetRequestFormComponent, AssetItAdminComponent, QRManagementComponent, ConfirmationLetterComponent, 
+     JobcodeComponent,
+     VacancyComponent,
+     JobDetailComponent,
+     NonFunctionalComponent,
+     AppendicesComponent,
+     UseCaseComponent,
+     SideBarComponent,
+     TrackingComponent,
+     personalInfoComponent,
+     HiringLoginComponent,
+     HiringDashboardComponent,
+     ProfileListComponent,
+     InterviewScheduleComponent,
+     InterviewProcessComponent,
+     InterviewProcessedComponent,
+     HoldComponent,
+     RejectedComponent,
+     OfferLetterComponent,
+     EmployeeCodeComponent,
+     assetManagerSideBarComponent,
+     RegistrationComponent,
+     FieldEmployeesComponent,
+     FieldworkHrmsComponent,
+     FieldworkDashboardComponent,
+     FieldWorkSideBarComponent,
+     OrganogramComponent,
+     OrganogramTrackingComponent,
   ],
   imports: [   
     BrowserModule,
@@ -163,6 +218,7 @@ import { ConfirmationLetterComponent } from './HR/confirmation-letter/confirmati
     ImageCropperModule,
     NgOtpInputModule,
     TimepickerModule.forRoot(),
+    MatDialogModule,
   ],
   providers: [DatePipe, NgIdleService,{provide: LocationStrategy, useClass: HashLocationStrategy}, NgxImageCompressService ],
   bootstrap: [AppComponent]

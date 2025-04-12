@@ -63,6 +63,30 @@ import {AssetRequestFormComponent} from 'src/app/components/asset-request-form/a
 import {AssetItAdminComponent} from 'src/app/components/asset-it-admin/asset-it-admin.component';
 import { QRManagementComponent } from './qrmanagement/qrmanagement.component';
 import { ConfirmationLetterComponent } from './HR/confirmation-letter/confirmation-letter.component';
+import { JobcodeComponent } from './jobcode/jobcode.component';
+import { VacancyComponent } from './jobcode/vacancy/vacancy.component';
+import { JobDetailComponent } from './jobcode/job-detail/job-detail.component';
+import { AppendicesComponent } from './jobcode/appendices/appendices.component';
+import { UseCaseComponent } from './jobcode/use-case/use-case.component';
+import { NonFunctionalComponent } from './jobcode/non-functional/non-functional.component';
+import { TrackingComponent } from './jobcode/tracking/tracking.component';
+import { personalInfoComponent } from './candidate-details/personal-info/personal-info.component';
+import { HiringLoginComponent } from './candidate-details/hiring-login/hiring-login.component';
+import { ProfileListComponent } from './hiring-module/shortlisted/shortlisted.component';
+import { InterviewScheduleComponent } from './hiring-module/interview-schedule/interview-schedule.component';
+import { InterviewProcessComponent } from './hiring-module/interview-process/interview-process.component';
+import { InterviewProcessedComponent } from './hiring-module/interview-processed/interview-processed.component';
+import { HiringDashboardComponent } from './hiring-module/hiring-dashboard/hiring-dashboard.component';
+import { OfferLetterComponent } from './hiring-module/offer-letter/offer-letter.component';
+import { EmployeeCodeComponent } from './hiring-module/employee-code/employee-code.component';
+import { RejectedComponent } from './hiring-module/rejected/rejected.component';
+import { HoldComponent } from './hiring-module/hold/hold.component';
+import { RegistrationComponent } from './workforce-management/registration/registration.component';
+import { FieldworkHrmsComponent } from './workforce-management/fieldwork-hrms/fieldwork-hrms.component';
+import { FieldworkDashboardComponent } from './workforce-management/fieldwork-dashboard/fieldwork-dashboard.component';
+import { FieldEmployeesComponent } from './workforce-management/field-employees/field-employees.component';
+import { OrganogramComponent } from './organogram/organogram/organogram.component';
+import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
   
 const routes: Routes = [ 
   { path: '', pathMatch: 'full', redirectTo: 'login'},
@@ -114,6 +138,37 @@ const routes: Routes = [
   { path: 'panReqsts', component: PanReqstsComponent,canActivate: [AuthGuard]},
   { path: 'postAnnouncement', component: AnnouncementsComponent,canActivate: [AuthGuard]},
   {path: 'saturdayPolicy', component: SaturdayPolicyComponent,canActivate: [AuthGuard]},
+
+
+
+
+
+  // jobcode paths
+
+  {path:'jobcode',component:JobcodeComponent},
+  {path:'vacancy',component:VacancyComponent},
+  {path:'nonfunctional',component:NonFunctionalComponent},
+  {path:'use-case',component:UseCaseComponent},
+  {path:'appendices',component:AppendicesComponent},
+  {path:'jobcode/:id',component:JobDetailComponent},
+  {path:'tracking/:id',component:TrackingComponent},
+  {path:'personal-info',component:personalInfoComponent},
+  {path:'hiring-login',component:HiringLoginComponent},
+  {path:'shortlisted',component:ProfileListComponent},
+  {path:'schedule',component:InterviewScheduleComponent},
+  {path:'process',component:InterviewProcessComponent},
+  {path:'procesed',component:InterviewProcessedComponent},
+  {path:'hiring-dashboard',component:HiringDashboardComponent},
+  {path:'offer-letter',component:OfferLetterComponent},
+  {path:'employee-code',component:EmployeeCodeComponent},
+  {path:'rejected',component:RejectedComponent},
+  {path:'hold',component:HoldComponent},
+  {path:'registration',component:RegistrationComponent},
+  {path:'field-employees',component:FieldEmployeesComponent},
+  {path:'fieldwork-dashboard',component:FieldworkDashboardComponent},
+  {path:'fieldwork-hrms',component:FieldworkHrmsComponent},
+  {path:'organogram',component:OrganogramComponent},
+  {path:'organogram/:id',component:OrganogramTrackingComponent},
       
 
   // Manager 
