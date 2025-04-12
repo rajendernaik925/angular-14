@@ -1145,6 +1145,18 @@ holdCandidates() {
   )
 }
 
+offerCandidates() {
+  return this.http.get(`${this.jobCodeUrls}hiring/offerletter`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+onBoardingCandidates() {
+  return this.http.get(`${this.jobCodeUrls}hiring/employeeonboarding`).pipe(
+    catchError(this.handleError)
+  )
+}
+
 rejectedCandidates() {
   return this.http.get(`${this.jobCodeUrls}hiring/rejectedcandidates`).pipe(
     catchError(this.handleError)
