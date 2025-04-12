@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { User } from './user';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Observable,BehaviorSubject ,throwError } from 'rxjs';  
 import { catchError, map, tap } from 'rxjs/operators';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +36,24 @@ export class AuthService {
      private bulkUploadUrl='https://sso.heterohcl.com/bulkupload/'
     
   constructor(public router: Router, private http: HttpClient) { }
+
+  private handleError = (error: HttpErrorResponse): Observable<never> => {
+    let errorMessage = '';
+    if (error.status === 0) {
+      errorMessage = error.message;
+    } else {
+      errorMessage = error.error;
+    }
+    Swal.fire({
+      title: 'OOPS',
+      text: error.error.message,
+      icon: 'error',
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+    });
+    return throwError(() => errorMessage);
+  }
  
   
  
@@ -863,5 +882,280 @@ getCurrentDate(): Observable<any> {
 getNotifications(formData: FormData): Observable<any> {
   return this.http.post(`${this.baseUrl}/notifications`, formData);
 }
+
+
+
+private getDefaultHttpOptions() {
+  return {
+    headers: new HttpHeaders({
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    }),
+    observe: 'response' as 'response'
+  };
+}
+
+
+private jobCodeUrls: string = "http://192.168.213.176:2025/";
+createJobCode(formData: any): Observable<HttpResponse<any>> {
+  return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
+    catchError(this.handleError)
+  );
+}
+
+getTotalJobCodes(pageNo: number, pageSize: number, searchData: string) {
+  const params = new HttpParams()
+    .set('pageNo', pageNo.toString())
+    .set('pageSize', pageSize.toString())
+    .set('search', searchData.toString());
+
+  return this.http.get(`${this.jobCodeUrls}jobcode/jobcodedata`, { params }).pipe(
+    catchError(this.handleError)
+  );
+}
+
+
+getDataByJobCode(id: any): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}jobcode/singlejobcode/${id}`, this.getDefaultHttpOptions()).pipe(
+    catchError(this.handleError)
+  );
+}
+
+listOfmanagers(): Observable<any> {
+  return this.http.get(this.jobCodeUrls + 'master/managers', this.getDefaultHttpOptions()).pipe(
+    catchError(this.handleError)
+  )
+}
+
+getJobCodeListData(id: any): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}jobcode/getcandidates/${id}`).pipe(
+    catchError(this.handleError)
+  );
+}
+
+CreateJobCandidate(formData: FormData): Observable<HttpResponse<any>> {
+  return this.http.post(`${this.jobCodeUrls}jobcode/addcandidate`, formData, { observe: 'response' });
+
+}
+masterBu() {
+  return this.http.get(`${this.jobCodeUrls}master/bu`).pipe(
+    catchError(this.handleError)
+  );
+}
+
+jobTitle(): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}master/title`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+listofTeams(): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}master/team`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+ReportingManagers(): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}master/reportingmanager`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+trackingData(id: any): Observable<any> {
+  return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`);
+}
+
+publishMode(formData: any): Observable<any> {
+  return this.http.put(`${this.jobCodeUrls}jobcode/publish`, formData).pipe(
+    catchError(this.handleError)
+  )
+}
+
+hiringLogin(payload): Observable<HttpResponse<any>> {
+  console.log("type: ", payload)
+  return this.http.post(`${this.jobCodeUrls}jobcode/login`, payload, { observe: 'response' })
+}
+
+hiringRegister(data: FormData): Observable<HttpResponse<any>> {
+  return this.http.post(`${this.jobCodeUrls}hiring/employeedetails`, data, { observe: 'response' }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+title() {
+  return this.http.get(`${this.jobCodeUrls}master/mstitle`)
+}
+
+gender() {
+  return this.http.get(`${this.jobCodeUrls}master/gender`)
+}
+
+marriageStatus() {
+  return this.http.get(`${this.jobCodeUrls}master/maritalstatus`)
+}
+university() {
+  return this.http.get(`${this.jobCodeUrls}master/university`)
+}
+
+qualification() {
+  return this.http.get(`${this.jobCodeUrls}master/qualification`)
+}
+
+joiningTime() {
+  return this.http.get(`${this.jobCodeUrls}master/noticeperiodindays`)
+}
+
+states() {
+  return this.http.get(`${this.jobCodeUrls}master/states`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+cities(id: any) {
+  return this.http.get(`${this.jobCodeUrls}master/cities/${id}`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+registeredData(id: any) {
+  return this.http.get(`${this.jobCodeUrls}hiring/candidatedata/${id}`)
+}
+
+deleteEducation(id: any): Observable<any> {
+  return this.http.delete(`${this.jobCodeUrls}hiring/deleteeducation/${id}`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+deleteFile(candidateId: any, fileId: any): Observable<HttpResponse<any>> {
+  return this.http.delete(`${this.jobCodeUrls}hiring/deletedocument/${candidateId}/${fileId}`, { observe: 'response' }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+deleteExperience(candidateId: any): Observable<HttpResponse<any>> {
+  return this.http.delete(`${this.jobCodeUrls}hiring/deleteexperience/${candidateId}`, { observe: 'response' }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+shortlistedCandidates(pageNo: number, pageSize: number, searchData: string) {
+  const params = new HttpParams()
+    .set('pageNo', pageNo.toString())
+    .set('pageSize', pageSize.toString())
+    .set('search', searchData.toString());
+  return this.http.get(`${this.jobCodeUrls}hiring/shortlisted`, { params }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+processCandidates(pageNo: number, pageSize: number, searchData: string,loginId:number) {
+  const params = new HttpParams()
+    .set('pageNo', pageNo.toString())
+    .set('pageSize', pageSize.toString())
+    .set('search', searchData.toString())
+    .set('loginId', loginId.toString());
+  return this.http.get(`${this.jobCodeUrls}hiring/process`, { params }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+processedCandidates(pageNo: number, pageSize: number, searchData: string,loginId:number) {
+  const params = new HttpParams()
+    .set('pageNo', pageNo.toString())
+    .set('pageSize', pageSize.toString())
+    .set('search', searchData.toString())
+    .set('loginId', loginId.toString());
+  return this.http.get(`${this.jobCodeUrls}hiring/processedlist`, { params }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+scheduleCandidates(pageNo: number, pageSize: number, searchData: string) {
+  const params = new HttpParams()
+    .set('pageNo', pageNo.toString())
+    .set('pageSize', pageSize.toString())
+    .set('search', searchData.toString());
+  return this.http.get(`${this.jobCodeUrls}hiring/schedule`,{params}).pipe(
+    catchError(this.handleError)
+  )
+}
+
+cancelInterview(id:any):Observable<HttpResponse<any>> {
+  return this.http.delete(`${this.jobCodeUrls}hiring/cancleinterview/${id}`,{ observe: 'response' }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+modeOfInterview() {
+  return this.http.get(`${this.jobCodeUrls}master/interviewmode`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+
+interviewRounds() {
+  return this.http.get(`${this.jobCodeUrls}master/interviewrounds`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+addInterviewRound(payload: any): Observable<HttpResponse<any>>{
+  return this.http.post(`${this.jobCodeUrls}hiring/interviewschedule`, payload, { observe: 'response' }).pipe(
+    catchError(this.handleError)
+  )
+}
+
+interviewedBy(payload: FormData): Observable<any> {
+  return this.http.post(`${this.jobCodeUrls}master/interviewby`, payload).pipe(
+    catchError(this.handleError)
+  )
+}
+
+
+interviewLocation() {
+  return this.http.get(`${this.jobCodeUrls}master/address`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+interviewstatus() {
+  return this.http.get(`${this.jobCodeUrls}master/finalstatus`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+feedbackFactors() {
+  return this.http.get(`${this.jobCodeUrls}master/factors`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+feedbackSubmitForm(payload: any): Observable<any> {
+  return this.http.post(`${this.jobCodeUrls}hiring/interviewfeedback`, payload, {
+    responseType: 'text' 
+  }).pipe(
+    catchError(this.handleError) 
+  );
+}
+
+holdCandidates() {
+  return this.http.get(`${this.jobCodeUrls}hiring/hold`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+rejectedCandidates() {
+  return this.http.get(`${this.jobCodeUrls}hiring/rejectedcandidates`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+dashboardCandidatesCount() {
+  return this.http.get(`${this.jobCodeUrls}hiring/dashboardcount`).pipe(
+    catchError(this.handleError)
+  )
+}
+
 
 }

@@ -1,0 +1,89 @@
+<div class="container-fluid">
+  <app-nav></app-nav>
+</div>
+
+<div class="container-flui mt-3">
+  <div class="row g-2 position-relative">
+    <div class="col-md-2 mb-2 position-relative sidebar-wrapper">
+      <div class="card border-0 p-0 shadow">
+        <div class="card-body p-2">
+          <app-asset-manager-side-bar></app-asset-manager-side-bar>
+        </div>
+        <!-- <button class="toggle-icon-btn" (click)="toggleSidebar()">
+          <i class="bi" [ngClass]="isSidebarOpen ? 'bi-chevron-left' : 'bi-chevron-right'"></i>
+        </button> -->
+      </div>
+    </div>
+    <!-- <button *ngIf="!isSidebarOpen" class="toggle-icon-btn-collapsed" (click)="toggleSidebar()">
+      <i class="bi bi-chevron-right"></i>
+    </button> -->
+    <div class="pad col-md-10">
+      <div class="card py-1 border-0 scroll-container">
+        <div class="card-body py-1">
+          <div class="row g-4 mb-5">
+            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/shortlisted'">
+              <div class="card dashboard-card text-white bg-custom h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                  <h6 class="card-title text-uppercase">Shortlisted</h6>
+                  <h2 class="display-5 fw-bold">{{candidatesCount?.onGoing}}</h2>
+                  <p class="small mb-0">Updated just now</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/schedule'">
+              <div class="card dashboard-card text-white bg-warning h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                  <h6 class="card-title text-uppercase">Scheduled</h6>
+                  <h2 class="display-5 fw-bold">80</h2>
+                  <p class="small mb-0">Next: 2 PM Today</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/hold'">
+              <div class="card dashboard-card text-white bg-success h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                  <h6 class="card-title text-uppercase">Hold</h6>
+                  <h2 class="display-5 fw-bold">{{candidatesCount?.hold}}</h2>
+                  <p class="small mb-0">Interviews Hold!</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/rejected'">
+              <div class="card dashboard-card text-white bg-danger h-100 shadow-sm rounded-4">
+                <div class="card-body text-center">
+                  <h6 class="card-title text-uppercase">Rejected</h6>
+                  <h2 class="display-5 fw-bold">{{candidatesCount?.rejected}}</h2>
+                  <p class="small mb-0">Interviews Rejected</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row px-5 mt-3" style="height: calc(100vh - 250px); overflow: auto;">
+            <div class="col-md-6 border-custom mr-3 d-flex align-items-center justify-content-center"
+              style="max-height: calc(100vh - 219px);">
+              <div #barChart class="chart"></div>
+            </div>
+            <div class="col-md-5 border-custom d-flex align-items-center justify-content-center"
+              style="max-height: calc(100vh - 219px);">
+              <div #pieChart class="chart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="loader attDnceLoadr" *ngIf="isLoading">
+  <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
+</div>

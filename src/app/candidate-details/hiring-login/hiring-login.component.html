@@ -1,0 +1,45 @@
+<div class="d-flex justify-content-center align-items-center full-height-90" *ngIf="logginStatus">
+    <div class="card shadow p-4" style="width: 400px;">
+        <img [src]="companyImage" alt="">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"> 
+            <div class="mb-3">
+                <input type="email" id="id" class="form-control" formControlName="email" placeholder="Enter your email"
+                 autocomplete="off" />
+                <div *ngIf="submitted && loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')"
+                    class="text-danger">
+                    <small>ID is required.</small>
+                </div>
+                <div *ngIf="submitted && loginForm.get('email')?.errors?.pattern" class="text-danger">
+                    <small>Enter 5 digit ID</small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <input type="password" id="password" class="form-control" formControlName="password"
+                    placeholder="Enter your password" autocomplete="off" />
+                <div *ngIf="submitted && loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')"
+                    class="text-danger">
+                    <small>Password is required.</small>
+                </div>
+                <div *ngIf="submitted && submitted && loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')"
+                    class="text-danger">
+                    <small>Password must be at least 6 characters long.</small>
+                </div>
+                <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('pattern')"
+                    class="text-danger mt-1">
+                    <small>Password must include 1 uppercase, 1 number, and 1 special character.</small>
+                </div>
+            </div>
+            <button type="submit" class="btn custom-bg w-100">
+                Login
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="loader attDnceLoadr" *ngIf="isLoading">
+    <div class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+  </div>

@@ -1,0 +1,100 @@
+.fw-bold
+  font-weight: bold
+.border-radius
+  border-radius: 40px
+.mt-4
+  .row
+    .col-md-3
+      .card
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out
+
+        &:hover
+          transform: translateY(-8px) scale(1.08)
+          box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2)
+
+      .rounded-circle
+        transition: transform 0.3s ease-in-out
+
+        &:hover
+          transform: scale(1.1)
+
+.mt-4-custom
+  display: flex
+  flex-wrap: wrap
+  gap: 12px // Adjust space between cards
+
+.team-card
+  display: flex
+  align-items: center
+  background: white
+  padding: 10px 15px
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) 
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out
+
+  &:hover
+    transform: translateY(-5px) scale(1.05)
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2)
+.cursor-pointer
+  cursor: pointer
+button
+  &:active, &:focus
+    box-shadow: none !important
+    outline: none !important
+
+.btn-warning
+  &:active, &:focus, &:focus-visible
+    background-color: #ffc107 !important
+    border-color: #ffc107 !important
+    box-shadow: none !important
+input:focus, select:focus, textarea:focus
+  border-color: black !important // Override Bootstrap default blue
+  box-shadow: none !important // Remove default Bootstrap shadow
+
+// Make the input fields smaller
+input, select, textarea
+  font-size: 0.875rem // Small font size
+  padding: 0.25rem 0.5rem // Reduce padding for a smaller look
+  height: auto // Ensure height is adjusted correctly 
+.max-height
+  height: calc(100vh - 40px)          
+
+
+
+@keyframes dropIn
+  from
+    opacity: 0
+    transform: translateY(-40px)
+    color: white
+    background: black
+  to
+    opacity: 1
+    transform: translateY(100)
+
+.team-card
+  opacity: 0 // Initially hidden
+  animation: dropIn 0.4s ease-out forwards
+
+  // Apply staggered effect for multiple cards
+  @for $i from 1 through 100
+    &:nth-child(#{$i})
+      animation-delay: $i * 0.04s // Each card drops slightly after the previous one
+
+
+
+
+@keyframes floatEmoji
+  0%
+    transform: translateY(0) scale(1)
+    opacity: 1
+  100%
+    transform: translateY(-50px) scale(1.5)
+    opacity: 0
+
+
+
+.emoji-trail
+  position: absolute
+  pointer-events: none
+  font-size: 20px
+  animation: floatEmoji 1s ease-out forwards
+
