@@ -10,14 +10,14 @@ import { AuthService } from 'src/app/auth.service';
 })
 export class HiringDashboardComponent implements OnInit {
 
-  @ViewChild('barChart', { static: false }) barChart!: ElementRef;
+  // @ViewChild('barChart', { static: false }) barChart!: ElementRef;c:\Users\rajender.bhukya\Downloads\Hiring Module Candidate Data .png
   @ViewChild('pieChart', { static: false }) pieChart!: ElementRef;
   candidatesCount:any;
   isLoading: boolean = false;
+  graphImageUrl:string = 'assets/img/job-code/graph.png';
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.initBarChart();
       this.initPieChart();
     }, 0);
   }
@@ -45,90 +45,164 @@ export class HiringDashboardComponent implements OnInit {
       }
     })
   }
-  
-  initBarChart() {
-    if (!this.barChart?.nativeElement) return;
 
-    const myChart = echarts.init(this.barChart.nativeElement);
-    const option = {
-      title: {
-        text: 'Fieldwork',
-        subtext: 'Fake Data'
-      },
-      tooltip: {
-        trigger: 'axis'
-      },
-      legend: {
-        data: ['Rainfall', 'Evaporation']
-      },
-      toolbox: {
-        show: true,
-        feature: {
-          dataView: { show: true, readOnly: false },
-          magicType: { show: true, type: ['line', 'bar'] },
-          restore: { show: true },
-          saveAsImage: { show: true }
-        }
-      },
-      calculable: true,
-      xAxis: [
-        {
-          type: 'category',
-          data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        }
-      ],
-      yAxis: [{ type: 'value' }],
-      series: [
-        {
-          name: 'Rainfall',
-          type: 'bar',
-          data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
-          markPoint: { data: [{ type: 'max', name: 'Max' }, { type: 'min', name: 'Min' }] },
-          markLine: { data: [{ type: 'average', name: 'Avg' }] }
-        },
-        {
-          name: 'Evaporation',
-          type: 'bar',
-          data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
-          markPoint: { data: [{ name: 'Max', value: 182.2, xAxis: 7, yAxis: 183 }, { name: 'Min', value: 2.3, xAxis: 11, yAxis: 3 }] },
-          markLine: { data: [{ type: 'average', name: 'Avg' }] }
-        }
-      ]
-    };
-    myChart.setOption(option);
-  }
+
+  // initPieChart() {
+  //   if (!this.pieChart?.nativeElement) return;
+  
+  //   const myChart = echarts.init(this.pieChart.nativeElement);
+  
+  //   // Generate time-series data with large variation
+  //   let base = +new Date(1988, 9, 3);
+  //   let oneDay = 24 * 3600 * 1000;
+  //   let data = [[base, Math.random() * 1000]];
+  
+  //   for (let i = 1; i < 20000; i++) {
+  //     base += oneDay;
+  //     const previous = data[i - 1][1];
+      
+  //     // Occasionally create large jumps or drops
+  //     let variation = (Math.random() - 0.5) * 200; // default small variation
+  //     if (Math.random() < 0.05) {
+  //       variation += (Math.random() - 0.5) * 2000; // big jump/drop
+  //     }
+  
+  //     let newValue = Math.max(0, Math.round(previous + variation));
+  //     data.push([base, newValue]);
+  //   }
+  
+  //   const option = {
+  //     tooltip: {
+  //       trigger: 'axis',
+  //       position: function (pt) {
+  //         return [pt[0], '10%'];
+  //       }
+  //     },
+  //     title: {
+  //       left: 'center',
+  //       text: 'Hiring Module Candidate Data'
+  //     },
+  //     toolbox: {
+  //       feature: {
+  //         dataZoom: { yAxisIndex: 'none' },
+  //         restore: {},
+  //         saveAsImage: {}
+  //       }
+  //     },
+  //     xAxis: {
+  //       type: 'time',
+  //       boundaryGap: false
+  //     },
+  //     yAxis: {
+  //       type: 'value',
+  //       boundaryGap: [0, '100%']
+  //     },
+  //     dataZoom: [
+  //       {
+  //         type: 'inside',
+  //         start: 0,
+  //         end: 20
+  //       },
+  //       {
+  //         start: 0,
+  //         end: 20
+  //       }
+  //     ],
+  //     series: [
+  //       {
+  //         name: 'Wild Data',
+  //         type: 'line',
+  //         smooth: true,
+  //         symbol: 'none',
+  //         areaStyle: {},
+  //         data: data
+  //       }
+  //     ]
+  //   };
+  
+  //   myChart.setOption(option);
+  // }
+
 
   initPieChart() {
     if (!this.pieChart?.nativeElement) return;
-
+  
     const myChart = echarts.init(this.pieChart.nativeElement);
+  
+    const year = 2024;
+    const startDate = new Date(year, 0, 1).getTime();
+    const oneDay = 24 * 3600 * 1000;
+    const daysInYear = 365;
+  
+    let data: [number, number][] = [];
+  
+    let baseValue = 500;
+  
+    for (let i = 0; i < daysInYear; i++) {
+      const date = startDate + i * oneDay;
+  
+      // Create a smooth up-and-down wave pattern
+      const seasonalFactor = Math.sin((i / daysInYear) * 2 * Math.PI); // sine wave
+      const randomNoise = (Math.random() - 0.5) * 100; // small randomness
+  
+      const value = Math.max(0, baseValue + seasonalFactor * 400 + randomNoise); // ensure non-negative
+      data.push([date, Math.round(value)]);
+    }
+  
     const option = {
-      tooltip: { trigger: 'item' },
-      legend: { top: '2%', left: 'start' },
+      tooltip: {
+        trigger: 'axis',
+        formatter: function (params: any) {
+          const date = new Date(params[0].data[0]);
+          const day = String(date.getDate()).padStart(2, '0');
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const year = date.getFullYear();
+          return `Date: ${day}-${month}-${year}<br/>Total Count: ${params[0].data[1]}`;
+        }
+      },
+      title: {
+        left: 'center',
+        text: 'Hiring Module Candidate Data'
+      },
+      toolbox: {
+        feature: {
+          restore: {},
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'time',
+        boundaryGap: false,
+        axisLabel: {
+          formatter: function (value: number) {
+            const date = new Date(value);
+            return date.toLocaleString('default', { month: 'short' }); // Jan, Feb, ...
+          }
+        },
+        splitNumber: 12
+      },
+      yAxis: {
+        type: 'value',
+        boundaryGap: [0, '10%']
+      },
       series: [
         {
-          name: 'Hiring Form',
-          type: 'pie',
-          radius: ['40%', '70%'],
-          avoidLabelOverlap: false,
-          itemStyle: {
-            borderRadius: 10,
-            borderColor: '#fff',
-            borderWidth: 2
-          },
-          label: { show: false, position: 'center' },
-          emphasis: { label: { show: true, fontSize: 20, fontWeight: 'bold' } },
-          labelLine: { show: false },
-          data: [
-            { value: 64, name: 'Shortlisted' },
-            { value: 80, name: 'Hired' },
-            { value: 100, name: 'Hold' },
-            { value: 100, name: 'Rejected' },
-          ]
+          name: 'Total Count',
+          type: 'line',
+          smooth: true,
+          symbol: 'none',
+          areaStyle: {},
+          data: data
         }
       ]
     };
+  
     myChart.setOption(option);
   }
+  
+  
+  
+  
+  
 }
 
