@@ -114,3 +114,49 @@ $card-shadow-hover: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2)
 
   &:hover
     background-color: darken(#0072bc, 10%)
+.chart-container
+  max-width: 100%
+
+select.form-select
+  min-width: 140px
+
+
+
+// Custom Select styles
+.custom-select
+  background-color: #f4f6f9 // Light grey background
+  border: 1px solid #ced4da // Border color
+  border-radius: 8px // Rounded corners
+  padding: 2px 5px // Padding for better spacing
+  transition: all 0.3s ease-in-out // Smooth transition on focus
+  height: 30px
+
+  // Change background on hover
+  &:hover
+    background-color: #e9ecef
+    border-color: #adb5bd
+
+  // Focus effect with shadow
+  &:focus
+    background-color: #fff
+    background-color: #f4f6f9
+    border-color: #495057
+    box-shadow: 0 0 5px black // Blue glow effect
+
+  // Style the dropdown icon
+  &::after
+    content: ' ▼' // Adds a downward arrow
+    color: #6c757d
+    font-size: 12px
+    position: absolute
+    right: 10px
+    top: 50%
+    transform: translateY(-50%)
+.fw-bold
+  font-weight: bold
+.Hover
+  cursor: pointer
+  transition: background-color 0.8s ease // Transition for background-color over 2 seconds
+
+  &:hover
+    background-color: #f2f2f2
