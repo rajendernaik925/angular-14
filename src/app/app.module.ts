@@ -25,7 +25,7 @@ import { ErrorComponent } from './components/error/error.component';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AttendanceApprovalsComponent } from './manager/attendance-approvals/attendance-approvals.component';
 import { NgIdleService } from './services/ng-idle-service.service'; 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { LeaveApprovalsComponent } from './manager/leave-approvals/leave-approvals.component';
 import { ManagerApprovalsComponent } from './manager/manager-approvals/manager-approvals.component';
@@ -126,6 +126,8 @@ import { FieldworkDashboardComponent } from './workforce-management/fieldwork-da
 import { FieldWorkSideBarComponent } from './workforce-management/side-bar/side-bar.component';
 import { OrganogramComponent } from './organogram/organogram/organogram.component';
 import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
  
   
 @NgModule({
@@ -199,7 +201,7 @@ import { OrganogramTrackingComponent } from './organogram/organogram-tracking/or
      FieldworkDashboardComponent,
      FieldWorkSideBarComponent,
      OrganogramComponent,
-     OrganogramTrackingComponent,
+     OrganogramTrackingComponent
   ],
   imports: [   
     BrowserModule,

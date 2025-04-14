@@ -43,6 +43,7 @@ export class personalInfoComponent implements OnInit {
   hovering = false;
   statusPercentage: number = 50;
   loadedData: any;
+  editButtonDisplay: boolean = true;
 
 
   resumeFile: string | null = null;
@@ -177,11 +178,26 @@ export class personalInfoComponent implements OnInit {
     const [year, month, day] = date.split('-');
     return `${day}-${month}-${year}`;
   }
+  
 
   loadUserData() {
+    this.isLoading = true;
     this.authService.registeredData(this.jobCodeData.candidateId).subscribe({
       next: (res: any) => {
+        this.isLoading = false;
         this.loadedData = res;
+        if (this.loadedData?.candidateInterviewDetails?.length) {
+          this.editButtonDisplay = false;
+          this.setActiveSection('status');
+          Swal.fire({
+            title: 'Notice',
+            text: 'You do not have access to edit. Please check the status of your interview rounds.',
+            icon: 'info',
+            showConfirmButton: true,
+            confirmButtonText: 'OK',
+            timerProgressBar: true,
+          });
+        }        
         // console.log("rajender : ",res.candidatePersonalInformationDetails.candidateInterviewDetails)
         if (
           res?.candidatePersonalInformationDetails ||
@@ -272,9 +288,9 @@ export class personalInfoComponent implements OnInit {
           this.othersFile = null;
         }
       },
-
       error: (err: HttpErrorResponse) => {
         console.log('HTTP Error:', err);
+        this.isLoading = false
       }
     });
   }
