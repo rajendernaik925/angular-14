@@ -144,7 +144,6 @@ const routes: Routes = [
 
 
   // jobcode paths
-
   {path:'jobcode',component:JobcodeComponent},
   {path:'vacancy',component:VacancyComponent},
   {path:'nonfunctional',component:NonFunctionalComponent},
