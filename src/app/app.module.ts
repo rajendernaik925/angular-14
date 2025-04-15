@@ -127,6 +127,7 @@ import { FieldWorkSideBarComponent } from './workforce-management/side-bar/side-
 import { OrganogramComponent } from './organogram/organogram/organogram.component';
 import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
  
   
@@ -201,7 +202,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
      FieldworkDashboardComponent,
      FieldWorkSideBarComponent,
      OrganogramComponent,
-     OrganogramTrackingComponent
+     OrganogramTrackingComponent,
+     PageNotFoundComponent
   ],
   imports: [   
     BrowserModule,

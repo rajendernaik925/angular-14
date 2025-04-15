@@ -18,14 +18,14 @@
 
           <div class="row mb-2 align-items-center">
             <div class="col-md-3">
-              <span class="fw-bold text-danger">
-                <i class="bi bi-arrow-left-circle-fill me-2" style="cursor: pointer;" (click)="goBack()"></i>
-                Hold Candidates
-                <span class="badge bg-danger text-white">{{ rows.length }}</span>
+              <span class="fw-bold text-dark">
+                <!-- <i class="bi bi-arrow-left-circle-fill me-2" style="cursor: pointer;" (click)="goBack()"></i> -->
+                Offer Management
+                <span class="badge bg-dark text-white">{{ rows.length }}</span>
               </span>
             </div>
             <div class="col-md-9 d-flex justify-content-end align-items-center">
-              <input type="search" class="form-control form-control-sm search-input" placeholder="Search"
+              <input type="search" class="form-control form-control-sm search-input" placeholder="🔍 Search"
                 [formControl]="searchQuery" aria-level="Search"
                 style="max-width: 150px; margin-right: 20px; font-size: 13px;">
               <!-- <button type="button" (click)="toggleOffcanvas()" class="btn btn-sm custom-bg text-light">
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="scroll-container p-0">
-            <table class="table table-striped table-hover table-bordered">
+            <table class="table table-bordered">
               <thead class="custom-bg">
                 <tr class="text-light">
                   <th *ngFor="let col of columns" class="small-header-th sticky-col"
@@ -44,7 +44,7 @@
                 </tr>
               </thead>
               <tbody *ngIf="paginatedRows.length > 0; else noData">
-                <tr *ngFor="let row of paginatedRows">
+                <tr *ngFor="let row of paginatedRows" class="table-hoverr">
                   <td *ngFor="let col of columns" class="small-header"
                       [ngClass]="{'text-uppercase': col.uppercase, 'text-center': col.center}">
                     

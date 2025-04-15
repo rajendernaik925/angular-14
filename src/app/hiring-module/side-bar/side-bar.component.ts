@@ -43,6 +43,14 @@ export class assetManagerSideBarComponent implements OnInit {
       route: '/employee-code',
     },
     // {
+    //   label: 'Rejected',
+    //   route: '/rejected',
+    // },
+    // {
+    //   label: 'Hold',
+    //   route: '/hold',
+    // },
+    // {
     //   label: 'See Job Codes',
     //   route: '/jobcode',
     // },
