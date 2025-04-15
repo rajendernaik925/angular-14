@@ -4,11 +4,14 @@
   background-color: #0072BC 
 .custom-text
   color: #0072bc   
+.small-header-th 
+  font-size: 12px
+  padding: 5px 10px
+  line-height: 2.0
 .small-header
   font-size: 12px
   padding: 5px 10px
-  line-height: 1.5
-
+  line-height: 1.6
 .cursor-pointer
   cursor: pointer
 th, td
@@ -33,12 +36,14 @@ th, td
   // Hide scrollbar for Internet Explorer 10+
   -ms-overflow-style: none
 
+
 thead th
   position: -webkit-sticky
   position: sticky
   top: 0px
   background: #0072BC
-  padding-top: 0
+  color: white
+  vertical-align: middle
 
 input:focus, select:focus, textarea:focus
   border-color: black !important // Override Bootstrap default blue
@@ -59,7 +64,10 @@ button
   font-weight: bold
    
 
-
+.table-hoverr:hover
+  background-color: rgba(0, 114, 188, 0.1)
+  color: #0072BC
+  cursor: pointer
 
 
 

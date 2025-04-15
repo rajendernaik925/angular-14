@@ -5,7 +5,7 @@
 <div class="container-flui mt-3">
   <div class="row g-2 position-relative">
     <div class="col-md-2 mb-2 position-relative sidebar-wrapper">
-      <div class="card border-0 p-0 shadow">
+      <div class="card border-0 p-0 ">
         <div class="card-body p-2">
           <app-asset-manager-side-bar></app-asset-manager-side-bar>
         </div>
@@ -18,66 +18,10 @@
       <i class="bi bi-chevron-right"></i>
     </button> -->
     <div class="pad col-md-10">
-      <!-- <div class="card py-1 border-0 scroll-container">
-        <div class="card-body py-1">
-          <div class="row g-4 mb-5">
-            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/shortlisted'">
-              <div class="card dashboard-card text-white bg-custom h-100 shadow-sm rounded-4">
-                <div class="card-body text-center">
-                  <h6 class="card-title text-uppercase">Shortlisted</h6>
-                  <h2 class="display-5 fw-bold">{{candidatesCount?.onGoing}}</h2>
-                  <p class="small mb-0">Updated just now</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/schedule'">
-              <div class="card dashboard-card text-white bg-warning h-100 shadow-sm rounded-4">
-                <div class="card-body text-center">
-                  <h6 class="card-title text-uppercase">Scheduled</h6>
-                  <h2 class="display-5 fw-bold">80</h2>
-                  <p class="small mb-0">Next: 2 PM Today</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/hold'">
-              <div class="card dashboard-card text-white bg-success h-100 shadow-sm rounded-4">
-                <div class="card-body text-center">
-                  <h6 class="card-title text-uppercase">Hold</h6>
-                  <h2 class="display-5 fw-bold">{{candidatesCount?.hold}}</h2>
-                  <p class="small mb-0">Interviews Hold!</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-3 col-sm-6 cursor-pointer" [routerLink]="'/rejected'">
-              <div class="card dashboard-card text-white bg-danger h-100 shadow-sm rounded-4">
-                <div class="card-body text-center">
-                  <h6 class="card-title text-uppercase">Rejected</h6>
-                  <h2 class="display-5 fw-bold">{{candidatesCount?.rejected}}</h2>
-                  <p class="small mb-0">Interviews Rejected</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row px-5 mt-3" style="height: calc(100vh - 250px); overflow: auto;">
-            <div class="col-md-6 border-custom mr-3 d-flex align-items-center justify-content-center"
-              style="max-height: calc(100vh - 219px);">
-              <div #barChart class="chart"></div>
-            </div>
-            <div class="col-md-5 border-custom d-flex align-items-center justify-content-center"
-              style="max-height: calc(100vh - 219px);">
-              <div #pieChart class="chart"></div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <div class="card container py-1 border-0 scroll-container">
+      <div class="py-1 pr-3 border-0 scroll-container">
         <div class="row g-3 mb-3">
-          <div class="col-md-3">
-            <div class="card Hover shadow border-0">
+          <div class="col-md-3" [routerLink]="'/shortlisted'">
+            <div class="card Hover  border-0">
               <div class="card-body py-2 px-3">
                 <h6 class="text-primary fs-6 mb-1">Applications ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -86,8 +30,8 @@
             </div>
           </div>
 
-          <div class="col-md-3">
-            <div class="card Hover shadow border-0">
+          <div class="col-md-3" [routerLink]="'/schedule'">
+            <div class="card Hover  border-0">
               <div class="card-body py-2 px-3">
                 <h6 class="text-primary fs-6 mb-1">Scheduled ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -97,7 +41,7 @@
           </div>
 
           <div class="col-md-3">
-            <div class="card Hover shadow border-0">
+            <div class="card Hover  border-0">
               <div class="card-body py-2 px-3">
                 <h6 class="text-primary fs-6 mb-1">Unscheduled ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -107,8 +51,8 @@
           </div>
 
 
-          <div class="col-md-3">
-            <div class="card Hover shadow border-0">
+          <div class="col-md-3" [routerLink]="'/process'">
+            <div class="card Hover  border-0">
               <div class="card-body py-2 px-3">
                 <h6 class="text-success fs-6 mb-1">Approved ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -119,8 +63,8 @@
 
         </div>
         <div class="row g-3">
-          <div class="col-md-3">
-            <div class="card Hover border-0 shadow">
+          <div class="col-md-3" [routerLink]="'/hold'">
+            <div class="card Hover border-0 ">
               <div class="card-body py-2 px-3">
                 <h6 class="text-warning fs-6 mb-1">Hold ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -129,8 +73,8 @@
             </div>
           </div>
 
-          <div class="col-md-3">
-            <div class="card Hover border-0 shadow">
+          <div class="col-md-3" [routerLink]="'/rejected'">
+            <div class="card Hover border-0 ">
               <div class="card-body py-2 px-3">
                 <h6 class="text-danger fs-6 mb-1">Rejected ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -139,8 +83,8 @@
             </div>
           </div>
 
-          <div class="col-md-3">
-            <div class="card Hover border-0 shadow">
+          <div class="col-md-3" [routerLink]="'/offer-letter'">
+            <div class="card Hover border-0">
               <div class="card-body py-2 px-3">
                 <h6 class="text-warning fs-6 mb-1">Offer Initiated ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -149,8 +93,8 @@
             </div>
           </div>
 
-          <div class="col-md-3">
-            <div class="card Hover border-0 shadow">
+          <div class="col-md-3" [routerLink]="'/employee-code'">
+            <div class="card Hover border-0 ">
               <div class="card-body py-2 px-3">
                 <h6 class="text-info fs-6 mb-1">Employee Onboarding ↗</h6>
                 <h4 class="fw-bold mb-1">120</h4>
@@ -161,29 +105,59 @@
         </div>
 
         <!-- Chart Section -->
-        <div class="mt-5">
+        <div class="card py-2 border-0 container mt-3 ">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="mb-0 fw-bold">Over View</h5>
+            <div>
+              <h5 class="mb-0 fw-bold">Over View</h5>
+              <span class="text-muted small">Showing Total Application Status of Year 2025</span>
+            </div>
+          
             <div class="d-flex gap-2">
-              <select class="form-select mr-3 custom-select" style="width: 150px;">
-                <!-- <option selected>Select Year :</option> -->
-                <option selected>2024</option>
+              <select class="form-select mr-3 custom-select" style="width: 50px;">
+                <option selected>2025</option>
+                <option>2024</option>
                 <option>2023</option>
                 <option>2022</option>
                 <option>2021</option>
                 <option>2020</option>
               </select>
-              <select class="form-select custom-select" style="width: 180px;">
-                <!-- <option selected>Status :</option> -->
-                <option selected>Shortlisted</option>
-                <option>Selected</option>
-                <option>Process</option>
-                <option>Scheduled</option>
-                <option>Offer</option>
-                <option>Onboarding</option>
-              </select>
+          
+              <div class="d-flex gap-2 mb-3">
+                <select class="form-select mr-3 custom-select" [(ngModel)]="statusOne" style="width: 150px;">
+                  <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+                </select>
+              
+                <select class="form-select mr-3 custom-select" [(ngModel)]="statusTwo" style="width: 150px;">
+                  <option *ngFor="let status of statusList" [value]="status">{{ status }}</option>
+                </select>
+              
+                <button class="btn bg-custom text-white btn-sm active" (click)="compareStatuses()">Compare</button>
+              </div>
+              
+              <!-- Bootstrap Modal -->
+              <div class="modal fade" id="differenceModal" tabindex="-1" aria-labelledby="differenceModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="differenceModalLabel">Difference Result</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p class="fw-bold">Difference:</p>
+                      <pre>{{ differenceResult | json }}</pre>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              
+              
             </div>
           </div>
+          
 
 
           <!-- Full-width chart container -->
@@ -191,9 +165,7 @@
             <div #pieChart class="chart" style="width: 100%; height: 400px;"></div>
           </div>
         </div>
-
       </div>
-
     </div>
   </div>
 

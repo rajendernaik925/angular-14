@@ -4,13 +4,13 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './auth.guard';
-import { SettingsComponent } from './settings/settings.component'; 
+import { SettingsComponent } from './settings/settings.component';
 import { BirthdaysComponent } from './components/birthdays/birthdays.component';
 import { DepartmentInfoComponent } from './components/department-info/department-info.component';
 import { LeaveSummaryComponent } from './components/leave-summary/leave-summary.component';
 import { AttendanceReportComponent } from './components/attendance-report/attendance-report.component';
 import { ErrorComponent } from './components/error/error.component';
-import { AttendanceApprovalsComponent } from './manager/attendance-approvals/attendance-approvals.component'; 
+import { AttendanceApprovalsComponent } from './manager/attendance-approvals/attendance-approvals.component';
 import { LeaveApprovalsComponent } from './manager/leave-approvals/leave-approvals.component';
 import { ManagerApprovalsComponent } from './manager/manager-approvals/manager-approvals.component';
 import { DeptAttendanceComponent } from './manager/dept-attendance/dept-attendance.component';
@@ -21,7 +21,7 @@ import { ProcessOfAssessmentComponent } from './HR/process-of-assessment/process
 import { HrmsComponent } from './HR/hrms/hrms.component';
 import { AttendanceReportAssamComponent } from './components/attendance-report-assam/attendance-report-assam.component';
 import { BusinessUnitAttendanceComponent } from './HR/business-unit-attendance/business-unit-attendance.component';
- 
+
 import { UnfreezeDatesComponent } from './HR/unfreeze-dates/unfreeze-dates.component';
 import { FlexiPolicyComponent } from './HR/flexi-policy/flexi-policy.component';
 import { AttendanceLogsComponent } from './HR/attendance-logs/attendance-logs.component';
@@ -59,8 +59,8 @@ import { AssetmainComponent } from './assetmain/assetmain.component';
 import { AssetDataComponent } from './assertdata/asset-data.component';
 import { AssethistoryComponent } from './assethistory/assethistory.component';
 import { EmployeeAssertModuleComponent } from './employee-assert-module/employee-assert-module.component';
-import {AssetRequestFormComponent} from 'src/app/components/asset-request-form/asset-request-form.component';
-import {AssetItAdminComponent} from 'src/app/components/asset-it-admin/asset-it-admin.component';
+import { AssetRequestFormComponent } from 'src/app/components/asset-request-form/asset-request-form.component';
+import { AssetItAdminComponent } from 'src/app/components/asset-it-admin/asset-it-admin.component';
 import { QRManagementComponent } from './qrmanagement/qrmanagement.component';
 import { ConfirmationLetterComponent } from './HR/confirmation-letter/confirmation-letter.component';
 import { JobcodeComponent } from './jobcode/jobcode.component';
@@ -87,98 +87,99 @@ import { FieldworkDashboardComponent } from './workforce-management/fieldwork-da
 import { FieldEmployeesComponent } from './workforce-management/field-employees/field-employees.component';
 import { OrganogramComponent } from './organogram/organogram/organogram.component';
 import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
-  
-const routes: Routes = [ 
-  { path: '', pathMatch: 'full', redirectTo: 'login'},
-  { path: 'login', component: LoginComponent }, 
-  { path: 'dashboard', component: DashboardComponent,canActivate: [AuthGuard]  },
-  { path: 'home', component: HomepageComponent,canActivate: [AuthGuard]  },
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
-  { path: 'settings', component: SettingsComponent,canActivate: [AuthGuard]  }, 
-  { path: 'profilePage', component: ProfilePageComponent,canActivate: [AuthGuard]  }, 
+const routes: Routes = [
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  { path: 'home', component: HomepageComponent, canActivate: [AuthGuard] },
 
-  
-  { path: 'birthdays', component: BirthdaysComponent,canActivate: [AuthGuard] },
-  { path: 'deptInfo', component: DepartmentInfoComponent,canActivate: [AuthGuard] },
-  { path: 'leaveSummary', component: LeaveSummaryComponent,canActivate: [AuthGuard] },
-  { path: 'attendanceReport', component: AttendanceReportComponent,canActivate: [AuthGuard]},
-  { path: 'attendanceReportAssam', component: AttendanceReportAssamComponent,canActivate: [AuthGuard]}, 
-  { path: 'applyLeave', component: ApplyLeaveComponent,canActivate: [AuthGuard]},
+  { path: 'settings', component: SettingsComponent, canActivate: [AuthGuard] },
+  { path: 'profilePage', component: ProfilePageComponent, canActivate: [AuthGuard] },
 
-  { path: 'ctcInfo', component: CtcComponent,canActivate: [AuthGuard]},
-  { path: 'vaccination', component: VaccineRegComponent,canActivate: [AuthGuard]},
-  { path: 'HR-Policies', component: HRpoliciesComponent,canActivate: [AuthGuard]},
 
-  { path: 'employeeletter', component: EmployeeLetterComponent,canActivate: [AuthGuard]},
+  { path: 'birthdays', component: BirthdaysComponent, canActivate: [AuthGuard] },
+  { path: 'deptInfo', component: DepartmentInfoComponent, canActivate: [AuthGuard] },
+  { path: 'leaveSummary', component: LeaveSummaryComponent, canActivate: [AuthGuard] },
+  { path: 'attendanceReport', component: AttendanceReportComponent, canActivate: [AuthGuard] },
+  { path: 'attendanceReportAssam', component: AttendanceReportAssamComponent, canActivate: [AuthGuard] },
+  { path: 'applyLeave', component: ApplyLeaveComponent, canActivate: [AuthGuard] },
 
-  { path: 'reviewletter', component: ReviewLetterComponent,canActivate: [AuthGuard]},
+  { path: 'ctcInfo', component: CtcComponent, canActivate: [AuthGuard] },
+  { path: 'vaccination', component: VaccineRegComponent, canActivate: [AuthGuard] },
+  { path: 'HR-Policies', component: HRpoliciesComponent, canActivate: [AuthGuard] },
 
-  { path: 'employeehikeletter', component: EmployeeHikeLetterComponent,canActivate: [AuthGuard]},
-  { path: 'hikereviewletter', component: HikeReviewLetterComponent,canActivate: [AuthGuard]},
-  { path: 'Payslipupload', component: PayslipsuploadsComponent,canActivate: [AuthGuard]},
-  
+  { path: 'employeeletter', component: EmployeeLetterComponent, canActivate: [AuthGuard] },
+
+  { path: 'reviewletter', component: ReviewLetterComponent, canActivate: [AuthGuard] },
+
+  { path: 'employeehikeletter', component: EmployeeHikeLetterComponent, canActivate: [AuthGuard] },
+  { path: 'hikereviewletter', component: HikeReviewLetterComponent, canActivate: [AuthGuard] },
+  { path: 'Payslipupload', component: PayslipsuploadsComponent, canActivate: [AuthGuard] },
+
 
 
   // HRMS 
-  { path: 'hrms', component: HrmsComponent,canActivate: [AuthGuard]  },
-  { path: 'assessmentProcess', component: ProcessOfAssessmentComponent,canActivate: [AuthGuard]  },
-  { path: 'assessmentExtendedReport', component: AssessmentExtendedReportComponent,canActivate: [AuthGuard]  },
-  { path: 'assessmentPermanentReport', component: AssessmentPermanentReportComponent,canActivate: [AuthGuard]  },
-  { path: 'assessmentProcessReport', component: AssessmentProcessReportComponent,canActivate: [AuthGuard]  },
-  { path: 'buAttendance', component: BusinessUnitAttendanceComponent,canActivate: [AuthGuard]  },
-  { path: 'unfreezeDates', component: UnfreezeDatesComponent,canActivate: [AuthGuard] },
-  { path: 'flexiPolicy', component: FlexiPolicyComponent,canActivate: [AuthGuard] },
-  { path: 'attendanceLogs', component: AttendanceLogsComponent,canActivate: [AuthGuard] },
-  { path: 'attendanceReader', component: AttendanceReaderComponent,canActivate: [AuthGuard] },
-  { path: 'profileRequests', component: ProfileRequestsComponent,canActivate: [AuthGuard]},
-  { path: 'commnctnAddrssReqsts', component: CommnctnAddrssComponent,canActivate: [AuthGuard]},
-  { path: 'permntAddrssReqsts', component: PermntAddrssComponent,canActivate: [AuthGuard]},
-  { path: 'iceAddressReqsts', component: IceAddressComponent,canActivate: [AuthGuard]},
-  { path: 'bankAddrssReqsts', component: BankAddrssComponent,canActivate: [AuthGuard]},
-  { path: 'panReqsts', component: PanReqstsComponent,canActivate: [AuthGuard]},
-  { path: 'postAnnouncement', component: AnnouncementsComponent,canActivate: [AuthGuard]},
-  {path: 'saturdayPolicy', component: SaturdayPolicyComponent,canActivate: [AuthGuard]},
+  { path: 'hrms', component: HrmsComponent, canActivate: [AuthGuard] },
+  { path: 'assessmentProcess', component: ProcessOfAssessmentComponent, canActivate: [AuthGuard] },
+  { path: 'assessmentExtendedReport', component: AssessmentExtendedReportComponent, canActivate: [AuthGuard] },
+  { path: 'assessmentPermanentReport', component: AssessmentPermanentReportComponent, canActivate: [AuthGuard] },
+  { path: 'assessmentProcessReport', component: AssessmentProcessReportComponent, canActivate: [AuthGuard] },
+  { path: 'buAttendance', component: BusinessUnitAttendanceComponent, canActivate: [AuthGuard] },
+  { path: 'unfreezeDates', component: UnfreezeDatesComponent, canActivate: [AuthGuard] },
+  { path: 'flexiPolicy', component: FlexiPolicyComponent, canActivate: [AuthGuard] },
+  { path: 'attendanceLogs', component: AttendanceLogsComponent, canActivate: [AuthGuard] },
+  { path: 'attendanceReader', component: AttendanceReaderComponent, canActivate: [AuthGuard] },
+  { path: 'profileRequests', component: ProfileRequestsComponent, canActivate: [AuthGuard] },
+  { path: 'commnctnAddrssReqsts', component: CommnctnAddrssComponent, canActivate: [AuthGuard] },
+  { path: 'permntAddrssReqsts', component: PermntAddrssComponent, canActivate: [AuthGuard] },
+  { path: 'iceAddressReqsts', component: IceAddressComponent, canActivate: [AuthGuard] },
+  { path: 'bankAddrssReqsts', component: BankAddrssComponent, canActivate: [AuthGuard] },
+  { path: 'panReqsts', component: PanReqstsComponent, canActivate: [AuthGuard] },
+  { path: 'postAnnouncement', component: AnnouncementsComponent, canActivate: [AuthGuard] },
+  { path: 'saturdayPolicy', component: SaturdayPolicyComponent, canActivate: [AuthGuard] },
 
 
 
 
 
   // jobcode paths
-  {path:'jobcode',component:JobcodeComponent},
-  {path:'vacancy',component:VacancyComponent},
-  {path:'nonfunctional',component:NonFunctionalComponent},
-  {path:'use-case',component:UseCaseComponent},
-  {path:'appendices',component:AppendicesComponent},
-  {path:'jobcode/:id',component:JobDetailComponent},
-  {path:'tracking/:id',component:TrackingComponent},
-  {path:'personal-info',component:personalInfoComponent},
-  {path:'hiring-login',component:HiringLoginComponent},
-  {path:'shortlisted',component:ProfileListComponent},
-  {path:'schedule',component:InterviewScheduleComponent},
-  {path:'process',component:InterviewProcessComponent},
-  {path:'procesed',component:InterviewProcessedComponent},
-  {path:'hiring-dashboard',component:HiringDashboardComponent},
-  {path:'offer-letter',component:OfferLetterComponent},
-  {path:'employee-code',component:EmployeeCodeComponent},
-  {path:'rejected',component:RejectedComponent},
-  {path:'hold',component:HoldComponent},
-  {path:'registration',component:RegistrationComponent},
-  {path:'field-employees',component:FieldEmployeesComponent},
-  {path:'fieldwork-dashboard',component:FieldworkDashboardComponent},
-  {path:'fieldwork-hrms',component:FieldworkHrmsComponent},
-  {path:'organogram',component:OrganogramComponent},
-  {path:'organogram/:id',component:OrganogramTrackingComponent},
-      
+  { path: 'jobcode', component: JobcodeComponent },
+  { path: 'vacancy', component: VacancyComponent },
+  { path: 'nonfunctional', component: NonFunctionalComponent },
+  { path: 'use-case', component: UseCaseComponent },
+  { path: 'appendices', component: AppendicesComponent },
+  { path: 'jobcode/:id', component: JobDetailComponent },
+  { path: 'tracking/:id', component: TrackingComponent },
+  { path: 'personal-info', component: personalInfoComponent },
+  { path: 'hiring-login', component: HiringLoginComponent },
+  { path: 'shortlisted', component: ProfileListComponent },
+  { path: 'schedule', component: InterviewScheduleComponent },
+  { path: 'process', component: InterviewProcessComponent },
+  { path: 'procesed', component: InterviewProcessedComponent },
+  { path: 'hiring-dashboard', component: HiringDashboardComponent },
+  { path: 'offer-letter', component: OfferLetterComponent },
+  { path: 'employee-code', component: EmployeeCodeComponent },
+  { path: 'rejected', component: RejectedComponent },
+  { path: 'hold', component: HoldComponent },
+  { path: 'registration', component: RegistrationComponent },
+  { path: 'field-employees', component: FieldEmployeesComponent },
+  { path: 'fieldwork-dashboard', component: FieldworkDashboardComponent },
+  { path: 'fieldwork-hrms', component: FieldworkHrmsComponent },
+  { path: 'organogram', component: OrganogramComponent },
+  { path: 'organogram/:id', component: OrganogramTrackingComponent },
+
 
   // Manager 
-  { path: 'managerApprovals', component: ManagerApprovalsComponent,canActivate: [AuthGuard]},    
-  { path: 'attendanceApprovals', component: AttendanceApprovalsComponent,canActivate: [AuthGuard]},  
-  { path: 'leaveApprovals', component: LeaveApprovalsComponent,canActivate: [AuthGuard]},
-  { path: 'deptAttendance/:id', component: DeptAttendanceComponent,canActivate: [AuthGuard]},
-  { path: 'assesmentForm', component: MngrAssesmentFormComponent,canActivate: [AuthGuard]},
-  { path: 'assesmentFillForm', component: AssmntFillFormComponent,canActivate: [AuthGuard]},
-  { path: 'errorPage', component: ErrorComponent},
-  {path:'familydetails',component:FamilyDetailsComponent, canActivate: [AuthGuard]},
+  { path: 'managerApprovals', component: ManagerApprovalsComponent, canActivate: [AuthGuard] },
+  { path: 'attendanceApprovals', component: AttendanceApprovalsComponent, canActivate: [AuthGuard] },
+  { path: 'leaveApprovals', component: LeaveApprovalsComponent, canActivate: [AuthGuard] },
+  { path: 'deptAttendance/:id', component: DeptAttendanceComponent, canActivate: [AuthGuard] },
+  { path: 'assesmentForm', component: MngrAssesmentFormComponent, canActivate: [AuthGuard] },
+  { path: 'assesmentFillForm', component: AssmntFillFormComponent, canActivate: [AuthGuard] },
+  { path: 'errorPage', component: ErrorComponent },
+  { path: 'familydetails', component: FamilyDetailsComponent, canActivate: [AuthGuard] },
   {
     path: 'mastercreation',
     component: MastercreationComponent,
@@ -191,34 +192,36 @@ const routes: Routes = [
       { path: 'assign-designation', component: MastercreationComponent },
       { path: 'create-qualification', component: MastercreationComponent },
     ], canActivate: [AuthGuard]
-  },   
-   
-  {path:'LeaveQuota',component:LeavequotaComponent, canActivate: [AuthGuard]},
+  },
+
+  { path: 'LeaveQuota', component: LeavequotaComponent, canActivate: [AuthGuard] },
   { path: 'idcard', component: IdcardComponent, canActivate: [AuthGuard] },
-{path:'utilities',component:UtilitiesComponent, canActivate: [AuthGuard]},
-{path:'promotionletter',component:PromotionLetterComponent, canActivate: [AuthGuard]},
-{path:'worksheet',component:WorksheetComponent, canActivate: [AuthGuard]},
-{path:'bulkupload',component:BulkUploadComponent, canActivate: [AuthGuard]},
- 
-  {path: 'assetamain',component:AssetmainComponent, canActivate: [AuthGuard]},
+  { path: 'utilities', component: UtilitiesComponent, canActivate: [AuthGuard] },
+  { path: 'promotionletter', component: PromotionLetterComponent, canActivate: [AuthGuard] },
+  { path: 'worksheet', component: WorksheetComponent, canActivate: [AuthGuard] },
+  { path: 'bulkupload', component: BulkUploadComponent, canActivate: [AuthGuard] },
+
+  { path: 'assetamain', component: AssetmainComponent, canActivate: [AuthGuard] },
   { path: 'asset', component: AssetDataComponent, canActivate: [AuthGuard] },
   { path: 'assethistory', component: AssethistoryComponent, canActivate: [AuthGuard] },
   //{path:'employeeasset',component:EmployeeAssertModuleComponent},
-   {
+  {
     path: 'employeeasset',
     component: EmployeeAssertModuleComponent,
     children: [
       // Redirect to /employeeasset/employeehistory when no child path is specified
       { path: '', pathMatch: 'full', redirectTo: 'employeeassets' },
-      { path: 'employeetable', component: EmployeeAssertModuleComponent } ,
+      { path: 'employeetable', component: EmployeeAssertModuleComponent },
       { path: 'employeeassets', component: EmployeeAssertModuleComponent }
       // { path: 'employeehistory', component: EmployeeAssertModuleComponent }  // Ensure this points to the correct component
     ], canActivate: [AuthGuard]
-  },{ path: 'AssetAllocationRequest', component: AssetRequestFormComponent,canActivate: [AuthGuard] },
-  { path: 'AssetITAdmin', component: AssetItAdminComponent,canActivate: [AuthGuard] },
-  
-  { path: 'qr-management', component: QRManagementComponent,canActivate: [AuthGuard] },
-  { path: 'confirmationletter', component: ConfirmationLetterComponent,canActivate: [AuthGuard] },
+  }, { path: 'AssetAllocationRequest', component: AssetRequestFormComponent, canActivate: [AuthGuard] },
+  { path: 'AssetITAdmin', component: AssetItAdminComponent, canActivate: [AuthGuard] },
+
+  { path: 'qr-management', component: QRManagementComponent, canActivate: [AuthGuard] },
+  { path: 'confirmationletter', component: ConfirmationLetterComponent, canActivate: [AuthGuard] },
+
+  { path: '**', component: PageNotFoundComponent },
 ];
 
 @NgModule({
