@@ -61,7 +61,6 @@
                       <span *ngIf="row.status === 'Cancelled'" class="text-orange-dark fw-bold">Cancelled</span>
                       <span *ngIf="row.status === 'Hold'" class="text-orange-dark fw-bold">Hold</span>
                     </ng-container>
-
                     <!-- 
                     1001 = '',
                     1002 = '',
@@ -69,19 +68,23 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
-                        <button *ngIf="row.status === 'Pending'"
+                        <button
+                          *ngIf="row.status === 'Pending'; else viewBtn"
                           class="border-none bg-success text-white custom-action-btn px-2"
                           (click)="handleAction(row.employeeid)">
                           Schedule
                         </button>
-
-                        <button *ngIf="row.status !== 'Pending'"
-                          class="border-none custom-bg text-white custom-action-btn px-2"
-                          (click)="viewAction(row.employeeid)">
-                          View
-                        </button>
-
+                      
+                        <ng-template #viewBtn>
+                          <button
+                            class="border-none custom-bg text-white custom-action-btn px-2"
+                            (click)="viewAction(row.employeeid)">
+                            View
+                          </button>
+                        </ng-template>
                       </ng-container>
+                      
+                      
 
                       <!-- <ng-template #normal>
                         {{ row[col.key] }}
@@ -243,13 +246,15 @@
               (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
               autocomplete="off">
 
-            <ul *ngIf="showDropdown && interviewedByList.length > 0"
-              class="dropdown-menu show w-100 position-absolute custom-scroll">
-              <li *ngFor="let item of interviewedByList" (click)="selectInterviewer(item)"
-                class="dropdown-item cursor-pointer">
-                {{ item?.name }}
+              <ul *ngIf="showDropdown && interviewedByList.length > 0"
+                class="dropdown-menu show w-100 position-absolute custom-scroll">
+              <li *ngFor="let item of interviewedByList"
+                  (click)="selectInterviewer(item)"
+                  class="dropdown-item cursor-pointer">
+                {{ item?.id }} - {{ item?.name }}
               </li>
             </ul>
+            
             <div *ngIf="addNewRoundForm.get('interviewBy')?.touched && addNewRoundForm.get('interviewBy')?.invalid"
               class="text-danger fs-custom">
               Interviewed By is required
@@ -313,9 +318,30 @@
               Interview Round is required
             </div>
           </div>
-          <div class="col-md-6 mt-4">
-            <button type="submit" class="btn text-white custom-bg w-100">Submit</button>
+
+
+
+          <div class="col-md-6">
+            <label for="meetingLink" class="form-label">
+              Meeting Link <span class="text-danger">*</span>
+            </label>
+          
+            <input
+              type="url"
+              formControlName="meetingLink"
+              class="form-control form-control-sm"
+              placeholder="Zoom, Teams, Google Meet link, etc."
+              required
+            />
+          
+            <div *ngIf="addNewRoundForm.get('meetingLink')?.touched && addNewRoundForm.get('meetingLink')?.invalid"
+                 class="text-danger fs-custom">
+              Please enter a valid meeting link
+            </div>
           </div>
+          
+          <button type="submit" class="btn text-white custom-bg w-100 mt-4">Submit</button>
+
         </div>
 
         <div class="row">

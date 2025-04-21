@@ -896,7 +896,7 @@ private getDefaultHttpOptions() {
 }
 
 
-private jobCodeUrls: string = "http://192.168.212.85:2025/";
+private jobCodeUrls: string = "http://192.168.214.51:2025/";
 createJobCode(formData: any): Observable<HttpResponse<any>> {
   return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
     catchError(this.handleError)
@@ -1143,6 +1143,16 @@ holdCandidates() {
   return this.http.get(`${this.jobCodeUrls}hiring/hold`).pipe(
     catchError(this.handleError)
   )
+}
+
+unScheduledCandidates() {
+  return this.http.get(`${this.jobCodeUrls}hiring/unscheduled`).pipe(
+    catchError(this.handleError)
+  )
+}
+
+updateJoingDate(formData: FormData) {
+  return this.http.put(`${this.jobCodeUrls}hiring/updatedoj`,formData)
 }
 
 offerCandidates() {

@@ -425,10 +425,9 @@
 
 
 <ng-template #feedbackform>
-
   <div class="row mb-2 align-items-center">
     <div class="col-md-9">
-      <span class="custom-text"> {{candidateData?.basicDetails?.firstName | uppercase}} FEEDBACK FORM </span>
+      <span class="custom-text"> {{ candidateData?.basicDetails?.firstName | uppercase }} FEEDBACK FORM </span>
     </div>
     <div class="col-md-3 d-flex justify-content-end align-items-center">
       <span class="cursor-pointer Hover" (click)="close()">
@@ -437,123 +436,112 @@
     </div>
   </div>
 
-
-
-  <!-- <span class="custom-text"> {{candidateData?.basicDetails?.firstName | uppercase}} FEEDBACK FORM </span> -->
   <div class="scroll-container-with-scroll-bar">
     <form [formGroup]="feedbackForm" (ngSubmit)="feedbackSubmit()">
-      <div class="">
-        <table class="table table-bordered mb-0">
-          <thead class="text-center">
-            <tr class="small-header text-white">
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">S.No</th>
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Factors</th>
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Excellent</th>
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Good</th>
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Average</th>
-              <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Below Average</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let factor of feedbackFactorsData; let i = index" [formGroup]="feedbackArray.controls[i]">
-              <td class="p-0 text-center small">{{ i + 1 }}</td>
-              <td class="p-0 small text-center">{{ factor.name }}</td>
-              <td class="p-0 text-center">
-                <input type="radio" formControlName="feedbackId" value="1"> <!-- excellent -->
-              </td>
-              <td class="p-0 text-center">
-                <input type="radio" formControlName="feedbackId" value="2"> <!-- good -->
-              </td>
-              <td class="p-0 text-center">
-                <input type="radio" formControlName="feedbackId" value="3"> <!-- average -->
-              </td>
-              <td class="p-0 text-center">
-                <input type="radio" formControlName="feedbackId" value="4"> <!-- below average -->
-              </td>
-            </tr>
+      <table class="table table-bordered mb-0">
+        <thead class="text-center">
+          <tr class="small-header text-white">
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">S.No</th>
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Factors</th>
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Excellent</th>
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Good</th>
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Average</th>
+            <th class="p-0 text-center small" style="padding: 2px; font-size: 12px;">Below Average</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let factor of feedbackFactorsData; let i = index" [formGroup]="feedbackArray.controls[i]">
+            <td class="p-0 text-center small">{{ i + 1 }}</td>
+            <td class="p-0 small text-center">{{ factor.name }}</td>
+            <td class="p-0 text-center">
+              <input type="radio" formControlName="feedbackId" value="1">
+            </td>
+            <td class="p-0 text-center">
+              <input type="radio" formControlName="feedbackId" value="2">
+            </td>
+            <td class="p-0 text-center">
+              <input type="radio" formControlName="feedbackId" value="3">
+            </td>
+            <td class="p-0 text-center">
+              <input type="radio" formControlName="feedbackId" value="4">
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
-          </tbody>
-        </table>
-
-        <div *ngIf="!feedbackForm.valid && feedbackForm.touched && areRadioFieldsInvalid()"
-          class="text-danger fs-custom">
-          Please select an option for all factors
-        </div>
+      <div *ngIf="!feedbackForm.valid && feedbackForm.touched && areRadioFieldsInvalid()" class="text-danger fs-custom">
+        Please select an option for all factors
       </div>
 
       <div class="row">
         <div class="col-md-12">
           <label for="textarea" class="form-label">Comments <span class="text-danger">*</span></label>
-          <textarea id="textarea" class="form-control form-control-sm" rows="1" formControlName="comments"
-            placeholder="Enter text"></textarea>
-          <div *ngIf="feedbackForm.controls['comments'].invalid && feedbackForm.controls['comments'].touched"
-            class="text-danger fs-custom">
+          <textarea id="textarea" class="form-control form-control-sm" rows="1" formControlName="comments" placeholder="Enter text"></textarea>
+          <div *ngIf="feedbackForm.controls['comments'].invalid && feedbackForm.controls['comments'].touched" class="text-danger fs-custom">
             Comment is required.
           </div>
         </div>
       </div>
 
       <div class="row g-3 align-items-center mt-1">
-        <div [ngClass]="selectedHrStatus === 1005 ? 'col-md-6' : 'col-md-4'">
+        <div [ngClass]="(selectedHrStatus === 1005 || selectedHrStatus === 1006) ? 'col-md-6' : 'col-md-4'">
           <label for="statusSelect" class="form-label">Status <span class="text-danger">*</span></label>
-          <select id="statusSelect" class="form-select form-control form-control-sm" formControlName="status"
-            (change)="onHrStatusChange($event.target.value)">
+          <select id="statusSelect" class="form-select form-control form-control-sm" formControlName="status" (change)="onHrStatusChange($event.target.value)">
             <option value="">Select</option>
             <option *ngFor="let item of interviewStatus" [value]="item?.id">{{ item?.name }}</option>
           </select>
-          <div *ngIf="feedbackForm.controls['status'].invalid && feedbackForm.controls['status'].touched"
-            class="text-danger fs-custom">
+          <div *ngIf="feedbackForm.controls['status'].invalid && feedbackForm.controls['status'].touched" class="text-danger fs-custom">
             Status is required.
           </div>
         </div>
 
-
-        <div class="col-md-6 mt-4" *ngIf="selectedHrStatus == 1005">
+        <div class="col-md-6 mt-4" *ngIf="selectedHrStatus === 1005 || selectedHrStatus === 1006"
+        >
           <span class="fw-bold custom-text"></span>
-          <div class="flex-grow-1 d-flex justify-content-center">
-          </div>
+          <div class="flex-grow-1 d-flex justify-content-center"></div>
           <span class="cursor-pointer Hover">
             <button type="submit" class="btn btn-sm custom-bg text-light mt-2 w-100">Submit</button>
           </span>
         </div>
 
-        <div class="col-md-4" *ngIf="selectedHrStatus !== 1005 && !finalHrRound">
+        <div class="col-md-4" *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
           <label for="optionSelect" class="form-label">Assign next round <span class="text-danger">*</span></label>
           <select id="optionSelect" class="form-select form-control form-control-sm" formControlName="interviewRound">
             <option value="">Select</option>
             <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>
           </select>
-          <div
-            *ngIf="feedbackForm.controls['interviewRound'].invalid && feedbackForm.controls['interviewRound'].touched"
-            class="text-danger fs-custom">
+          <div *ngIf="feedbackForm.controls['interviewRound'].invalid && feedbackForm.controls['interviewRound'].touched" class="text-danger fs-custom">
             Next round option is required.
           </div>
         </div>
 
-        <!-- Hide this field when hrStatus is 'Rejected' (id: 1005) -->
-        <div class="col-md-4 position-relative" *ngIf="selectedHrStatus !== 1005 && !finalHrRound">
-          <label for="interview_employeeid" class="form-label">
-            Interviewer Name <span class="text-danger">*</span>
-          </label>
-          <input type="text" placeholder="Search interviewer" class="form-control form-control-sm"
-            formControlName="interviewBy" [value]="selectedInterviewerName || ''"
-            (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
-            autocomplete="off">
+        <div class="col-md-4 position-relative" *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
+          <label for="interview_employeeid" class="form-label">Interviewer Name <span class="text-danger">*</span></label>
+          
+          <!-- Dropdown -->
           <ul *ngIf="showDropdown && interviewedByList.length > 0"
-            class="dropdown-menu show w-100 position-absolute custom-scroll top-dropdown">
+              class="dropdown-menu show w-100 position-absolute custom-scroll"
+              style="bottom: 100%; top: auto; z-index: 1050;">
             <li *ngFor="let item of interviewedByList" (click)="selectInterviewer(item)"
-              class="dropdown-item cursor-pointer">
-              {{ item?.Name }}
+                class="dropdown-item cursor-pointer">
+              {{ item?.id }} - {{ item?.name }}
             </li>
           </ul>
-
+        
+          <!-- Input field -->
+          <input type="text" placeholder="Search interviewer" class="form-control form-control-sm"
+                 formControlName="interviewBy" [value]="selectedInterviewerName || ''"
+                 (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
+                 autocomplete="off">
+        
+          <!-- Validation -->
           <div *ngIf="feedbackForm.controls['interviewBy'].invalid && feedbackForm.controls['interviewBy'].touched"
-            class="text-danger fs-custom">
+               class="text-danger fs-custom">
             Interviewer Name is required.
           </div>
         </div>
+        
       </div>
-
 
       <div *ngIf="finalHrRound && selectedHrStatus !== 1005" class="row g-3 align-items-center mt-1">
         <div class="col-md-3">
@@ -595,6 +583,7 @@
           <label>Region:</label>
           <input type="text" formControlName="region" class="form-control">
         </div>
+
         <div class="col-md-3 mt-4">
           <span class="cursor-pointer Hover">
             <button type="submit" class="btn btn-sm custom-bg text-light mt-2 w-100">Submit</button>
@@ -602,18 +591,17 @@
         </div>
       </div>
 
-      <div class="d-flex mb-2 align-items-center" *ngIf="selectedHrStatus !== 1005 && !finalHrRound">
+      <div class="d-flex mb-2 align-items-center" *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
         <span class="fw-bold custom-text"></span>
-        <div class="flex-grow-1 d-flex justify-content-center">
-        </div>
+        <div class="flex-grow-1 d-flex justify-content-center"></div>
         <span class="cursor-pointer Hover">
           <button type="submit" class="btn btn-sm custom-bg text-light mt-2 w-100">Submit</button>
         </span>
       </div>
-      <!-- <button type="submit" class="btn btn-sm custom-bg text-light mt-2 w-100">Submit</button> -->
     </form>
   </div>
 </ng-template>
+
 
 
 

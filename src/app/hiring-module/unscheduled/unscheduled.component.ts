@@ -1,18 +1,17 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
-import * as moment from 'moment';
 
 @Component({
-  selector: 'app-offer-letter',
-  templateUrl: './offer-letter.component.html',
-  styleUrls: ['./offer-letter.component.sass']
+  selector: 'app-unscheduled',
+  templateUrl: './unscheduled.component.html',
+  styleUrls: ['./unscheduled.component.sass']
 })
-export class OfferLetterComponent implements OnInit {
+export class UnscheduledComponent implements OnInit {
 
   columns: { key: string; label: string; center?: boolean; uppercase?: boolean; clickable?: boolean; minKey?: string; maxKey?: string }[] = [];
   rows: any[] = [];
@@ -30,9 +29,6 @@ export class OfferLetterComponent implements OnInit {
   comapnyLogo: string = 'assets/img/icons/company-name.png'
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   searchQueryText: string;
-  colorTheme = 'theme-dark-blue';
-
-
 
 
   constructor(
@@ -43,7 +39,7 @@ export class OfferLetterComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.offerCandidates();
+    this.unScheduledCandidates();
     this.generateColumns();
     // this.generateRows();
 
@@ -57,52 +53,52 @@ export class OfferLetterComponent implements OnInit {
     });
   }
 
-  offerCandidates() {
+  unScheduledCandidates() {
     this.isLoading = true;
-  
-    this.authService.offerCandidates().subscribe({
+    this.authService.unScheduledCandidates().subscribe({
       next: (res: any) => {
         console.log("hold candidates : ", res);
         this.isLoading = false;
-  
+
         this.rows = res.map((item: any, index: number) => ({
           jobcodeId: item.jobcodeId || 'N/A',
           jcReferanceId: item.jcReferanceId || 'N/A',
-          employeeId: item.employeeId || 'N/A',
-          name: item.candidateName || 'N/A',
+          candidateId: item.candidateId || 'N/A',
+          name: item.name || 'N/A',
           jobTitleName: item.jobTitleName || 'N/A',
-          deptName: item.deptName || 'N/A',
-          expectedCtc: item.expectedCtc || 'N/A',
-          joiningDate: item.joiningDate ? moment(item.joiningDate).format('YYYY-MM-DD') : null,
-          status: item.status || 'N/A'
+          mobileNumber: item.mobileNumber || 'N/A',
+          email: item.email || 'N/A',
+          teamName: item.teamName || 'N/A',
+          reportingManager: item.reportingManager || 'N/A',
+          createdBy: item.createdBy || 'N/A',
+          // status: item.status || 'N/A'
         }));
-  
-        // ✅ Ensure at least 100 dummy entries
-        let currentLength = this.rows.length;
-        while (this.rows.length < 29) {
+
+        // Ensure at least 100 dummy entries
+        while (this.rows.length < 100) {
           const dummyIndex = this.rows.length + 1;
           this.rows.push({
             jobcodeId: 1000 + dummyIndex,
             jcReferanceId: `JC${1000 + dummyIndex}`,
-            employeeId: `DUMMY-${dummyIndex}`,
+            candidateId: dummyIndex,
             name: `Candidate ${dummyIndex}`,
             jobTitleName: `Job Title ${dummyIndex}`,
-            deptName: `Dept ${dummyIndex}`,
-            expectedCtc: `${Math.floor(Math.random() * 10 + 3)} LPA`,
-            joiningDate: moment().add(dummyIndex, 'days').format('YYYY-MM-DD'),
-            status: 'N/A'
+            mobileNumber: `987654${String(dummyIndex).padStart(4, '0')}`,
+            email: `dummy${dummyIndex}@example.com`,
+            teamName: `Team ${dummyIndex}`,
+            reportingManager: `Manager ${dummyIndex}`,
+            createdBy: `Creator ${dummyIndex}`,
+            status: dummyIndex % 3 === 0 ? 1001 : dummyIndex % 3 === 1 ? 1003 : 1005
           });
         }
-  
+
         this.originalRows = [...this.rows];
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        console.error('Error fetching candidates:', err);
       }
     });
   }
-  
 
 
 
@@ -110,15 +106,15 @@ export class OfferLetterComponent implements OnInit {
   generateColumns() {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
-      { key: 'expectedCtc', label: 'Propoesed CTC', uppercase: true },
+      { key: 'email', label: 'Mail ID', uppercase: true },
       { key: 'name', label: 'Candidate Name', uppercase: true },
-      { key: 'deptName', label: 'Dept Name', uppercase: true },
-      // { key: 'jobTitleName', label: 'Job Title', uppercase: true },
-      { key: 'joiningDate', label: 'Actual Date Of Join (editable)', uppercase: true },
-      // { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
-      // { key: 'createdBy', label: 'Created By', uppercase: true },
+      { key: 'mobileNumber', label: 'Mobile', uppercase: true },
+      { key: 'jobTitleName', label: 'Job Title', uppercase: true },
+      { key: 'teamName', label: 'Team', uppercase: true },
+      { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
+      { key: 'createdBy', label: 'Created By', uppercase: true },
       // { key: 'status', label: 'Status', uppercase: true },
-      { key: 'employeeId', label: 'Action', center: true, clickable: true }
+      { key: 'candidateId', label: 'Action', center: true, clickable: true }
     ];
   }
 
@@ -142,16 +138,32 @@ export class OfferLetterComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
-  handleAction(employeeId: any, joiningDate:any) {
-    console.log("employeeId : ",employeeId, "joiningDate: ",joiningDate);
+  handleAction(employeeId: any) {
+
     Swal.fire({
       title: 'Success',
-      text: 'need to implement',
+      text: 'Reminder Sent',
       icon: 'success',
-      showConfirmButton: false,
       timer: 1000,
       timerProgressBar: true,
-    })
+      showConfirmButton: false
+    });
+    // this.isLoading = true;
+    // this.authService.registeredData(employeeId).subscribe({
+    //   next: (res) => {
+    //     this.isLoading = false;
+    //     this.candidateData = res;
+    //   },
+    //   error: (err: HttpErrorResponse) => {
+    //     this.isLoading = false;
+    //     console.log("error : ", err)
+    //   }
+    // })
+    // this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
+    //   width: 'auto',
+    //   height: 'auto',
+    //   hasBackdrop: true,
+    // });
 
   }
 
@@ -214,63 +226,9 @@ export class OfferLetterComponent implements OnInit {
     window.history.back();
   }
 
-  formatDate(date: string): string {
-    if (!date) return '';
-    const d = new Date(date);
-    return d.toISOString().split('T')[0];
-  }
-
-  // Handle the date change and update the row data
-  onDateChange(date: string, row: any, key: string): void {
-    const formattedDate = moment(date).format('YYYY-MM-DD');
-    row[key] = formattedDate;
-
-    if (key === 'joiningDate') {
-      this.updateJoiningDate(row.employeeId, formattedDate);
-    }
-  }
-
-
-  updateJoiningDate(employeeId: string, joiningDate: string): void {
-    this.isLoading= true;
-    const formData = new FormData();
-    formData.append('employeeId', employeeId);
-    formData.append('doj', joiningDate);
-
-    this.authService.updateJoingDate(formData).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-        console.log('Updated successfully');
-        Swal.fire({
-          title: 'Success',
-          text: 'Date Updated Successfully!',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
-        this.offerCandidates();
-      },
-      error: (err) => {
-        this.isLoading = false;
-        Swal.fire({
-          title: 'OOPS',
-          text: 'Date Is not updated',
-          icon: 'warning',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
-      }
-    });
-  }
-
-
-
-
-
 
 
 }
+
 
 

@@ -27,7 +27,7 @@
             <div class="col-md-9 d-flex justify-content-end align-items-center">
               <input type="search" class="form-control form-control-sm search-input" placeholder="🔍 Search"
                 [formControl]="searchQuery" aria-level="Search"
-                style="max-width: 150px; margin-right: 20px; font-size: 13px;">
+                style="max-width: 150px; font-size: 13px;">
               <!-- <button type="button" (click)="toggleOffcanvas()" class="btn btn-sm custom-bg text-light">
                 Filter Options
               </button> -->
@@ -46,25 +46,47 @@
               <tbody *ngIf="paginatedRows.length > 0; else noData">
                 <tr *ngFor="let row of paginatedRows" class="table-hoverr">
                   <td *ngFor="let col of columns" class="small-header"
-                      [ngClass]="{'text-uppercase': col.uppercase, 'text-center': col.center}">
-                    
-                    <!-- If the column is clickable (like Action button for candidateId) -->
-                    <ng-container *ngIf="col.clickable && col.key === 'candidateId'; else normalCell">
-                      <button class="border-none custom-bg text-white custom-action-btn px-2"
-                              (click)="handleAction(row[col.key])">
-                        View
+                    [ngClass]="{ 'text-uppercase': col.uppercase, 'text-center': col.center }"
+                    [hidden]="col.key === 'status' && row['status'] === '1001'">
+
+                    <!-- Action button cell -->
+                    <ng-container *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
+                      <button class="border-none custom-action-btn px-2"
+                        [ngClass]="row['status'] === '1002' ? 'bg-secondary text-white' : 'bg-success text-white'"
+                        (click)="handleAction(row[col.key], row['joiningDate'])"
+                        [disabled]="row['status'] === '1002'">
+                        {{ row['status'] === '1002' ? 'Generated' : 'Generate' }}
                       </button>
                     </ng-container>
-              
-                    <!-- Normal cell content -->
+                    
+
+                    <!-- Normal cells -->
                     <ng-template #normalCell>
-                      <span [innerHTML]="highlightMatch(row[col.key])"></span>
+                      <ng-container *ngIf="col.key === 'joiningDate'; else defaultCell">
+                        <input type="text" readonly class="form-control extra-small-input cursor-pointer" placeholder="yyyy-mm-dd"
+                          [bsConfig]="{
+                   adaptivePosition: true,
+                   showWeekNumbers: false,
+                   isAnimated: true,
+                   containerClass: colorTheme,
+                   customTodayClass: 'custom-today-class',
+                   dateInputFormat: 'YYYY-MM-DD'
+                 }" bsDatepicker [ngModel]="row[col.key]" (ngModelChange)="onDateChange($event, row, col.key)"
+                          autocomplete="off" required />
+                      </ng-container>
+
+
+                      <ng-template #defaultCell>
+                        <span [innerHTML]="highlightMatch(row[col.key])"></span>
+                      </ng-template>
                     </ng-template>
-              
+
                   </td>
                 </tr>
               </tbody>
-              
+
+
+
               <ng-template #noData>
                 <tbody class="bg-white">
                   <tr>
@@ -87,8 +109,8 @@
           </div>
 
           <!-- Pagination Controls -->
-          <hr *ngIf="rows.length > 0" class="custom-hr mb-2 mt-1">
-          <div class="d-flex justify-content-between align-items-center mt-1" *ngIf="rows.length > 0">
+          <hr *ngIf="rows.length > 8" class="custom-hr mb-1 mt-0">
+          <div class="d-flex justify-content-between align-items-center mt-1" *ngIf="rows.length > 8">
             <span class="small badge bg-secondary text-white">
               Showing {{ startIndex }} to {{ endIndex }} of {{ rows.length }} Records
             </span>
@@ -125,15 +147,6 @@
   </div>
 </div>
 
-<!-- loader -->
-<div class="loader attDnceLoadr" *ngIf="">
-  <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  </div>
-</div>
-
 
 <div class="offcanvas-right" [class.show]="isOpen">
   <div class="offcanvas-header">
@@ -142,8 +155,8 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  
-  
+
+
   <div class="container mt-3">
     <!-- Name Filter -->
     <div class="form-group">
@@ -186,231 +199,10 @@
       </div>
     </div>
     <div class="mt-5 d-flex justify-content-center align-items-center">
-      <img (click)="closeOffcanvas()"  type="button"  [src]="comapnyLogo" alt="">
+      <img (click)="closeOffcanvas()" type="button" [src]="comapnyLogo" alt="">
     </div>
   </div>
-
 </div>
-
-<ng-template #aboutCandidateDialog>
-  <div class="animate-zoom">
-    <div class="container">
-      <div class="row mb-2 align-items-center">
-        <div class="col-md-3">
-          <span *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName"
-            class="fw-bold custom-text">Candidate Details</span>
-          <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
-            class="fw-bold custom-text">Details</span>
-        </div>
-        <div class="col-md-9 d-flex justify-content-end align-items-center">
-          <span class="cursor-pointer Hover" (click)="close()">
-            <i class="bi bi-x-circle"></i>
-          </span>
-        </div>
-      </div>
-      <hr class="m-0 p-0 text-dark border mb-2">
-
-      <div *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName; else noCandidateData"
-        class="scroll-container">
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Basic Details</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <strong>Name:</strong>
-              {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
-              <span>{{ candidateData?.candidatePersonalInformationDetails?.lastName }}</span>
-            </div>
-            <div class="col-md-3">
-              <strong>Gender:</strong> {{ candidateData?.candidatePersonalInformationDetails?.genderName || 'N/A' }}
-            </div>
-            <div class="col-md-3">
-              <strong>Mobile:</strong> {{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}
-            </div>
-            <div class="col-md-2">
-              <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob }}
-            </div>
-            <div class="col-md-4">
-              <strong>Email:</strong> {{ candidateData?.candidatePersonalInformationDetails?.email }}
-            </div>
-            <div class="col-md-4">
-              <strong>Marital Status:</strong> {{ candidateData?.candidatePersonalInformationDetails?.maritalStatusName
-              }}
-            </div>
-          </div>
-        </div>
-
-        <div class="card p-3 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Communication Address</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <p class="mb-0">
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressA }},
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressB }},
-                {{ candidateData?.candidateCommunicationAddressDetails?.comAddressC }}
-              </p>
-            </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.stateName
-                }}</p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.cityName }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-
-        <div class="card p-3 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Permanent Address</strong></span>
-          <div class="row">
-            <div class="col-md-4">
-              <p class="mb-0">
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressA }},
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressB }},
-                {{ candidateData?.candidatePermanentAddressDetails?.perAddressC }}
-              </p>
-            </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidatePermanentAddressDetails?.stateName }}
-              </p>
-            </div>
-            <div class="col-md-2">
-              <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidatePermanentAddressDetails?.cityName }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
-
-          <!-- Salary details in the same line -->
-          <div class="d-flex justify-content-start">
-            <span class="mr-5"><strong>Current Salary:</strong> ₹{{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.currentSalary }}</span>
-            <span><strong>Expected Salary:</strong> ₹{{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.expectedSalary }}</span>
-          </div>
-
-          <!-- Job description on a new line -->
-          <div>
-            <span><strong>Job Description:</strong> {{
-              candidateData?.candidateExperienceDetails?.candidateSalaryDetails?.description }}</span>
-          </div>
-        </div>
-
-
-
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Education</strong></span>
-          <table class="table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Type</th>
-                <th>University</th>
-                <th>Qualification</th>
-                <th>Year</th>
-                <th>Percentage</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let edu of candidateData?.candidateEducationDetails">
-                <td class="small-header">{{ edu?.educationTypeName }}</td>
-                <td class="small-header">{{ edu?.universityName }}</td>
-                <td class="small-header">{{ edu?.qualificationName }}</td>
-                <td class="small-header">{{ edu?.yearOfPassing }}</td>
-                <td class="small-header">{{ edu?.percentage }}%</td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-
-
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Experience</strong></span>
-          <span><strong>Experience Type:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
-            }}
-          </span>
-          <span><strong>Notice Period:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
-          </span>
-          <table class="table table-bordered">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Company</th>
-                <th>Total Experience (Years)</th>
-                <th>Last Working Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let exp of candidateData.candidateExperienceDetails.candidateCompanyDetails">
-                <td class="small-header">{{ exp.companyName }}</td>
-                <td class="small-header">{{ exp.totalExp }}</td>
-                <td class="small-header">{{ exp.lastWorkingDate | date: 'dd-MM-yyyy' }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline">
-            <strong>Interview</strong>
-          </span>
-
-          <div class="table-container">
-            <table class="custom-table">
-              <thead>
-                <tr>
-                  <th class="custom-th small-header">Candidate ID</th>
-                  <th class="custom-th small-header">Interview Date</th>
-                  <th class="custom-th small-header">Interview Time</th>
-                  <th class="custom-th small-header">Interviewer ID</th>
-                  <th class="custom-th small-header">Round Name</th>
-                  <th class="custom-th small-header">Location</th>
-                </tr>
-              </thead>
-              <tbody>
-                <ng-container *ngFor="let exp of candidateData.candidateInterviewDetails">
-                  <tr *ngIf="exp.interviewTime">
-                    <td class="custom-td small-header">{{ exp.roundNo }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewBy }}</td>
-                    <td class="custom-td small-header">{{ exp.level }}</td>
-                    <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
-                  </tr>
-                </ng-container>
-              </tbody>
-
-            </table>
-          </div>
-
-
-          <!-- Show message if no interview details are available -->
-          <div *ngIf="!candidateData?.candidateInterviewDetails?.length" class="text-muted text-center">
-            No interview details available.
-          </div>
-        </div>
-      </div>
-
-
-      <ng-template #noCandidateData>
-        <div class="alert alert-warning text-center">
-          No Candidate data available.
-        </div>
-      </ng-template>
-    </div>
-  </div>
-</ng-template>
 
 
 
@@ -422,4 +214,3 @@
     <div class="bounce3"></div>
   </div>
 </div>
-

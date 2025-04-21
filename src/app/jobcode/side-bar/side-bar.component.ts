@@ -25,27 +25,27 @@ export class SideBarComponent implements OnInit {
         { label: 'Vacancy and Recruitment', route: '/vacancy', icon:'bi bi-award' }
       ]
     },
-    {
-      label: 'Non Functional Requirements',
-      route: '/nonfunctional',
-      icon:'bi bi-bullseye',
-      isDropdown: false,
-      subItems: []
-    },
-    {
-      label: 'Use Case Scenarios',
-      route: '/use-case',
-      icon:'bi bi-calendar2-check-fill',
-      isDropdown: false,
-      subItems: []
-    },
-    {
-      label: 'Appendices',
-      route: '/appendices',
-      icon:'bi bi-flower1',
-      isDropdown: false,
-      subItems: []
-    }
+    // {
+    //   label: 'Non Functional Requirements',
+    //   route: '/nonfunctional',
+    //   icon:'bi bi-bullseye',
+    //   isDropdown: false,
+    //   subItems: []
+    // },
+    // {
+    //   label: 'Use Case Scenarios',
+    //   route: '/use-case',
+    //   icon:'bi bi-calendar2-check-fill',
+    //   isDropdown: false,
+    //   subItems: []
+    // },
+    // {
+    //   label: 'Appendices',
+    //   route: '/appendices',
+    //   icon:'bi bi-flower1',
+    //   isDropdown: false,
+    //   subItems: []
+    // }
   ];
 
   constructor(private router: Router) {}

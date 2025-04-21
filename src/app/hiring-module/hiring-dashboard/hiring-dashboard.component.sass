@@ -56,11 +56,19 @@ $card-shadow-hover: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2)
 
 
 .scroll-container
-  max-height: calc(100vh - 135px)
+  max-height: calc(100vh - 140px)
   overflow-y: scroll
   display: block
   max-width: 100%
   position: relative
+
+  // Hide scrollbar for WebKit-based browsers (Chrome, Safari)
+  &::-webkit-scrollbar
+    display: none
+
+  // Hide scrollbar for Firefox
+  scrollbar-width: none
+
 
 
 .btn:focus, .btn:active 

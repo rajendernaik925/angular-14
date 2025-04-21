@@ -33,7 +33,9 @@ export class OrganogramComponent implements OnInit {
   searchQuery: FormControl = new FormControl();
   hoveredCard: number | null = null;
   activeIndex: number | null = null;
-  emojis: string[] = ["🔥", "💖", "✨", "😃", "👍", "🌟"];
+  emojis: string[] = ["🌻", "🌹", "🌷"];
+
+
 
 
   profiles = [
@@ -190,6 +192,6 @@ export class OrganogramComponent implements OnInit {
     // Remove emoji after animation
     setTimeout(() => {
       this.renderer.removeChild(container, emoji);
-    }, 1000);
+    }, 10000);
   }
 }
