@@ -604,9 +604,10 @@
                             Qualification is required
                           </div>
                           <div *ngIf="checkDuplicateQualification(i)" class="text-danger fs-custom">
-                            You have already selected this qualification. To update, please delete the existing entry and add again.
+                            You have already selected this qualification. To update, please delete the existing entry
+                            and add again.
                           </div>
-                          
+
                         </div>
 
                         <div class="col-md-2">
@@ -642,7 +643,8 @@
                         </div>
 
                         <!-- SAVE & ADD BUTTON (only for new entry) -->
-                        <div class="col-md-2 mt-4 d-flex align-items-center" *ngIf="!education.disabled && editButtonDisplay">
+                        <div class="col-md-2 mt-4 d-flex align-items-center"
+                          *ngIf="!education.disabled && editButtonDisplay">
                           <button class="btn custom-bg text-white btn-sm mt-1" type="button"
                             (click)="setValidation('education')">Save & Add</button>
                         </div>
@@ -658,7 +660,7 @@
               </div>
             </div>
 
-            
+
             <div *ngIf="activeTab === 'documents'">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="fw-bold text-start custom-text">{{ 'Upload Documents' | uppercase }}</div>
@@ -697,11 +699,13 @@
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="tenthFile  && editButtonDisplay" class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                        <button *ngIf="tenthFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile('1')">Delete</button>
                         <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
                           (click)="setValidation('documents')">Save</button>
-                        <button *ngIf="tenthFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                        <button *ngIf="tenthFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('tenth')">Update</button>
                       </div>
                     </td>
@@ -725,11 +729,13 @@
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="twelthFile  && editButtonDisplay" class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                        <button *ngIf="twelthFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(2)">Delete</button>
                         <button *ngIf="!twelthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
                           (click)="setValidation('documents')">Save</button>
-                        <button *ngIf="twelthFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                        <button *ngIf="twelthFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('twelth')">Update</button>
                       </div>
                     </td>
@@ -756,12 +762,13 @@
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="degreeOrBTechFile  && editButtonDisplay" class="btn btn-danger btn-sm shadow-none border- mr-2"
-                          (click)="deleteFile(3)">Delete</button>
+                        <button *ngIf="degreeOrBTechFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border- mr-2" (click)="deleteFile(3)">Delete</button>
                         <button *ngIf="!degreeOrBTechFile"
                           class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
                           (click)="setValidation('documents')">Save</button>
-                        <button *ngIf="degreeOrBTechFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                        <button *ngIf="degreeOrBTechFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('degreeOrBTech')">Update</button>
                       </div>
                     </td>
@@ -786,11 +793,14 @@
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="deplomaFile && editButtonDisplay" class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                        <button *ngIf="deplomaFile && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(4)">Delete</button>
-                        <button *ngIf="!deplomaFile  && editButtonDisplay" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
+                        <button *ngIf="!deplomaFile  && editButtonDisplay"
+                          class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
                           (click)="setValidation('documents')">Save</button>
-                        <button *ngIf="deplomaFile  && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                        <button *ngIf="deplomaFile  && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('deploma')">Update</button>
                       </div>
                     </td>
@@ -814,11 +824,14 @@
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="othersFile  && editButtonDisplay" class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                        <button *ngIf="othersFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(5)">Delete</button>
-                        <button *ngIf="!othersFile && editButtonDisplay" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
+                        <button *ngIf="!othersFile && editButtonDisplay"
+                          class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
                           (click)="setValidation('documents')">Save</button>
-                        <button *ngIf="othersFile  && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                        <button *ngIf="othersFile  && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('others')">Update</button>
                       </div>
                     </td>
@@ -849,19 +862,22 @@
                       <label class="d-block">Are you a Fresher or Experienced?</label>
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="fresher"
-                          value="fresher" (change)="handleExperienceToggle('fresher')" [attr.disabled]="!editButtonDisplay ? true : null" />
+                          value="fresher" (change)="handleExperienceToggle('fresher')"
+                          [attr.disabled]="!editButtonDisplay ? true : null" />
                         <label class="form-check-label" for="fresher">Fresher</label>
                       </div>
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="experienced"
-                          value="experienced" (change)="handleExperienceToggle('experienced')" [attr.disabled]="!editButtonDisplay ? true : null" />
+                          value="experienced" (change)="handleExperienceToggle('experienced')"
+                          [attr.disabled]="!editButtonDisplay ? true : null" />
                         <label class="form-check-label" for="experienced">Experienced</label>
                       </div>
                     </div>
                   </div>
                   <div class="col-md-2">
                     <label>Joining Time <span class="text-danger">*</span></label>
-                    <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="joiningTime" class="form-control form-control-sm">
+                    <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="joiningTime"
+                      class="form-control form-control-sm">
                       <option value="">Select</option>
                       <option *ngFor="let joining of joiningOptions" [value]="joining.id">
                         {{ joining.name }}
@@ -883,8 +899,9 @@
                   </div>
                   <div *ngIf="!isFresher" class="col-md-2">
                     <label>Current Salary <span class="text-danger">*</span></label>
-                    <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" formControlName="currentSalary" placeholder="₹400000"
-                      (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
+                    <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
+                      formControlName="currentSalary" placeholder="₹400000" (keydown)="onlyNumbers($event)"
+                      class="form-control form-control-sm" />
                     <div
                       *ngIf="registrationForm.get('currentSalary')?.touched && registrationForm.get('currentSalary')?.invalid"
                       class="text-danger fs-custom">
@@ -894,8 +911,9 @@
 
                   <div *ngIf="!isFresher" class="col-md-2">
                     <label>Expected Salary <span class="text-danger">*</span></label>
-                    <input [attr.disabled]="!editButtonDisplay ? true : null" type="text" formControlName="expectedSalary" placeholder="₹600000"
-                      (keydown)="onlyNumbers($event)" class="form-control form-control-sm" />
+                    <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
+                      formControlName="expectedSalary" placeholder="₹600000" (keydown)="onlyNumbers($event)"
+                      class="form-control form-control-sm" />
                     <div
                       *ngIf="registrationForm.get('expectedSalary')?.touched && registrationForm.get('expectedSalary')?.invalid"
                       class="text-danger fs-custom">
@@ -904,7 +922,8 @@
                   </div>
                   <div *ngIf="!isFresher" class="col-md-3">
                     <label>Description <span class="text-danger">*</span></label>
-                    <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" formControlName="suitableJobDescription" class="form-control form-control-sm"
+                    <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1"
+                      formControlName="suitableJobDescription" class="form-control form-control-sm"
                       placeholder="Description"></textarea>
                     <div
                       *ngIf="registrationForm.get('suitableJobDescription')?.touched && registrationForm.get('suitableJobDescription')?.invalid"
@@ -918,8 +937,9 @@
                   <div class="row mt-3 mb-4">
                     <div class="col-md-2">
                       <label *ngIf="editButtonDisplay">Company Name<span class="text-danger">*</span></label>
-                      <input *ngIf="editButtonDisplay" type="text" formControlName="companyName" placeholder="Company Name"
-                        class="form-control form-control-sm" (blur)="checkDuplicateCompanyName()" />
+                      <input *ngIf="editButtonDisplay" type="text" formControlName="companyName"
+                        placeholder="Company Name" class="form-control form-control-sm"
+                        (blur)="checkDuplicateCompanyName()" />
 
                       <div
                         *ngIf="registrationForm.get('companyName')?.touched && registrationForm.get('companyName')?.invalid"
@@ -930,8 +950,9 @@
 
                     <div class="col-md-2">
                       <label *ngIf="editButtonDisplay">Total Experience<span class="text-danger">*</span></label>
-                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience" placeholder="5" maxlength="6"
-                        (keydown)="onlyNumbersWithDot($event)" maxlength="3" class="form-control form-control-sm" />
+                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience" placeholder="5"
+                        maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
+                        class="form-control form-control-sm" />
                       <div
                         *ngIf="registrationForm.get('totalExperience')?.touched && registrationForm.get('totalExperience')?.invalid"
                         class="text-danger fs-custom">
@@ -942,9 +963,9 @@
                       <label *ngIf="editButtonDisplay">Last Date <span class="text-danger">*</span></label>
                       <!-- <input type="date" formControlName="LastOrStill_Working_Date"
                         class="form-control form-control-sm" /> -->
-                      <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date" class="form-control form-control-sm"
-                        placeholder="yyyy-dd-mm" formControlName="LastOrStill_Working_Date" autocomplete="off"
-                        [bsConfig]="{
+                      <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
+                        class="form-control form-control-sm" placeholder="yyyy-dd-mm"
+                        formControlName="LastOrStill_Working_Date" autocomplete="off" [bsConfig]="{
                         adaptivePosition: true,
                         showWeekNumbers: false,
                         isAnimated: true,
@@ -1168,8 +1189,7 @@
                 </div>
 
                 <!-- Interview Loop -->
-                <div *ngFor="let interview of loadedData.candidateInterviewDetails" class=" rounded mb-3"
-                  [ngClass]="{
+                <div *ngFor="let interview of loadedData.candidateInterviewDetails" class=" rounded mb-3" [ngClass]="{
                     'filled-bg': interview.candidateInterviewFeedBackDTO?.length,
                     'custom-bg text-white': !interview.candidateInterviewFeedBackDTO?.length
                   }">
@@ -1208,14 +1228,21 @@
                     </div>
 
                     <!-- Feedback Status -->
-                    <div class="col-md-2 fw-medium"
-                      [ngClass]="interview.candidateInterviewFeedBackDTO?.length ? 'text-success' : 'text-warning'">
+                    <div class="col-md-2 fw-medium" [ngClass]="{
+                      'text-success': interview.status === 1004,
+                      'text-warning': interview.status === 1001,
+                      'text-danger': interview.status === 1002 || interview.status === 1005,
+                      'text-primary': interview.status === 1006
+                       }">
                       {{
-                      interview.candidateInterviewFeedBackDTO?.length
-                      ? 'Completed'
-                      : 'Not Completed'
+                      interview.status === 1001 ? 'Pending' :
+                      interview.status === 1002 ? 'Cancelled' :
+                      interview.status === 1004 ? 'Completed' :
+                      interview.status === 1005 ? 'Rejected' :
+                      interview.status === 1006 ? 'On Hold' : 'Unknown'
                       }}
                     </div>
+
                   </div>
                 </div>
               </div>

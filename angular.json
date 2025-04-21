@@ -68,7 +68,7 @@
               "sourceMap": false,
               "namedChunks": false,
               "extractLicenses": true,
-              "vendorChunk": false, 
+              "vendorChunk": false,
               "buildOptimizer": true,
               "budgets": [
                 {
@@ -88,7 +88,7 @@
             "development": {
               "aot": true,
               "optimization": false,
-              "sourceMap": false,
+              "sourceMap": true,
               "extractLicenses": false,
               "vendorChunk": true,
               "buildOptimizer": false,

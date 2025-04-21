@@ -93,16 +93,16 @@ throw new Error('Method not implemented.');
   }
 
   handleAction(employeeId: any) {
+    if (this.isLoading) return; // prevent double call
+  
     this.isLoading = true;
     this.authService.registeredData(employeeId).subscribe({
       next: (res) => {
         this.isLoading = false;
-        setTimeout(() => {
-          this.candidateData = res || {};  
-          this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
-          console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
-          this.openDialog();
-        });
+        this.candidateData = res || {};
+        this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
+        console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
+        this.openDialog();
       },
       error: (err) => {
         this.isLoading = false;
@@ -112,16 +112,13 @@ throw new Error('Method not implemented.');
   }
   
   
+  
 
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
       width: 'auto',
       height: 'auto',
       hasBackdrop: true
-    });
-    // this.closeButton = false;
-
-    this.dialogRef.afterClosed().subscribe(() => {
     });
   }
 

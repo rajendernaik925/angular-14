@@ -67,11 +67,14 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
-                        <button class="border-none custom-bg text-white custom-action-btn px-2"
+                        <button
+                          class="border-none custom-bg text-white custom-action-btn px-2"
+                          [disabled]="isLoading"
                           (click)="handleAction(row.employeeid)">
                           View
                         </button>
                       </ng-container>
+                      
 
                       <!-- <ng-template #normal>
                         {{ row[col.key] }}
@@ -401,7 +404,7 @@
             <table class="custom-table">
               <thead>
                 <tr>
-                  <th class="custom-th small-header">Candidate ID</th>
+                  <th class="custom-th small-header">S.NO</th>
                   <th class="custom-th small-header">Interview Date</th>
                   <th class="custom-th small-header">Interview Time</th>
                   <th class="custom-th small-header">Interviewer ID</th>

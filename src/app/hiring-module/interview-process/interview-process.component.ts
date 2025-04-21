@@ -3,6 +3,7 @@ import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/c
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { debounceTime } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -47,6 +48,7 @@ export class InterviewProcessComponent implements OnInit {
   selectedHrStatus: number;
   finalHrRound: boolean = false;
   disableFeedBack: boolean = false;
+  selectedInterviewerId: string | null = null;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -106,33 +108,31 @@ export class InterviewProcessComponent implements OnInit {
 
 
   searchInterviewer(query: string) {
-    if (!query.trim()) {
-      this.interviewedByList = [];
-      return;
+      if (query.trim().length < 1) {
+        this.interviewedByList = [];
+        return;
+      }
+      const formData = new FormData();
+      formData.append("name", query)
+      // Debounce API call
+      this.authService.interviewedBy(formData).pipe(debounceTime(300)).subscribe({
+        next: (res: any) => {
+          this.interviewedByList = Array.isArray(res) ? res : [];
+          this.showDropdown = this.interviewedByList.length > 0;
+        },
+        error: (err: HttpErrorResponse) => {
+          this.interviewedByList = [];
+        }
+      });
     }
 
-    const formData = new FormData(); // Corrected syntax
-    formData.append('name', query);
-
-    this.authService.interviewedBy(formData).subscribe({
-      next: (res: any) => {
-        this.interviewedByList = Array.isArray(res) ? res : []; // Ensure it's an array
-        console.log("rajjjjjjj", this.interviewedByList);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error("Error fetching interviewers:", err);
-        this.interviewedByList = [];
-      }
-    });
-  }
-
-  selectInterviewer(item: any) {
-    this.feedbackForm.patchValue({
-      interviewBy: item.employeeid, // Bind the value as employeeid
-    });
-    this.selectedInterviewerName = item.Name; // Display name in the input field
-    this.showDropdown = false;
-  }
+    selectInterviewer(interviewer: any) {
+      this.selectedInterviewerId = interviewer.id;
+      this.selectedInterviewerName = interviewer.name;
+      this.feedbackForm.patchValue({ interviewBy: interviewer.id });
+  
+      this.showDropdown = false;
+    }
 
   hideDropdown() {
     setTimeout(() => {
@@ -234,8 +234,8 @@ export class InterviewProcessComponent implements OnInit {
     // this.close();
     // this.feedbackForm.reset();
     this.dialogRef = this.dialog.open(this.feedbackform, {
-      width: 'auto',
-      height: 'auto',
+      width: '900px',
+      height: '550px',
       hasBackdrop: true,
     });
   }
@@ -279,11 +279,15 @@ export class InterviewProcessComponent implements OnInit {
           this.candidateId = lastInterview.candidateId;
           this.roundNo = lastInterview.roundNo;
           const lastfeedback = lastInterview.candidateInterviewFeedBackDTO.length;
+          // const lastInterviewDate = lastInterview.interviewTime;
+          // console.log("last date : ",lastInterviewDate);
           console.log("last feedback : ", lastfeedback);
           console.log("last round : ", this.roundNo);
           if (lastfeedback) {
             this.disableFeedBack = true;
+            console.log("rajenderrrrrrrrrrrrr")
           }
+          
 
           console.log("Last Interview Round Name:", lastInterviewRoundName);
           if (lastInterviewRoundName === 'HR') {

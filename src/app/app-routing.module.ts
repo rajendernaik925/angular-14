@@ -88,6 +88,7 @@ import { FieldEmployeesComponent } from './workforce-management/field-employees/
 import { OrganogramComponent } from './organogram/organogram/organogram.component';
 import { OrganogramTrackingComponent } from './organogram/organogram-tracking/organogram-tracking.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { UnscheduledComponent } from './hiring-module/unscheduled/unscheduled.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -169,6 +170,7 @@ const routes: Routes = [
   { path: 'fieldwork-hrms', component: FieldworkHrmsComponent },
   { path: 'organogram', component: OrganogramComponent },
   { path: 'organogram/:id', component: OrganogramTrackingComponent },
+  {path:'unscheduled',component:UnscheduledComponent},
 
 
   // Manager 

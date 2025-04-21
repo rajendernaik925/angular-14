@@ -63,6 +63,13 @@ export class InterviewScheduleComponent implements OnInit {
       interviewDate: ['', Validators.required],
       interviewTime: ['', Validators.required],
       interviewBy: ['', Validators.required],
+      meetingLink: [
+        '',
+        [
+          Validators.required, // Makes the field required
+          Validators.pattern(/^(https?:\/\/)(www\.)?(zoom\.us|teams\.microsoft\.com|meet\.google\.com)\/.*/), // URL pattern for Zoom, Teams, and Google Meet
+        ]
+      ],
     });
   }
 
@@ -179,16 +186,27 @@ export class InterviewScheduleComponent implements OnInit {
     const highlightedText = String(text).replace(regex, `<span style="font-weight: bold; color: #0072BC;">$1</span>`);
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
-  handleAction(employeeId: any) {
-    this.interviewedByList = []
-    this.employeeId = employeeId
-    this.addNewRoundForm.reset();
-    this.dialogRef = this.dialog.open(this.interviewDialog, {
-      width: '400px',
-      height: 'auto',
-      hasBackdrop: true,
-    });
-  }
+  isDialogOpen = false;
+
+handleAction(employeeId: any) {
+  if (this.isDialogOpen) return; // prevent double open
+  this.isDialogOpen = true;
+
+  this.interviewedByList = [];
+  this.employeeId = employeeId;
+  this.addNewRoundForm.reset();
+
+  this.dialogRef = this.dialog.open(this.interviewDialog, {
+    width: '400px',
+    height: 'auto',
+    hasBackdrop: true,
+  });
+
+  this.dialogRef.afterClosed().subscribe(() => {
+    this.isDialogOpen = false;
+  });
+}
+
 
   close() {
     this.dialog.closeAll();
@@ -307,54 +325,45 @@ export class InterviewScheduleComponent implements OnInit {
 
 
   viewAction(id: string) {
+    if (this.isDialogOpen) return; // Prevent double open
+    this.isDialogOpen = true;
     this.isLoading = true;
     this.employeeId = id;
+    this.close();
+  
     this.authService.registeredData(id).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        console.log("Total Interview Rounds: ", res?.candidateInterviewDetails?.length || 0);
-
+  
         const recordLength = res?.candidateInterviewDetails?.length || 0;
         const lastRecordStatus = recordLength
           ? res.candidateInterviewDetails[recordLength - 1].status
           : null;
-        console.log("Last Interview Round Status:", lastRecordStatus);
-        // 1001
-        // 1002
-        // 1003
-        // 1004 approved
-        // 1005
-        // 1006 hold
+  
         this.roundNo = (lastRecordStatus === 1001 || lastRecordStatus === 1002 || lastRecordStatus === 1006)
           ? recordLength
           : recordLength + 1;
-
-        console.log("Final Round No:", this.roundNo);
-
+  
         const lastRecordInterviewerName = recordLength
           ? res.candidateInterviewDetails[recordLength - 1].interviewBy
           : null;
-
+          
+  
         this.interviewScheduleTo = lastRecordInterviewerName;
-        console.log("Last Interviewer Name:", lastRecordInterviewerName);
-
-
-
-
-
-        setTimeout(() => {
-          this.candidateData = res || {};
-          this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
-          console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
-          this.openDialog();
-        });
+  
+        this.candidateData = res || {};
+        this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
+  
+        this.openDialog();
       },
       error: (err) => {
         this.isLoading = false;
+        this.isDialogOpen = false;
         console.error("Error fetching candidate data:", err);
       }
     });
   }
+  
 
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
@@ -362,8 +371,8 @@ export class InterviewScheduleComponent implements OnInit {
       height: 'auto',
       hasBackdrop: true
     });
-
     this.dialogRef.afterClosed().subscribe(() => {
+      this.isDialogOpen = false;
     });
   }
 

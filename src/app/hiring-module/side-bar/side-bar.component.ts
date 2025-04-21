@@ -11,7 +11,6 @@ export class assetManagerSideBarComponent implements OnInit {
 
   activeTab: string | null = null;
   isSidebarOpen: boolean = false;
-
   sidebarItems = [
     {
       label: 'Dashboard',

@@ -18,6 +18,8 @@ export class HiringDashboardComponent implements OnInit {
   statusList: string[] = ['Compare','Shortlisted', 'Selected', 'Process', 'Scheduled', 'Offer', 'Onboarding'];
   statusOne: string = this.statusList[0];
   statusTwo: string = this.statusList[0]; 
+  isOpen = false;
+  isSidebarOpen = true;
 
   differenceResult: any;
 
@@ -32,7 +34,7 @@ export class HiringDashboardComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // this.candidateCount();
+    this.candidateCount();
   }
 
 
@@ -80,84 +82,9 @@ export class HiringDashboardComponent implements OnInit {
       }
     })
   }
-
-
-  // initPieChart() {
-  //   if (!this.pieChart?.nativeElement) return;
-
-  //   const myChart = echarts.init(this.pieChart.nativeElement);
-
-  //   // Generate time-series data with large variation
-  //   let base = +new Date(1988, 9, 3);
-  //   let oneDay = 24 * 3600 * 1000;
-  //   let data = [[base, Math.random() * 1000]];
-
-  //   for (let i = 1; i < 20000; i++) {
-  //     base += oneDay;
-  //     const previous = data[i - 1][1];
-
-  //     // Occasionally create large jumps or drops
-  //     let variation = (Math.random() - 0.5) * 200; // default small variation
-  //     if (Math.random() < 0.05) {
-  //       variation += (Math.random() - 0.5) * 2000; // big jump/drop
-  //     }
-
-  //     let newValue = Math.max(0, Math.round(previous + variation));
-  //     data.push([base, newValue]);
-  //   }
-
-  //   const option = {
-  //     tooltip: {
-  //       trigger: 'axis',
-  //       position: function (pt) {
-  //         return [pt[0], '10%'];
-  //       }
-  //     },
-  //     title: {
-  //       left: 'center',
-  //       text: 'Hiring Module Candidate Data'
-  //     },
-  //     toolbox: {
-  //       feature: {
-  //         dataZoom: { yAxisIndex: 'none' },
-  //         restore: {},
-  //         saveAsImage: {}
-  //       }
-  //     },
-  //     xAxis: {
-  //       type: 'time',
-  //       boundaryGap: false
-  //     },
-  //     yAxis: {
-  //       type: 'value',
-  //       boundaryGap: [0, '100%']
-  //     },
-  //     dataZoom: [
-  //       {
-  //         type: 'inside',
-  //         start: 0,
-  //         end: 20
-  //       },
-  //       {
-  //         start: 0,
-  //         end: 20
-  //       }
-  //     ],
-  //     series: [
-  //       {
-  //         name: 'Wild Data',
-  //         type: 'line',
-  //         smooth: true,
-  //         symbol: 'none',
-  //         areaStyle: {},
-  //         data: data
-  //       }
-  //     ]
-  //   };
-
-  //   myChart.setOption(option);
-  // }
-
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
 
   initPieChart() {
     if (!this.pieChart?.nativeElement) return;
