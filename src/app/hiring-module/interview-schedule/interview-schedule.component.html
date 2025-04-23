@@ -68,23 +68,21 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
-                        <button
-                          *ngIf="row.status === 'Pending'; else viewBtn"
+                        <button *ngIf="row.status === 'Pending'; else viewBtn"
                           class="border-none bg-success text-white custom-action-btn px-2"
                           (click)="handleAction(row.employeeid)">
                           Schedule
                         </button>
-                      
+
                         <ng-template #viewBtn>
-                          <button
-                            class="border-none custom-bg text-white custom-action-btn px-2"
+                          <button class="border-none custom-bg text-white custom-action-btn px-2"
                             (click)="viewAction(row.employeeid)">
                             View
                           </button>
                         </ng-template>
                       </ng-container>
-                      
-                      
+
+
 
                       <!-- <ng-template #normal>
                         {{ row[col.key] }}
@@ -112,8 +110,8 @@
                   </tr>
                 </tbody>
               </ng-template>
-              
-              
+
+
             </table>
           </div>
           <hr *ngIf="rows.length > 0" class="custom-hr mb-2 mt-1">
@@ -225,7 +223,7 @@
 </div>
 
 <ng-template #interviewDialog>
-  <div class="animate-zoom">
+  <div class="animate-zoom" style="font-size: 12px;">
     <div class="">
       <div class="d-flex justify-content-between">
         <h5 class="fw-bold">Schedule Interview</h5>
@@ -246,15 +244,14 @@
               (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
               autocomplete="off">
 
-              <ul *ngIf="showDropdown && interviewedByList.length > 0"
-                class="dropdown-menu show w-100 position-absolute custom-scroll">
-              <li *ngFor="let item of interviewedByList"
-                  (click)="selectInterviewer(item)"
-                  class="dropdown-item cursor-pointer">
+            <ul *ngIf="showDropdown && interviewedByList.length > 0"
+              class="dropdown-menu show w-100 position-absolute custom-scroll">
+              <li *ngFor="let item of interviewedByList" (click)="selectInterviewer(item)"
+                class="dropdown-item cursor-pointer">
                 {{ item?.id }} - {{ item?.name }}
               </li>
             </ul>
-            
+
             <div *ngIf="addNewRoundForm.get('interviewBy')?.touched && addNewRoundForm.get('interviewBy')?.invalid"
               class="text-danger fs-custom">
               Interviewed By is required
@@ -282,13 +279,14 @@
             <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
             <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
               formControlName="interviewDate" autocomplete="off" [bsConfig]="{
-            adaptivePosition: true,
-            showWeekNumbers: false,
-            isAnimated: true,
-            containerClass: colorTheme,
-            customTodayClass: 'custom-today-class',
-            dateInputFormat: 'YYYY-MM-DD'
-            }" bsDatepicker required />
+                adaptivePosition: true,
+                showWeekNumbers: false,
+                isAnimated: true,
+                containerClass: colorTheme,
+                customTodayClass: 'custom-today-class',
+                dateInputFormat: 'YYYY-MM-DD'
+              }" [minDate]="minDate" bsDatepicker required />
+
             <div class="fs-custom text-danger"
               *ngIf="addNewRoundForm.get('interviewDate')?.hasError('required') && addNewRoundForm.get('interviewDate')?.touched">
               Date is required.
@@ -296,12 +294,16 @@
           </div>
           <div class="col-md-6">
             <label for="time" class="form-label">Time <span class="text-danger">*</span></label>
-            <input type="time" id="time" class="form-control form-control-sm" formControlName="interviewTime">
+            <select id="time" class="form-control form-control-sm" formControlName="interviewTime">
+              <option value="" disabled selected>Select Time</option>
+              <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
+            </select>
             <div class="fs-custom text-danger"
               *ngIf="addNewRoundForm.get('interviewTime')?.hasError('required') && addNewRoundForm.get('interviewTime')?.touched">
               Time is required.
             </div>
           </div>
+          
         </div>
 
         <div class="row mb-3">
@@ -312,8 +314,7 @@
               <option value="">Select</option>
               <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>
             </select>
-            <div
-              *ngIf="addNewRoundForm.get('mode')?.touched && addNewRoundForm.get('mode')?.invalid"
+            <div *ngIf="addNewRoundForm.get('mode')?.touched && addNewRoundForm.get('mode')?.invalid"
               class="text-danger fs-custom">
               Interview Round is required
             </div>
@@ -325,21 +326,16 @@
             <label for="meetingLink" class="form-label">
               Meeting Link <span class="text-danger">*</span>
             </label>
-          
-            <input
-              type="url"
-              formControlName="meetingLink"
-              class="form-control form-control-sm"
-              placeholder="Zoom, Teams, Google Meet link, etc."
-              required
-            />
-          
+
+            <input type="url" formControlName="meetingLink" class="form-control form-control-sm"
+              placeholder="Zoom, Teams, Google Meet link, etc." required />
+
             <div *ngIf="addNewRoundForm.get('meetingLink')?.touched && addNewRoundForm.get('meetingLink')?.invalid"
-                 class="text-danger fs-custom">
+              class="text-danger fs-custom">
               Please enter a valid meeting link
             </div>
           </div>
-          
+
           <button type="submit" class="btn text-white custom-bg w-100 mt-4">Submit</button>
 
         </div>
@@ -371,12 +367,14 @@
     <div class="container">
       <div class="row mb-2 align-items-center">
         <div class="col-md-10">
-          <span class="fw-bold custom-text mr-2">Interview Details</span>
-          <span class="badge custom-bg text-white">
-            {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
-          </span>
+          <div class="d-flex">
+            <span class="fw-bold custom-text mr-3">Candidate Details </span>
+            <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
+            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+          </div>
 
-          <!-- <span>{{ candidateData?.candidatePersonalInformationDetails?.email }}</span> -->
+          <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
+            class="fw-bold custom-text">Details</span>
         </div>
         <div class="col-md-2 d-flex justify-content-end align-items-center">
           <span class="cursor-pointer Hover" (click)="close()">
@@ -399,28 +397,29 @@
                   <th class="custom-th small-header">Round</th>
                   <th class="custom-th small-header">Interview Date</th>
                   <th class="custom-th small-header">Interview Time</th>
-                  <th class="custom-th small-header">Interviewer ID</th>
+                  <th class="custom-th small-header">Interviewer </th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
                   <th class="custom-th small-header">Status</th>
+                  <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let exp of candidateData.candidateInterviewDetails">
-                  <td class="custom-td small-header">{{ exp.roundNo }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewBy }}</td>
-                  <td class="custom-td small-header">{{ exp.level }}</td>
+                  <td class="custom-td small-header">{{ exp?.roundNo }}</td>
+                  <td class="custom-td small-header">{{ exp?.interviewDate | date: 'dd-MMM-yyyy' }}</td>
+                  <td class="custom-td small-header">{{ exp?.interviewTime }}</td>
+                  <td class="custom-td small-header">{{ exp?.interviewBy }} - {{exp?.interviewByName}}</td>
+                  <td class="custom-td small-header">{{ exp?.level }} - {{exp?.interviewRoundName || 'Initial'}}</td>
                   <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
                   <td class="custom-td small-header text-single-line">
-                    <button (click)="cancelInterview(exp.interviewScheduleId)" *ngIf="exp.status === 1001"
+                    <button (click)="cancelInterview(exp?.interviewScheduleId)" *ngIf="exp.status === 1001"
                       class="btn btn-sm btn-danger border-0 px-2 py-1 text-white mr-2">
                       Cancel
                     </button>
                     <button (click)="rescheduleInterview(employeeId)" *ngIf="exp.status === 1001 && !exp.interviewTime"
                       class="btn btn-sm btn-info border-0 px-2 py-1 text-white">
-                      Schedule 
+                      Schedule
                     </button>
                     <button (click)="rescheduleInterview(employeeId)" *ngIf="exp.status === 1002 || exp.status == 1006"
                       class="btn btn-sm btn-warning border-0 px-2 py-1 text-white">
@@ -436,6 +435,18 @@
                       Rejected
                     </button>
                   </td>
+                  <td class="custom-td small-header text-break">
+                    <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
+                      <button class="btn btn-sm custom-bg text-white text-break"
+                        (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)">
+                        View
+                      </button>
+                    </ng-container>
+                    <ng-template #pending>
+                      <span class="text-muted">Pending</span>
+                    </ng-template>
+                  </td>
+
 
                 </tr>
               </tbody>

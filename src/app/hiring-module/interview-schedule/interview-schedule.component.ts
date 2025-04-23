@@ -24,7 +24,9 @@ export class InterviewScheduleComponent implements OnInit {
   private dialogRef: any;
   candidateData: any = null;
   isLoading: boolean = false;
-  audio: any;
+  minDate: Date = new Date();
+  colorTheme = 'theme-dark-blue';
+  timeSlots: string[] = [];
   interviewRounds: any;
   interviewLocationData: any
   employeeId: string | null = null;
@@ -41,7 +43,6 @@ export class InterviewScheduleComponent implements OnInit {
   searchQueryText: any;
   totalRecords: number = 0;
   totalPages: number = 1;
-  colorTheme = 'theme-dark-blue';
   selectedInterviewerId: string | null = null;
   roundNo: number | null = null;
   interviewScheduleTo: string | null = null;
@@ -84,6 +85,8 @@ export class InterviewScheduleComponent implements OnInit {
     //   localStorage.setItem('lastReloadDate', today);
     //   window.location.reload();
     // }
+
+    this.generateTimeSlots();
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(loggedUser);
     console.log("rajender : ", this.userData.user.empID)
@@ -188,24 +191,24 @@ export class InterviewScheduleComponent implements OnInit {
   }
   isDialogOpen = false;
 
-handleAction(employeeId: any) {
-  if (this.isDialogOpen) return; // prevent double open
-  this.isDialogOpen = true;
+  handleAction(employeeId: any) {
+    if (this.isDialogOpen) return; // prevent double open
+    this.isDialogOpen = true;
 
-  this.interviewedByList = [];
-  this.employeeId = employeeId;
-  this.addNewRoundForm.reset();
+    this.interviewedByList = [];
+    this.employeeId = employeeId;
+    this.addNewRoundForm.reset();
 
-  this.dialogRef = this.dialog.open(this.interviewDialog, {
-    width: '400px',
-    height: 'auto',
-    hasBackdrop: true,
-  });
+    this.dialogRef = this.dialog.open(this.interviewDialog, {
+      width: '400px',
+      height: 'auto',
+      hasBackdrop: true,
+    });
 
-  this.dialogRef.afterClosed().subscribe(() => {
-    this.isDialogOpen = false;
-  });
-}
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.isDialogOpen = false;
+    });
+  }
 
 
   close() {
@@ -293,6 +296,21 @@ handleAction(employeeId: any) {
   }
 
 
+  generateTimeSlots() {
+    this.timeSlots = []; // Clear existing slots if needed
+    const interval = 15; // 15-minute intervals
+
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minutes = 0; minutes < 60; minutes += interval) {
+        const h = hour.toString().padStart(2, '0');
+        const m = minutes.toString().padStart(2, '0');
+        this.timeSlots.push(`${h}:${m}`);
+      }
+    }
+  }
+
+
+
   selectInterviewer(interviewer: any) {
     this.selectedInterviewerId = interviewer.id;
     this.selectedInterviewerName = interviewer.name;
@@ -330,30 +348,30 @@ handleAction(employeeId: any) {
     this.isLoading = true;
     this.employeeId = id;
     this.close();
-  
+
     this.authService.registeredData(id).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-  
+
         const recordLength = res?.candidateInterviewDetails?.length || 0;
         const lastRecordStatus = recordLength
           ? res.candidateInterviewDetails[recordLength - 1].status
           : null;
-  
+
         this.roundNo = (lastRecordStatus === 1001 || lastRecordStatus === 1002 || lastRecordStatus === 1006)
           ? recordLength
           : recordLength + 1;
-  
+
         const lastRecordInterviewerName = recordLength
           ? res.candidateInterviewDetails[recordLength - 1].interviewBy
           : null;
-          
-  
+
+
         this.interviewScheduleTo = lastRecordInterviewerName;
-  
+
         this.candidateData = res || {};
         this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
-  
+
         this.openDialog();
       },
       error: (err) => {
@@ -363,7 +381,7 @@ handleAction(employeeId: any) {
       }
     });
   }
-  
+
 
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
@@ -417,4 +435,120 @@ handleAction(employeeId: any) {
       });
     }
   }
+
+  feedbackView(interview: any, name:any, mail:any) {
+      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+      const comments = interview.comments;
+    
+      const scoreMap: any = {
+        'Excellent': 10,
+        'Good': 8,
+        'Average': 6,
+        'Below Average': 4
+      };
+    
+      let totalScore = 0;
+    
+      const feedbackRows = feedBackformat.map((item: any, index: number) => {
+        const getMark = (level: string) =>
+          item.feedBackName === level
+            ? '<span style="color:green;">✔️</span>'
+            : '<span style="color:red;">❌</span>';
+    
+        totalScore += scoreMap[item.feedBackName] || 0;
+    
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td class="text-start">${item.factorName}</td>
+            <td>${getMark('Excellent')}</td>
+            <td>${getMark('Good')}</td>
+            <td>${getMark('Average')}</td>
+            <td>${getMark('Below Average')}</td>
+          </tr>
+        `;
+      }).join('');
+    
+      const averageScore = (feedBackformat.length > 0)
+        ? (totalScore / feedBackformat.length).toFixed(2)
+        : 'N/A';
+    
+      const detailsHtml = `
+        <div style="font-size:12px; width:100%;">
+          <div style="margin-bottom: 10px;">
+            <h5 style="margin: 0;">Interview Feedback</h5>
+          </div>
+    
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm w-100">
+              <tbody>
+              <tr>
+                  <th>Candidate Name</th>
+                  <td>${name ? name.charAt(0).toUpperCase() + name.slice(1) : '--'}</td>
+                  <th>Mail Id</th>
+                  <td>${mail || '--'}</td>
+                </tr>
+                <tr>
+                  <th>Interviewer Name</th>
+                  <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+                  <th>Interview Date</th>
+                  <td>${interview.interviewDate || 'N/A'}</td>
+                </tr>
+                <tr>
+                  <th>Interview Time</th>
+                  <td>${interview.interviewTime || 'N/A'}</td>
+                  <th>Round Name</th>
+                  <td>${interview.interviewRoundName || 'Initial'}</td>
+                </tr>
+                <tr>
+                  <th>Level</th>
+                  <td>${interview.level || 'N/A'}</td>
+                  <th>Mode</th>
+                  <td>${interview.modeName || 'N/A'}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+    
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm w-100 text-center">
+              <thead class="table-dark">
+                <tr>
+                  <th style="font-size: 12px;">S.No</th>
+                  <th style="font-size: 12px;">Factors</th>
+                  <th style="font-size: 12px;">Excellent</th>
+                  <th style="font-size: 12px;">Good</th>
+                  <th style="font-size: 12px;">Average</th>
+                  <th style="font-size: 12px;">Below Average</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${feedbackRows}
+              </tbody>
+            </table>
+            <div class="mt-1 text-right font-weight-bold">
+            Average Score: ${averageScore}
+          </div>
+  
+          </div>
+    
+          <div style="margin-top: 10px; text-align: left;">
+            <strong>Comments:</strong>
+            <p style="text-align: left; margin-top: 5px;">${comments || 'No comments available.'}</p>
+          </div>
+        </div>
+      `;
+    
+      Swal.fire({
+        html: detailsHtml,
+        width: '900px',
+        showConfirmButton: false,
+        showCloseButton: true,
+        customClass: {
+          popup: 'p-3'
+        },
+        buttonsStyling: false
+      });
+    }
+
 }

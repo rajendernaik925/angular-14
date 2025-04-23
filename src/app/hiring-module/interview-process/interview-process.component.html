@@ -202,13 +202,18 @@
   <div class="animate-zoom">
     <div class="container">
       <div class="row mb-2 align-items-center">
-        <div class="col-md-3">
-          <span *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName"
-            class="fw-bold custom-text">Candidate Details</span>
+        <div class="col-md-9">
+          <div class="d-flex">
+            <span class="fw-bold custom-text mr-3">Candidate Details </span>
+            <span class="text-uppercase mr-2">Name : {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
+            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+
+          </div>
+          
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
             class="fw-bold custom-text">Details</span>
         </div>
-        <div class="col-md-9 d-flex justify-content-end align-items-center">
+        <div class="col-md-3 d-flex justify-content-end align-items-center">
           <button *ngIf="!disableFeedBack" type="button"
             class="border-none custom-bg text-white custom-action-btn px-2 py-1 mr-2" (click)="viewFeedbackForm()">
             Feedback Form
@@ -298,7 +303,7 @@
             </div>
           </div>
         </div>
-        <div class="card p-2 mb-3">
+        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
           <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
 
           <!-- Salary details in the same line -->
@@ -345,15 +350,28 @@
 
 
         <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Experience</strong></span>
-          <span><strong>Experience Type:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
-            }}
-          </span>
-          <span><strong>Notice Period:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
-          </span>
-          <table class="table table-bordered">
+          <!-- Experience Header Section -->
+          <div class="row mb-1">
+            <div class="col">
+              <span class="custom-text text-decoration-underline fs-4"><strong>Experience</strong></span>
+            </div>
+          </div>
+        
+          <!-- Experience Type and Notice Period Side-by-Side -->
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Experience Type:</strong>
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced' }}
+            </div>
+            <div class="col-md-6">
+              <strong>Notice Period:</strong>
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
+            </div>
+          </div>
+        
+          <!-- Show Table Only if NOT Fresher -->
+          <table class="table table-bordered"
+                 *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
             <thead class="table-dark">
               <tr class="small-header">
                 <th>Company</th>
@@ -370,6 +388,10 @@
             </tbody>
           </table>
         </div>
+        
+        
+        
+        
 
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline">
@@ -386,6 +408,7 @@
                   <th class="custom-th small-header">Interviewer ID</th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
+                  <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
               <tbody>
@@ -397,6 +420,17 @@
                     <td class="custom-td small-header">{{ exp.interviewBy }}</td>
                     <td class="custom-td small-header">{{ exp.level }}</td>
                     <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
+                    <td class="custom-td small-header text-break">
+                      <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
+                        <button class="btn btn-sm custom-bg text-white text-break" (click)="feedbackView(exp)">
+                          View
+                        </button>
+                      </ng-container>
+                      <ng-template #pending>
+                        <span class="text-muted">Pending</span>
+                      </ng-template>
+                    </td>
+                    
                   </tr>
                 </ng-container>
               </tbody>
@@ -543,10 +577,20 @@
         
       </div>
 
-      <div *ngIf="finalHrRound && selectedHrStatus !== 1005" class="row g-3 align-items-center mt-1">
+      <div *ngIf="finalHrRound && selectedHrStatus === 1004" class="row g-3 align-items-center mt-1">
         <div class="col-md-3">
           <label>Join Date:</label>
-          <input type="date" formControlName="joiningDate" class="form-control">
+          <!-- <input type="date" formControlName="joiningDate" class="form-control"> -->
+
+          <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
+              formControlName="joiningDate" autocomplete="off" [bsConfig]="{
+                adaptivePosition: true,
+                showWeekNumbers: false,
+                isAnimated: true,
+                containerClass: colorTheme,
+                customTodayClass: 'custom-today-class',
+                dateInputFormat: 'YYYY-MM-DD'
+              }" [minDate]="minDate" bsDatepicker required />
         </div>
 
         <div class="col-md-3">

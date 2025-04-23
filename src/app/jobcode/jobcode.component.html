@@ -36,8 +36,8 @@
 
           <!-- Table Section -->
           <div class="p-0 scroll-container">
-            <table class="table table-bordered table-striped table-hover">
-              <thead class="custom-bg">
+            <table class="table table-bordered">
+              <thead class="">
                 <tr class="text-light">
                   <th class="small-header-th cursor-pointer" (click)="sortTable('jcReferenceId')">
                     Job Code
@@ -148,7 +148,7 @@
               <ng-template #noData>
                 <tbody>
                   <tr>
-                    <td colspan="9">
+                    <td colspan="10">
                       <div class="d-flex justify-content-center align-items-center my-3">
                         <img [src]="dataNotFound" alt="" width="150px" height="150px">
                       </div>

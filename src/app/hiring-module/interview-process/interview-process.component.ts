@@ -32,7 +32,8 @@ export class InterviewProcessComponent implements OnInit {
   showDropdown: boolean = false;
   feedbackForm: FormGroup;
   employeeId: string | null = null;
-  userData: any;
+  userData: any; minDate: Date = new Date();
+  colorTheme = 'theme-dark-blue';
   currentPage = 1;
   pageSize = 10;
   totalRecords: number = 0;
@@ -108,31 +109,31 @@ export class InterviewProcessComponent implements OnInit {
 
 
   searchInterviewer(query: string) {
-      if (query.trim().length < 1) {
+    if (query.trim().length < 1) {
+      this.interviewedByList = [];
+      return;
+    }
+    const formData = new FormData();
+    formData.append("name", query)
+    // Debounce API call
+    this.authService.interviewedBy(formData).pipe(debounceTime(300)).subscribe({
+      next: (res: any) => {
+        this.interviewedByList = Array.isArray(res) ? res : [];
+        this.showDropdown = this.interviewedByList.length > 0;
+      },
+      error: (err: HttpErrorResponse) => {
         this.interviewedByList = [];
-        return;
       }
-      const formData = new FormData();
-      formData.append("name", query)
-      // Debounce API call
-      this.authService.interviewedBy(formData).pipe(debounceTime(300)).subscribe({
-        next: (res: any) => {
-          this.interviewedByList = Array.isArray(res) ? res : [];
-          this.showDropdown = this.interviewedByList.length > 0;
-        },
-        error: (err: HttpErrorResponse) => {
-          this.interviewedByList = [];
-        }
-      });
-    }
+    });
+  }
 
-    selectInterviewer(interviewer: any) {
-      this.selectedInterviewerId = interviewer.id;
-      this.selectedInterviewerName = interviewer.name;
-      this.feedbackForm.patchValue({ interviewBy: interviewer.id });
-  
-      this.showDropdown = false;
-    }
+  selectInterviewer(interviewer: any) {
+    this.selectedInterviewerId = interviewer.id;
+    this.selectedInterviewerName = interviewer.name;
+    this.feedbackForm.patchValue({ interviewBy: interviewer.id });
+
+    this.showDropdown = false;
+  }
 
   hideDropdown() {
     setTimeout(() => {
@@ -233,6 +234,7 @@ export class InterviewProcessComponent implements OnInit {
   viewFeedbackForm() {
     // this.close();
     // this.feedbackForm.reset();
+    this.selectedHrStatus = null
     this.dialogRef = this.dialog.open(this.feedbackform, {
       width: '900px',
       height: '550px',
@@ -287,7 +289,7 @@ export class InterviewProcessComponent implements OnInit {
             this.disableFeedBack = true;
             console.log("rajenderrrrrrrrrrrrr")
           }
-          
+
 
           console.log("Last Interview Round Name:", lastInterviewRoundName);
           if (lastInterviewRoundName === 'HR') {
@@ -395,6 +397,95 @@ export class InterviewProcessComponent implements OnInit {
   }
 
 
+  feedbackView(interview: any) {
+      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+      const comments = interview.comments;
+  
+      const detailsHtml = `
+    <div style="font-size:12px; width:100%;">
+      <div style="margin-bottom: 10px;">
+        <h5 style="margin: 0;">Interview Feedback</h5>
+      </div>
+  
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm w-100">
+          <tbody>
+            <tr>
+              <th>Interviewer Name</th>
+              <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+              <th>Interview Date</th>
+              <td>${interview.interviewDate || 'N/A'}</td>
+            </tr>
+            <tr>
+              <th>Interview Time</th>
+              <td>${interview.interviewTime || 'N/A'}</td>
+              <th>Round Name</th>
+              <td>${interview.interviewRoundName || 'Initial'}</td>
+            </tr>
+            <tr>
+              <th>Level</th>
+              <td>${interview.level || 'N/A'}</td>
+              <th>Mode</th>
+              <td>${interview.modeName || 'N/A'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm w-100 text-center">
+          <thead class="table-dark">
+            <tr>
+              <th style="font-size: 12px;">S.No</th>
+              <th style="font-size: 12px;">Factors</th>
+              <th style="font-size: 12px;">Excellent</th>
+              <th style="font-size: 12px;">Good</th>
+              <th style="font-size: 12px;">Average</th>
+              <th style="font-size: 12px;">Below Average</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${feedBackformat.map((item: any, index: number) => {
+        const getMark = (level: string) =>
+          item.feedBackName === level
+            ? '<span style="color:green;">✔️</span>'
+            : '<span style="color:red;">❌</span>';
+        return `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td class="text-start">${item.factorName}</td>
+                  <td>${getMark('Excellent')}</td>
+                  <td>${getMark('Good')}</td>
+                  <td>${getMark('Average')}</td>
+                  <td>${getMark('Below Average')}</td>
+                </tr>
+              `;
+      }).join('')}
+          </tbody>
+        </table>
+      </div>
+  
+      <div style="margin-top: 10px; text-align: left;">
+        <strong>Comments:</strong>
+        <p style="text-align: left; margin-top: 5px;">${comments || 'No comments available.'}</p>
+      </div>
+    </div>
+  `;
+  
+  
+      Swal.fire({
+        html: detailsHtml,
+        width: '900px',
+        showConfirmButton: false,
+        showCloseButton: true,
+        customClass: {
+          popup: 'p-3'
+        },
+        buttonsStyling: false
+      });
+    }
+
+
   formatTime(time: string): string {
     if (!time) return '';
     const [hour, minute] = time.split(':').map(Number);
@@ -402,7 +493,6 @@ export class InterviewProcessComponent implements OnInit {
     const period = hour >= 12 ? 'PM' : 'AM';
     return `${formattedHour}:${minute.toString().padStart(2, '0')} ${period}`;
   }
-
 
   changePage(newPage: number) {
     if (newPage >= 1 && newPage <= this.totalPages) {
