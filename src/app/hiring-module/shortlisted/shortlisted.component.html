@@ -40,8 +40,7 @@
             <table class="table table-bordered">
               <thead class="">
                 <tr class="text-light">
-                  <th *ngFor="let col of columns" class="small-header-th"
-                    [ngClass]="{'text-center': col.center}">
+                  <th *ngFor="let col of columns" class="small-header-th" [ngClass]="{'text-center': col.center}">
                     {{ col.label }}
                   </th>
                 </tr>
@@ -67,14 +66,12 @@
                      -->
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
-                        <button
-                          class="border-none custom-bg text-white custom-action-btn px-2"
-                          [disabled]="isLoading"
+                        <button class="border-none custom-bg text-white custom-action-btn px-2" [disabled]="isLoading"
                           (click)="handleAction(row.employeeid)">
                           View
                         </button>
                       </ng-container>
-                      
+
 
                       <!-- <ng-template #normal>
                         {{ row[col.key] }}
@@ -223,26 +220,23 @@
   <div class="animate-zoom">
     <div class="container">
       <div class="row mb-2 align-items-center">
-        <div class="col-md-3">
-          <span *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName"
-            class="fw-bold custom-text">Candidate Details</span>
+        <div class="col-md-10">
+          <div class="d-flex">
+            <span class="fw-bold custom-text mr-3">Candidate Details </span>
+            <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
+            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+          </div>
+
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
             class="fw-bold custom-text">Details</span>
         </div>
-        <div class="col-md-9 d-flex justify-content-end align-items-center">
-          <!-- <button type="button" class="border-none bg-warning text-white custom-action-btn px-2 py-1 mr-2"
-            (click)="sendRemainder()">
-            Send Remainder <i class="bi bi-bell"></i>
-          </button> -->
-          <!-- <span class="text-danger mr-2 fs-custom">NA (Not Applicable) </span> -->
+        <div class="col-md-2 d-flex justify-content-end align-items-center">
           <span class="cursor-pointer Hover" (click)="close()">
             <i class="bi bi-x-circle"></i>
           </span>
         </div>
       </div>
-      <!-- <hr class="m-0 p-0 text-dark border mb-2"> -->
-      <hr class="custom-hr mb-2">
-
+      <hr class="m-0 p-0 text-dark border mb-2">
 
       <div *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName; else noCandidateData"
         class="scroll-container">
@@ -322,7 +316,7 @@
             </div>
           </div>
         </div>
-        <div class="card p-2 mb-3">
+        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
           <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
 
           <!-- Salary details in the same line -->
@@ -369,15 +363,29 @@
 
 
         <div class="card p-2 mb-3">
-          <span class="custom-text text-decoration-underline"><strong>Experience</strong></span>
-          <span><strong>Experience Type:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
-            }}
-          </span>
-          <span><strong>Notice Period:</strong>
-            {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
-          </span>
-          <table class="table table-bordered">
+          <!-- Experience Header Section -->
+          <div class="row mb-1">
+            <div class="col">
+              <span class="custom-text text-decoration-underline fs-4"><strong>Experience</strong></span>
+            </div>
+          </div>
+
+          <!-- Experience Type and Notice Period Side-by-Side -->
+          <div class="row">
+            <div class="col-md-6">
+              <strong>Experience Type:</strong>
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
+              }}
+            </div>
+            <div class="col-md-6">
+              <strong>Notice Period:</strong>
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
+            </div>
+          </div>
+
+          <!-- Show Table Only if NOT Fresher -->
+          <table class="table table-bordered"
+            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
             <thead class="table-dark">
               <tr class="small-header">
                 <th>Company</th>
@@ -395,34 +403,56 @@
           </table>
         </div>
 
+
+
+
+
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline">
-            <strong>Interview (note)</strong>
+            <strong>Interview</strong>
           </span>
 
           <div class="table-container">
             <table class="custom-table">
               <thead>
                 <tr>
-                  <th class="custom-th small-header">S.NO</th>
+                  <th class="custom-th small-header">Candidate ID</th>
                   <th class="custom-th small-header">Interview Date</th>
                   <th class="custom-th small-header">Interview Time</th>
                   <th class="custom-th small-header">Interviewer ID</th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
+                  <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let exp of candidateData.candidateInterviewDetails">
-                  <td class="custom-td small-header">{{ exp.roundNo }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                  <td class="custom-td small-header">{{ exp.interviewBy }}</td>
-                  <td class="custom-td small-header">{{ exp.level }}</td>
-                  <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
-                  <!-- Ensures long text wraps -->
-                </tr>
+                <ng-container *ngFor="let exp of candidateData.candidateInterviewDetails">
+                  <tr *ngIf="exp.interviewTime">
+                    <td class="custom-td small-header">{{ exp.roundNo }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewTime }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewBy }}</td>
+                    <td class="custom-td small-header">{{ exp.level }}</td>
+                    <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
+                    <td class="custom-td small-header text-break">
+                      <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
+                        <button class="btn btn-sm custom-bg text-white text-break"
+                          [disabled]="!exp?.candidateInterviewFeedBackDTO?.length"
+                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)" tabindex="-1">
+                          View
+                        </button>
+
+
+                      </ng-container>
+                      <ng-template #pending>
+                        <span class="text-muted">Pending</span>
+                      </ng-template>
+                    </td>
+
+                  </tr>
+                </ng-container>
               </tbody>
+
             </table>
           </div>
 
@@ -432,7 +462,6 @@
             No interview details available.
           </div>
         </div>
-
       </div>
 
 

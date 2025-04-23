@@ -44,8 +44,6 @@ export class personalInfoComponent implements OnInit {
   statusPercentage: number = 50;
   loadedData: any;
   editButtonDisplay: boolean = true;
-
-
   resumeFile: string | null = null;
   photoFile: string | null = null;
   tenthFile: string | null = null;
@@ -56,7 +54,6 @@ export class personalInfoComponent implements OnInit {
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
   updateDocumentFlag: boolean = false;
-
   deleteStatus: true;
 
   // private readonly STORAGE_KEY = 'registrationFormData';

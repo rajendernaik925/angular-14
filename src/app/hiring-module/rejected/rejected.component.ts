@@ -180,6 +180,94 @@ export class RejectedComponent implements OnInit {
     return `${formattedHour}:${minute.toString().padStart(2, '0')} ${period}`;
   }
 
+  feedbackView(interview: any) {
+      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+      const comments = interview.comments;
+  
+      const detailsHtml = `
+    <div style="font-size:12px; width:100%;">
+      <div style="margin-bottom: 10px;">
+        <h5 style="margin: 0;">Interview Feedback</h5>
+      </div>
+  
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm w-100">
+          <tbody>
+            <tr>
+              <th>Interviewer Name</th>
+              <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+              <th>Interview Date</th>
+              <td>${interview.interviewDate || 'N/A'}</td>
+            </tr>
+            <tr>
+              <th>Interview Time</th>
+              <td>${interview.interviewTime || 'N/A'}</td>
+              <th>Round Name</th>
+              <td>${interview.interviewRoundName || 'Initial'}</td>
+            </tr>
+            <tr>
+              <th>Level</th>
+              <td>${interview.level || 'N/A'}</td>
+              <th>Mode</th>
+              <td>${interview.modeName || 'N/A'}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <div class="table-responsive">
+        <table class="table table-bordered table-sm w-100 text-center">
+          <thead class="table-dark">
+            <tr>
+              <th style="font-size: 12px;">S.No</th>
+              <th style="font-size: 12px;">Factors</th>
+              <th style="font-size: 12px;">Excellent</th>
+              <th style="font-size: 12px;">Good</th>
+              <th style="font-size: 12px;">Average</th>
+              <th style="font-size: 12px;">Below Average</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${feedBackformat.map((item: any, index: number) => {
+        const getMark = (level: string) =>
+          item.feedBackName === level
+            ? '<span style="color:green;">✔️</span>'
+            : '<span style="color:red;">❌</span>';
+        return `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td class="text-start">${item.factorName}</td>
+                  <td>${getMark('Excellent')}</td>
+                  <td>${getMark('Good')}</td>
+                  <td>${getMark('Average')}</td>
+                  <td>${getMark('Below Average')}</td>
+                </tr>
+              `;
+      }).join('')}
+          </tbody>
+        </table>
+      </div>
+  
+      <div style="margin-top: 10px; text-align: left;">
+        <strong>Comments:</strong>
+        <p style="text-align: left; margin-top: 5px;">${comments || 'No comments available.'}</p>
+      </div>
+    </div>
+  `;
+  
+  
+      Swal.fire({
+        html: detailsHtml,
+        width: '900px',
+        showConfirmButton: false,
+        showCloseButton: true,
+        customClass: {
+          popup: 'p-3'
+        },
+        buttonsStyling: false
+      });
+    }
+  
   sendRemainder() {
     Swal.fire({
       title: 'Success',

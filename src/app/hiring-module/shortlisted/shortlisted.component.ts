@@ -11,9 +11,9 @@ import Swal from 'sweetalert2';
   styleUrls: ['./shortlisted.component.sass']
 })
 export class ProfileListComponent implements OnInit {
-applyFilter() {
-throw new Error('Method not implemented.');
-}
+  applyFilter() {
+    throw new Error('Method not implemented.');
+  }
   columns = [
     { key: 'job_code', label: 'Job Code', uppercase: true },
     { key: 'email', label: 'User Mail ID', uppercase: true },
@@ -28,7 +28,7 @@ throw new Error('Method not implemented.');
   searchQuery = new FormControl();
   isOpen = false;
   isLoading = false;
-  candidateData: any = {};  
+  candidateData: any = {};
   currentPage = 1;
   pageSize = 10;
   searchQueryText: string = '';
@@ -43,7 +43,7 @@ throw new Error('Method not implemented.');
     private dialog: MatDialog,
     private authService: AuthService,
     private sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.currentPage = 1;
@@ -94,7 +94,7 @@ throw new Error('Method not implemented.');
 
   handleAction(employeeId: any) {
     if (this.isLoading) return; // prevent double call
-  
+
     this.isLoading = true;
     this.authService.registeredData(employeeId).subscribe({
       next: (res) => {
@@ -110,9 +110,9 @@ throw new Error('Method not implemented.');
       }
     });
   }
-  
-  
-  
+
+
+
 
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
@@ -134,6 +134,166 @@ throw new Error('Method not implemented.');
   closeOffcanvas() {
     this.isOpen = false;
   }
+
+  
+
+  feedbackView(interview: any, name: any, mail: any) {
+    const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+    const comments = interview.comments;
+    const statusCode = interview.status;
+  
+    const statusMap: any = {
+      '1001': 'Interview pending',
+      '1002': 'Interview Cancelled',
+      '1004': 'Selected',
+      '1005': 'Rejected',
+      '1006': 'Interview Hold',
+      // Add more statuses as needed
+    };
+
+    const statusLabel = statusMap[statusCode] || 'Unknown';
+  
+    const scoreMap: any = {
+      'Excellent': 10,
+      'Good': 8,
+      'Average': 6,
+      'Below Average': 4
+    };
+  
+    let totalScore = 0;
+  
+    const feedbackRows = feedBackformat.map((item: any, index: number) => {
+      const getMark = (level: string) =>
+        item.feedBackName === level
+          ? '<span style="color:green;">✔️</span>'
+          : '<span style="color:red;">❌</span>';
+  
+      totalScore += scoreMap[item.feedBackName] || 0;
+  
+      return `
+        <tr style="line-height: 1.2;">
+          <td>${index + 1}</td>
+          <td class="text-start">${item.factorName}</td>
+          <td>${getMark('Excellent')}</td>
+          <td>${getMark('Good')}</td>
+          <td>${getMark('Average')}</td>
+          <td>${getMark('Below Average')}</td>
+        </tr>
+      `;
+    }).join('');
+  
+    const averageScore = (feedBackformat.length > 0)
+      ? (totalScore / feedBackformat.length).toFixed(1)
+      : 'N/A';
+  
+  
+    const detailsHtml = `
+      <div style="font-size:12px; width:100%; padding: 10px; ">
+        
+        <!-- Header with status label -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="d-flex align-items-center">
+            <span style="font-size: 16px; margin-left: 10px; font-weight: bold; color: #0072BC">
+              Average Score ${averageScore}
+            </span>
+            <span style="font-size: 14px; margin-left: 10px; padding: 2px 6px; background-color: #d9edf7; color: #31708f; border-radius: 4px;">
+              ${statusLabel}
+            </span>
+            
+          </div>
+        </div>
+  
+        <!-- Info Table -->
+        <table class="table table-bordered table-sm w-100 mb-2" style="margin: 0;">
+          <tbody>
+            <tr>
+              <th>Candidate Name</th>
+              <td>${name ? name.charAt(0).toUpperCase() + name.slice(1) : '--'}</td>
+              <th>Mail Id</th>
+              <td>${mail || '--'}</td>
+            </tr>
+            <tr>
+              <th>Interviewer Name</th>
+              <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+              <th>Interview Date</th>
+              <td>${interview.interviewDate || 'N/A'}</td>
+            </tr>
+            <tr>
+              <th>Interview Time</th>
+              <td>${interview.interviewTime || 'N/A'}</td>
+              <th>Round Name</th>
+              <td>${interview.interviewRoundName || 'Initial'}</td>
+            </tr>
+            <tr>
+              <th>Level</th>
+              <td>${interview.level || 'N/A'}</td>
+              <th>Mode</th>
+              <td>${interview.modeName || 'N/A'}</td>
+            </tr>
+          </tbody>
+        </table>
+  
+        <!-- Watermarked Average Score + Feedback Table -->
+       <!-- <div style="position: relative; margin-top: 10px;">
+          <div style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            font-size: 50px;
+            color: #baca5a;
+            z-index: 0;
+            white-space: nowrap;
+            pointer-events: none;
+          ">
+            Average ${averageScore}
+          </div>  -->
+  
+          <table class="table table-bordered table-sm w-100 text-center mb-1" style="z-index: 1; position: relative; margin: 0;">
+            <thead class="table-dark">
+              <tr style="line-height: 1.2;">
+                <th style="font-size: 12px;">S.No</th>
+                <th style="font-size: 12px;">Factors</th>
+                <th style="font-size: 12px;">Excellent</th>
+                <th style="font-size: 12px;">Good</th>
+                <th style="font-size: 12px;">Average</th>
+                <th style="font-size: 12px;">Below Average</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${feedbackRows}
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Comments and Status Row -->
+         <div style="margin-top: 5px; text-align: left;">
+            <strong>Comments:</strong>
+             <p style="margin: 0;">${comments || 'No comments available.'}</p>
+          </div>
+         </div>
+      </div>
+    `;
+  
+    Swal.fire({
+      html: detailsHtml,
+      width: '800px',
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup: 'p-2'
+      },
+      buttonsStyling: false
+    });
+  }
+  
+  
+  
+  
+ 
+  
+  
+  
 
   sendRemainder() {
     Swal.fire({
