@@ -1,31 +1,11 @@
-<div class="emoji-containe" (mousemove)="onMouseMove($event)">
+<div class="emoji-containe" (mousemove)="onMouseMove($event)" >
+    <div class="container-fluid">
+        <app-nav></app-nav>
+    </div>
 
-    <div class="card py-1 border-0">
+    <div class=" container-fluid card py-1 border-0">
         <div class="card-body py-1">
-            <div class="row mb-2 align-items-center">
-                <div class="col-md-3">
-                    <span class="fw-bold text-danger">
-                        <img src="../../../assets/img/icons/company-name.png" width="200" height="50"
-                            alt="Company Logo">
-                    </span>
-                </div>
-                <div class="col-md-9 d-flex justify-content-end align-items-center gap-2">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBHf--60OfT0X5oAd-1fmIUKyxDWV6mxBlqaVUK-9Z2CgHp9VwbH4ChXw6PbtmVZb_aGQ&usqp=CAU"
-                        width="40" height="40" alt="Profile Image">
-                    <div class="dropdown">
-                        <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Rajender
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Profile</a>
-                            <a class="dropdown-item" href="#">Logout</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 mt-3">
                 <div class="row w-100">
                     <div class="col-12 col-md-10 d-flex align-items-center">
                         <h4 class="fw-bold mb-0 mr-4">Reporting Managers</h4>
@@ -51,13 +31,13 @@
                     <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3"
                         *ngFor="let profile of paginatedProfiles; let i = index"
                         [@slideAnimation]="{ value: '', params: { offset: slideDirection } }">
-                        <div class="card border-0 cursor-pointer p-1 shadow border-radius"
+                        <div class="border border-1 border-dark cursor-pointer p-1 border-radius"
                             [ngClass]="{'bg-dark': profile.bgDark}"
                             [@hoverAnimation]="hoveredCard === i ? 'hover' : 'default'" (mouseenter)="setHover(i)"
-                            (mouseleave)="setHover(null)" (click)="setActive(i)">
+                            (mouseleave)="setHover(null)" (click)="setActive(i,$event)" (dblclick)="handleDoubleClick(i, $event)">
                             <div class="card-body p-1 d-flex align-items-center">
                                 <img [src]="profile.image" width="50" height="50" alt="Profile Image"
-                                    class="rounded-circle mr-2">
+                                    (click)="toggleOffcanvas($event)" class="rounded-circle mr-2">
                                 <div class="d-flex flex-column">
                                     <span class="fw-bold" [ngClass]="{'text-white': profile.bgDark}">{{ profile.name
                                         }}</span>
@@ -82,7 +62,7 @@
             </div>
             <div *ngIf="paginatedProfiles.length > 0"
                 class="mt-4 mt-4-custom d-flex flex-wrap gap-3 justify-content-start">
-                <div class="team-card cursor-pointer p-1 shadow border-radius" *ngFor="let team of teams">
+                <div class="border border-1 border-dark cursor-pointer p-1 border-radius" *ngFor="let team of teams">
                     <div class="card-body p-1 d-flex align-items-center" (click)="trackingPage('1234')">
                         <span class="fw-bold">{{ team.name }}</span>
                     </div>
@@ -94,107 +74,25 @@
 
 
 
-
-
-
-<!-- <div class="mt-4">
-            <div class="row">
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 p-1 bg-dark shadow border-radius">
-                        <div class="card-body p-1 d-flex align-items-center">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold text-white">Chiranjeevi</span>
-                                <span class="text-muted small text-white">Sr. Project Manager</span>
-                                <span class="text-muted small text-white">Ex: 12 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Ravi Kumar</span>
-                                <span class="text-muted small">Software Engineer</span>
-                                <span class="text-muted small">Ex: 5 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Priya Sharma</span>
-                                <span class="text-muted small">Product Manager</span>
-                                <span class="text-muted small">Ex: 7 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Amit Verma</span>
-                                <span class="text-muted small">Data Scientist</span>
-                                <span class="text-muted small">Ex: 6 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Sonia Gupta</span>
-                                <span class="text-muted small">UX Designer</span>
-                                <span class="text-muted small">Ex: 8 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Vikram Singh</span>
-                                <span class="text-muted small">HR Manager</span>
-                                <span class="text-muted small">Ex: 10 years</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="col-md-3 mb-3">
-                    <div class="card border-0 shadow border-radius">
-                        <div class="card-body d-flex align-items-center p-2">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQp9XXU7SVb7ZkED-wSC9xKUgvs7qD8ypvLxpjllkTcd_pv_ne1jpQrbvCme2MEXMMIMBM&usqp=CAU"
-                                width="50" height="50" alt="Profile Image" class="rounded-circle mr-2">
-                            <div class="d-flex flex-column">
-                                <span class="fw-bold">Neha Mehta</span>
-                                <span class="text-muted small">Marketing Head</span>
-                                <span class="text-muted small">Ex: 9 years</span>
-                            </div>
-                        </div>
-                    </div>
+<div class="offcanvas-right" [class.show]="isOpen">
+    <div class="container mt-3">
+        <div class="candidate-details text-center">
+            <img [src]="candidate.image" alt="Candidate Image" class="img-fluid w-100 rounded-top" style="max-height: 300px; object-fit: cover;">
+            <div class="p-3">
+                <h5 class="fw-bold mb-1">{{ candidate.name }}</h5>
+                <p class="mb-0 text-muted">{{ candidate.designation }}</p>
+                <p class="mb-1 text-muted">Experience: {{ candidate.experience }}</p>
+                <p class="mb-1 text-muted">Location: {{ candidate.location }}</p>
+                <p class="mb-1 text-muted">Email: {{ candidate.email }}</p>
+                <p class="mb-1 text-muted">Phone: {{ candidate.phone }}</p>
+            </div>
+            <div class="row mt-3 px-3">
+                <div class="col-12">
+                    <button class="btn btn-sm btn-danger w-100" (click)="closeOffcanvas()">Close</button>
                 </div>
             </div>
-        </div> -->
+        </div>
+        
+    </div>
+
+</div>

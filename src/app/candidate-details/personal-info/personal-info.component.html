@@ -261,16 +261,16 @@
                   </div>
                   <div class="col-md-3">
                     <label for="tenth" class="form-label">Resume <span class="text-danger">*</span></label>
-                    <div class="file-upload px-2 pt-1 rounded-4">
+                    <div class="file-upload  rounded-4">
                       <ng-container *ngIf="resumeFile && isAllDataPresent; else resumeFileInput">
-                        <button class="btn btn-info badge badge-pill badge-info py-2  btn-sm shadow-none border-0 w-100"
+                        <button class="btn btn-info badge badge-pil badge-info py-2  btn-sm shadow-none border-0 w-100"
                           (click)="viewFile(resumeFile)">
                           View Resume
                         </button>
                       </ng-container>
                       <ng-template #resumeFileInput>
                         <input type="file" formControlName="resume" id="resume" #resumeFileInput
-                          (change)="onFileSelect($event, 'resume')" class="form-control form-control-sm file-input" />
+                          (change)="onFileSelect($event, 'resume')" accept=".pdf" class="form-control form-control-sm file-input" />
                       </ng-template>
                     </div>
                     <div *ngIf="registrationForm.get('resume')?.touched && registrationForm.get('resume')?.invalid"
@@ -280,17 +280,17 @@
                   </div>
                   <div class="col-md-3">
                     <label for="tenth" class="form-label">photo <span class="text-danger">*</span></label>
-                    <div class="file-upload px-2 pt-1 rounded-4">
+                    <div class="file-upload  rounded-4">
                       <ng-container *ngIf="photoFile && isAllDataPresent; else photoFileInput">
                         <button
-                          class="btn btn-info badge badge-pill badge-info py-2  btn-sm shadow-none border-0  w-100"
+                          class="btn btn-info badge badge-pil badge-info py-2  btn-sm shadow-none border-0  w-100"
                           (click)="viewFile(resumeFile)">
                           View photo
                         </button>
                       </ng-container>
                       <ng-template #photoFileInput>
                         <input type="file" formControlName="photo" id="photo" #photoFileInput
-                          (change)="onFileSelect($event, 'photo')" class="form-control form-control-sm file-input" />
+                          (change)="onFileSelect($event, 'photo')" accept=".pdf" class="form-control form-control-sm file-input" />
                       </ng-template>
                     </div>
                     <div *ngIf="registrationForm.get('photo')?.touched && registrationForm.get('photo')?.invalid"
@@ -547,10 +547,14 @@
             <div *ngIf="activeTab === 'education'">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="fw-bold text-start custom-text">{{ 'Education Details' | uppercase }}
+                  <span class="fs-custom rounded-pill text-danger ml-2"
+                    aria-label="Fields marked with asterisk are required">(Minimum 3 Qualification are Required)
+                  </span>
                 </div>
                 <div class="text-end mt-0 align-items-center">
                   <span class="fs-custom rounded-pill text-danger"
-                    aria-label="Fields marked with asterisk are required">(*) Required Fields</span>
+                    aria-label="Fields marked with asterisk are required">(*) Required Fields
+                  </span>
                 </div>
               </div>
               <hr class="custom-hr mb-2 mt-1" />
@@ -688,11 +692,11 @@
                       <div class="file-upload px-2 pt-1 rounded-4">
                         <ng-container *ngIf="tenthFile; else tenthFileInput">
                           <button
-                            class="btn btn-info badge badge-pill badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            class="btn btn-info badge  badge-info py-2 btn-sm shadow-none border-0 w-100"
                             (click)="viewFile(tenthFile)">View Document</button>
                         </ng-container>
                         <ng-template #tenthFileInput>
-                          <input type="file" formControlName="tenth" id="tenth" #tenthFileInput
+                          <input type="file" formControlName="tenth" accept=".pdf" id="tenth" #tenthFileInput
                             (change)="onFileSelect($event, 'tenth')" class="form-control form-control-sm file-input" />
                         </ng-template>
                       </div>
@@ -718,11 +722,11 @@
                       <div class="file-upload px-2 pt-1 rounded-4">
                         <ng-container *ngIf="twelthFile; else twelthFileInput">
                           <button
-                            class="btn btn-info badge badge-pill badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            class="btn btn-info badge badge-pil badge-info py-2 btn-sm shadow-none border-0 w-100"
                             (click)="viewFile(twelthFile)">View Document</button>
                         </ng-container>
                         <ng-template #twelthFileInput>
-                          <input type="file" formControlName="twelth" id="twelth" #twelthFileInput
+                          <input type="file" formControlName="twelth" accept=".pdf" id="twelth" #twelthFileInput
                             (change)="onFileSelect($event, 'twelth')" class="form-control form-control-sm file-input" />
                         </ng-template>
                       </div>
@@ -750,11 +754,11 @@
                       <div class="file-upload px-2 pt-1 rounded-4">
                         <ng-container *ngIf="degreeOrBTechFile; else degreeOrBTechFileInput">
                           <button
-                            class="btn btn-info badge badge-pill badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            class="btn btn-info badge badge-pil badge-info py-2 btn-sm shadow-none border-0 w-100"
                             (click)="viewFile(degreeOrBTechFile)">View Document</button>
                         </ng-container>
                         <ng-template #degreeOrBTechFileInput>
-                          <input type="file" formControlName="degreeOrBTech" id="degreeOrBTech" #degreeOrBTechFileInput
+                          <input type="file" formControlName="degreeOrBTech" accept=".pdf" id="degreeOrBTech" #degreeOrBTechFileInput
                             (change)="onFileSelect($event, 'degreeOrBTech')"
                             class="form-control form-control-sm file-input" />
                         </ng-template>
@@ -781,11 +785,11 @@
                       <div class="file-upload px-2 pt-1 rounded-4">
                         <ng-container *ngIf="deplomaFile; else deplomaFileInput">
                           <button
-                            class="btn btn-info badge badge-pill badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            class="btn btn-info badge badge-pil badge-info py-2 btn-sm shadow-none border-0 w-100"
                             (click)="viewFile(deplomaFile)">View Document</button>
                         </ng-container>
                         <ng-template #deplomaFileInput>
-                          <input type="file" formControlName="deploma" id="deploma" #deplomaFileInput
+                          <input type="file" formControlName="deploma" accept=".pdf" id="deploma" #deplomaFileInput
                             (change)="onFileSelect($event, 'deploma')"
                             class="form-control form-control-sm file-input" />
                         </ng-template>
@@ -813,11 +817,11 @@
                       <div class="file-upload px-2 pt-1 rounded-4">
                         <ng-container *ngIf="othersFile; else othersFileInput">
                           <button
-                            class="btn btn-info badge badge-pill badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            class="btn btn-info badge badge-pil badge-info py-2 btn-sm shadow-none border-0 w-100"
                             (click)="viewFile(othersFile)">View Document</button>
                         </ng-container>
                         <ng-template #othersFileInput>
-                          <input type="file" formControlName="others" id="others" #othersFileInput
+                          <input type="file" formControlName="others" accept=".pdf" id="others" #othersFileInput
                             (change)="onFileSelect($event, 'others')" class="form-control form-control-sm file-input" />
                         </ng-template>
                       </div>

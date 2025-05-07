@@ -175,7 +175,7 @@ export class personalInfoComponent implements OnInit {
     const [year, month, day] = date.split('-');
     return `${day}-${month}-${year}`;
   }
-  
+
 
   loadUserData() {
     this.isLoading = true;
@@ -194,7 +194,7 @@ export class personalInfoComponent implements OnInit {
             confirmButtonText: 'OK',
             timerProgressBar: true,
           });
-        }        
+        }
         // console.log("rajender : ",res.candidatePersonalInformationDetails.candidateInterviewDetails)
         if (
           res?.candidatePersonalInformationDetails ||
@@ -469,7 +469,7 @@ export class personalInfoComponent implements OnInit {
       });
       return;
     }
-  
+
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you really want to delete this education record?',
@@ -484,7 +484,7 @@ export class personalInfoComponent implements OnInit {
         this.isLoading = true;
         console.log("index: ", index);
         console.log("educationId: ", educationId);
-  
+
         this.authService.deleteEducation(educationId).subscribe({
           next: (res: any) => {
             this.isLoading = false;
@@ -508,7 +508,7 @@ export class personalInfoComponent implements OnInit {
       }
     });
   }
-  
+
 
 
 
@@ -833,39 +833,39 @@ export class personalInfoComponent implements OnInit {
       formData.append('moduleId', '2');
 
       this.finalSave('address', formData);
-    }else if (Action === 'education') {
+    } else if (Action === 'education') {
       let isValid = true;
       let educationData: any[] = [];
-    
+
       const newEducationControls = this.educationArray.controls.filter(ctrl => !ctrl.disabled);
       const existingEducationControls = this.educationArray.controls.filter(ctrl => ctrl.disabled);
-    
+
       if (newEducationControls.length === 0) {
         this.formFillMessageAlert();
         return;
       }
-    
+
       // Collect existing qualificationIds and normalize to string
       const existingQualificationIds = existingEducationControls
         .map(ctrl => String(ctrl.get('qualificationId')?.value))
         .filter(id => !!id); // Remove null/undefined
-    
+
       const newQualificationIds: string[] = [];
       let hasDuplicate = false;
-    
+
       for (let group of newEducationControls) {
         const qualificationId = String(group.get('qualificationId')?.value);
-    
+
         if (!qualificationId || qualificationId === 'null') continue;
-    
+
         if (existingQualificationIds.includes(qualificationId) || newQualificationIds.includes(qualificationId)) {
           hasDuplicate = true;
           break;
         }
-    
+
         newQualificationIds.push(qualificationId);
       }
-    
+
       if (hasDuplicate) {
         Swal.fire({
           title: 'Duplicate Qualification',
@@ -875,14 +875,14 @@ export class personalInfoComponent implements OnInit {
         });
         return;
       }
-    
+
       newEducationControls.forEach((group: FormGroup) => {
         let educationEntry: any = {};
         const educationFields = [
           'educationTypeId', 'universityId', 'qualificationId',
           'yearOfPassing', 'percentage'
         ];
-    
+
         educationFields.forEach((field) => {
           const control = group.get(field);
           if (control?.invalid) {
@@ -892,27 +892,27 @@ export class personalInfoComponent implements OnInit {
             educationEntry[field] = control?.value;
           }
         });
-    
+
         educationEntry['educationId'] = 1;
         educationEntry['candidateId'] = this.jobCodeData?.candidateId;
-    
+
         educationData.push(educationEntry);
       });
-    
+
       if (!isValid) {
         this.formFillMessageAlert();
         return;
       }
-    
+
       let formData = new FormData();
       formData.append("education", JSON.stringify(educationData));
       formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
       formData.append('candidateId', this.jobCodeData?.candidateId);
       formData.append('moduleId', '3');
-    
+
       this.finalSave('education', formData);
     }
-    
+
     else if (Action === 'documents') {
       const documentsFields = ['tenth', 'twelth', 'deploma', 'degreeOrBTech', 'others'];
       let hasFile = false; // Flag to check if any file is present
@@ -1274,15 +1274,15 @@ export class personalInfoComponent implements OnInit {
   checkDuplicateQualification(index: number): boolean {
     const educationArray = this.registrationForm.get('educationDetails') as FormArray;
     const currentQual = educationArray.at(index).get('qualificationId')?.value;
-  
+
     if (!currentQual) return false;
-  
+
     // Count how many times this qualification appears in the form
     const duplicates = educationArray.controls.filter((control, i) => {
       return i !== index && control.get('qualificationId')?.value === currentQual;
     });
-  
+
     return duplicates.length > 0;
   }
-  
+
 }

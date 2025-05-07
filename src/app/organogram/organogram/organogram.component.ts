@@ -34,6 +34,7 @@ export class OrganogramComponent implements OnInit {
   hoveredCard: number | null = null;
   activeIndex: number | null = null;
   emojis: string[] = ["🌻", "🌹", "🌷"];
+  isOpen = false;
 
 
 
@@ -79,43 +80,68 @@ export class OrganogramComponent implements OnInit {
     { name: 'Data Science' },
     { name: 'Cyber Security' },
     { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'Data Science' },
-    { name: 'Cyber Security' },
-    { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'Data Science' },
-    { name: 'Cyber Security' },
-    { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'IT Support' },
-    { name: 'Application Development' },
-    { name: 'Data Science' },
-    { name: 'Cyber Security' },
-    { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'Data Science' },
-    { name: 'Cyber Security' },
-    { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'Data Science' },
-    { name: 'Cyber Security' },
-    { name: 'Cloud Computing' },
-    { name: 'DevOps' },
-    { name: 'Product Management' },
-    { name: 'Quality Assurance' },
-    { name: 'IT Support' }
   ];
+
+  candidates = [
+    {
+      image: 'https://media.licdn.com/dms/image/v2/D4E03AQE61b20q9jYSA/profile-displayphoto-shrink_800_800/B4EZYFPQS1HYAg-/0/1743844608872?e=1752105600&v=beta&t=oU3T7NbG4IDxsKYb0SMl9KyuCKqQa4pQSeuuHOS3fWc',
+      name: 'Rajendra Naik',
+      designation: 'Software Developer',
+      experience: '5 Years',
+      location: 'Hyderabad, India',
+      email: 'rajender@example.com',
+      phone: '+91-9876543210'
+    },
+    {
+      image: 'https://i.pinimg.com/736x/c6/34/60/c6346030acb7a780af81803c84a06680.jpg',
+      name: 'Rani Sharma',
+      designation: 'Frontend Developer',
+      experience: '3 Years',
+      location: 'Bangalore, India',
+      email: 'rani@example.com',
+      phone: '+91-9123456780'
+    },
+    {
+      image: 'https://sso.heterohcl.com/iconnectpics/10515/DSC_1705.png',
+      name: 'Durga Prasad',
+      designation: 'Backend Developer',
+      experience: '4 Years',
+      location: 'Chennai, India',
+      email: 'chinna@example.com',
+      phone: '+91-9988776655'
+    },
+    {
+      image: 'https://sso.heterohcl.com/iconnectpics/13431/rajender.jpeg',
+      name: 'Chinna',
+      designation: 'UI/UX Designer',
+      experience: '6 Years',
+      location: 'Pune, India',
+      email: 'durga@example.com',
+      phone: '+91-9811223344'
+    },
+    {
+      image: 'https://sso.heterohcl.com/iconnectpics/13066/WhatsApp%20Image%202024-02-10%20at%204.28.56%20PM.jpeg',
+      name: 'Venu babu gurram',
+      designation: 'DevOps Engineer',
+      experience: '5 Years',
+      location: 'Mumbai, India',
+      email: 'venu@example.com',
+      phone: '+91-8877665544'
+    },
+    {
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBaesfW7UaeTkOeCmDyrsM66YTtisobhLL5Q&s',
+      name: 'Swapna Reddy',
+      designation: 'QA Engineer',
+      experience: '4 Years',
+      location: 'Delhi, India',
+      email: 'swapna@example.com',
+      phone: '+91-9090909090'
+    }
+  ];
+
+
+
+
 
   constructor(
     private router: Router,
@@ -149,7 +175,38 @@ export class OrganogramComponent implements OnInit {
     return Math.ceil(this.profiles.length / this.profilesPerPage) - 1;
   }
 
+  clickCount = 0;
+
+  candidate = this.candidates[0]; // Default to first
+
+  toggleOffcanvas(event: Event) {
+    event.stopPropagation();
+    this.isOpen = false;
+
+    setTimeout(() => {
+      // Cycle through the 6 candidates
+      this.candidate = this.candidates[this.clickCount % this.candidates.length];
+      this.clickCount++;
+      this.isOpen = true;
+    }, 300);
+  }
+
+  closeOffcanvas() {
+    this.isOpen = false;
+  }
+
+
+  handleDoubleClick(id: any, event: Event): void {
+    event.stopPropagation();
+    this.isOpen = false;
+    setTimeout(() => {
+      this.isOpen = true;
+    }, 1000);
+  }
+
+
   prevPage() {
+    this.isOpen = false;
     if (this.currentPage > 0) {
       this.slideDirection = -100;
       this.currentPage--;
@@ -157,6 +214,7 @@ export class OrganogramComponent implements OnInit {
   }
 
   nextPage() {
+    this.isOpen = false;
     if (this.currentPage < this.maxPage) {
       this.slideDirection = 100;
       this.currentPage++;
@@ -167,7 +225,9 @@ export class OrganogramComponent implements OnInit {
     this.hoveredCard = index;
   }
 
-  setActive(index: number) {
+  setActive(index: number, event: Event) {
+    this.isOpen = false;
+    event.stopPropagation();
     this.activeIndex = index;
     this.profiles.forEach((profile, i) => profile.bgDark = i === (this.currentPage * this.profilesPerPage + index));
   }

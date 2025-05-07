@@ -78,21 +78,21 @@ export class OfferLetterComponent implements OnInit {
         }));
   
         // ✅ Ensure at least 100 dummy entries
-        let currentLength = this.rows.length;
-        while (this.rows.length < 29) {
-          const dummyIndex = this.rows.length + 1;
-          this.rows.push({
-            jobcodeId: 1000 + dummyIndex,
-            jcReferanceId: `JC${1000 + dummyIndex}`,
-            employeeId: `DUMMY-${dummyIndex}`,
-            name: `Candidate ${dummyIndex}`,
-            jobTitleName: `Job Title ${dummyIndex}`,
-            deptName: `Dept ${dummyIndex}`,
-            expectedCtc: `${Math.floor(Math.random() * 10 + 3)} LPA`,
-            joiningDate: moment().add(dummyIndex, 'days').format('YYYY-MM-DD'),
-            status: 'N/A'
-          });
-        }
+        // let currentLength = this.rows.length;
+        // while (this.rows.length < 5000) {
+        //   const dummyIndex = this.rows.length + 1;
+        //   this.rows.push({
+        //     jobcodeId: 1000 + dummyIndex,
+        //     jcReferanceId: `JC${1000 + dummyIndex}`,
+        //     employeeId: `DUMMY-${dummyIndex}`,
+        //     name: `Candidate ${dummyIndex}`,
+        //     jobTitleName: `Job Title ${dummyIndex}`,
+        //     deptName: `Dept ${dummyIndex}`,
+        //     expectedCtc: `${Math.floor(Math.random() * 10 + 3)} LPA`,
+        //     joiningDate: moment().add(dummyIndex, 'days').format('YYYY-MM-DD'),
+        //     status: 'N/A'
+        //   });
+        // }
   
         this.originalRows = [...this.rows];
       },
