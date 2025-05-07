@@ -191,13 +191,9 @@ export class JobcodeComponent implements OnInit {
   
     this.authService.getTotalJobCodes(pageNo, pageSize, searchQuery).subscribe({
       next: (res: any) => {
-        console.log("Total job codes:", res);
-        
+        this.isLoading = false;
         this.rows = res.list || [];
         this.filteredJobs = [...this.rows];
-        
-        this.isLoading = false;
-  
         // Set totalRecords based on API response
         this.totalRecords = res.totalCount ?? this.rows.length;
   

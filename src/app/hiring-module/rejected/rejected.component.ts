@@ -73,22 +73,22 @@ export class RejectedComponent implements OnInit {
         }));
 
         // Ensure at least 100 dummy entries
-        while (this.rows.length < 100) {
-          const dummyIndex = this.rows.length + 1;
-          this.rows.push({
-            jobcodeId: 1000 + dummyIndex,
-            jcReferanceId: `JC${1000 + dummyIndex}`,
-            candidateId: dummyIndex,
-            name: `Candidate ${dummyIndex}`,
-            jobTitleName: `Job Title ${dummyIndex}`,
-            mobileNumber: `987654${String(dummyIndex).padStart(4, '0')}`,
-            email: `dummy${dummyIndex}@example.com`,
-            teamName: `Team ${dummyIndex}`,
-            reportingManager: `Manager ${dummyIndex}`,
-            createdBy: `Creator ${dummyIndex}`,
-            status: dummyIndex % 3 === 0 ? 1001 : dummyIndex % 3 === 1 ? 1003 : 1005
-          });
-        }
+        // while (this.rows.length < 100) {
+        //   const dummyIndex = this.rows.length + 1;
+        //   this.rows.push({
+        //     jobcodeId: 1000 + dummyIndex,
+        //     jcReferanceId: `JC${1000 + dummyIndex}`,
+        //     candidateId: dummyIndex,
+        //     name: `Candidate ${dummyIndex}`,
+        //     jobTitleName: `Job Title ${dummyIndex}`,
+        //     mobileNumber: `987654${String(dummyIndex).padStart(4, '0')}`,
+        //     email: `dummy${dummyIndex}@example.com`,
+        //     teamName: `Team ${dummyIndex}`,
+        //     reportingManager: `Manager ${dummyIndex}`,
+        //     createdBy: `Creator ${dummyIndex}`,
+        //     status: dummyIndex % 3 === 0 ? 1001 : dummyIndex % 3 === 1 ? 1003 : 1005
+        //   });
+        // }
         this.originalRows = [...this.rows];
 
       },

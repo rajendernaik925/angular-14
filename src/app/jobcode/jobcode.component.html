@@ -102,7 +102,7 @@
 
 
               <tbody class="" *ngIf="paginatedRows?.length > 0; else noData">
-                <tr class="small-header" *ngFor="let row of paginatedRows">
+                <tr class="small-header table-hoverr" *ngFor="let row of paginatedRows">
                   <th class="small-header text-uppercase" scope="row" [innerHTML]="highlightMatch(row.jcReferenceId)">
                   </th>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.jobTitleName)"></td>
@@ -223,8 +223,9 @@
       <div class="row mb-3">
         <!-- First Row (3 form controls) -->
         <div class="col-md-4 ">
-          <label for="jobTitle">Role Title <span class="text-danger">*</span></label>
+          <label for="">Role Title <span class="text-danger">*</span></label>
           <select id="jobTitle" formControlName="jobTitle" class="form-control form-control-sm">
+            <option value="">Select</option>
             <option *ngFor="let item of jobTitleList" [value]="item.id">
               {{ item.name }}
             </option>

@@ -30,7 +30,7 @@ export class InterviewScheduleComponent implements OnInit {
   interviewRounds: any;
   interviewLocationData: any
   employeeId: string | null = null;
-  userId: string | null = null;
+  // userId: string | null = null;
   interviewedByList: any[] = [];
   originalRows: any[] = [];
   showDropdown: boolean = false;
@@ -46,6 +46,7 @@ export class InterviewScheduleComponent implements OnInit {
   selectedInterviewerId: string | null = null;
   roundNo: number | null = null;
   interviewScheduleTo: string | null = null;
+  isMeetingLinkDisabled = false;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -64,13 +65,13 @@ export class InterviewScheduleComponent implements OnInit {
       interviewDate: ['', Validators.required],
       interviewTime: ['', Validators.required],
       interviewBy: ['', Validators.required],
-      meetingLink: [
+      link: [
         '',
         [
-          Validators.required, // Makes the field required
-          Validators.pattern(/^(https?:\/\/)(www\.)?(zoom\.us|teams\.microsoft\.com|meet\.google\.com)\/.*/), // URL pattern for Zoom, Teams, and Google Meet
+          Validators.required,
+          Validators.pattern(/^(https?:\/\/)?(www\.)?(zoom\.us|meet\.google\.com|teams\.microsoft\.com)\/.+$/)
         ]
-      ],
+      ]
     });
   }
 
@@ -182,6 +183,23 @@ export class InterviewScheduleComponent implements OnInit {
     );
   }
 
+  onModeChange(event: Event): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+  
+    if (selectedValue === '1') {
+      this.isMeetingLinkDisabled = true;
+      this.addNewRoundForm.removeControl('link');
+    } else {
+      this.isMeetingLinkDisabled = false;
+      if (!this.addNewRoundForm.get('link')) {
+        this.addNewRoundForm.addControl(
+          'link',
+          new FormControl('', [Validators.required, Validators.pattern(/https?:\/\/.+/)])
+        );
+      }
+    }
+  }
+  
   highlightMatch(text: any): SafeHtml {
     if (!this.searchQueryText || !text) return text;
     const escapedQuery = this.searchQueryText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -436,9 +454,21 @@ export class InterviewScheduleComponent implements OnInit {
     }
   }
 
-  feedbackView(interview: any, name:any, mail:any) {
+  feedbackView(interview: any, name: any, mail: any) {
       const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
       const comments = interview.comments;
+      const statusCode = interview.status;
+    
+      const statusMap: any = {
+        '1001': 'Interview pending',
+        '1002': 'Interview Cancelled',
+        '1004': 'Selected',
+        '1005': 'Rejected',
+        '1006': 'Interview Hold',
+        // Add more statuses as needed
+      };
+  
+      const statusLabel = statusMap[statusCode] || 'Unknown';
     
       const scoreMap: any = {
         'Excellent': 10,
@@ -458,7 +488,7 @@ export class InterviewScheduleComponent implements OnInit {
         totalScore += scoreMap[item.feedBackName] || 0;
     
         return `
-          <tr>
+          <tr style="line-height: 1.2;">
             <td>${index + 1}</td>
             <td class="text-start">${item.factorName}</td>
             <td>${getMark('Excellent')}</td>
@@ -470,50 +500,75 @@ export class InterviewScheduleComponent implements OnInit {
       }).join('');
     
       const averageScore = (feedBackformat.length > 0)
-        ? (totalScore / feedBackformat.length).toFixed(2)
+        ? (totalScore / feedBackformat.length).toFixed(1)
         : 'N/A';
     
+    
       const detailsHtml = `
-        <div style="font-size:12px; width:100%;">
-          <div style="margin-bottom: 10px;">
-            <h5 style="margin: 0;">Interview Feedback</h5>
+        <div style="font-size:12px; width:100%; padding: 10px; ">
+          
+          <!-- Header with status label -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center">
+              <span style="font-size: 16px; margin-left: 10px; font-weight: bold; color: #0072BC">
+                Average Score ${averageScore}
+              </span>
+              <span style="font-size: 14px; margin-left: 10px; padding: 2px 6px; background-color: #d9edf7; color: #31708f; border-radius: 4px;">
+                ${statusLabel}
+              </span>
+              
+            </div>
           </div>
     
-          <div class="table-responsive">
-            <table class="table table-bordered table-sm w-100">
-              <tbody>
+          <!-- Info Table -->
+          <table class="table table-bordered table-sm w-100 mb-2" style="margin: 0;">
+            <tbody>
               <tr>
-                  <th>Candidate Name</th>
-                  <td>${name ? name.charAt(0).toUpperCase() + name.slice(1) : '--'}</td>
-                  <th>Mail Id</th>
-                  <td>${mail || '--'}</td>
-                </tr>
-                <tr>
-                  <th>Interviewer Name</th>
-                  <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
-                  <th>Interview Date</th>
-                  <td>${interview.interviewDate || 'N/A'}</td>
-                </tr>
-                <tr>
-                  <th>Interview Time</th>
-                  <td>${interview.interviewTime || 'N/A'}</td>
-                  <th>Round Name</th>
-                  <td>${interview.interviewRoundName || 'Initial'}</td>
-                </tr>
-                <tr>
-                  <th>Level</th>
-                  <td>${interview.level || 'N/A'}</td>
-                  <th>Mode</th>
-                  <td>${interview.modeName || 'N/A'}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                <th>Candidate Name</th>
+                <td>${name ? name.charAt(0).toUpperCase() + name.slice(1) : '--'}</td>
+                <th>Mail Id</th>
+                <td>${mail || '--'}</td>
+              </tr>
+              <tr>
+                <th>Interviewer Name</th>
+                <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+                <th>Interview Date</th>
+                <td>${interview.interviewDate || 'N/A'}</td>
+              </tr>
+              <tr>
+                <th>Interview Time</th>
+                <td>${interview.interviewTime || 'N/A'}</td>
+                <th>Round Name</th>
+                <td>${interview.interviewRoundName || 'Initial'}</td>
+              </tr>
+              <tr>
+                <th>Level</th>
+                <td>${interview.level || 'N/A'}</td>
+                <th>Mode</th>
+                <td>${interview.modeName || 'N/A'}</td>
+              </tr>
+            </tbody>
+          </table>
     
-          <div class="table-responsive">
-            <table class="table table-bordered table-sm w-100 text-center">
+          <!-- Watermarked Average Score + Feedback Table -->
+         <!-- <div style="position: relative; margin-top: 10px;">
+            <div style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-30deg);
+              font-size: 50px;
+              color: #baca5a;
+              z-index: 0;
+              white-space: nowrap;
+              pointer-events: none;
+            ">
+              Average ${averageScore}
+            </div>  -->
+    
+            <table class="table table-bordered table-sm w-100 text-center mb-1" style="z-index: 1; position: relative; margin: 0;">
               <thead class="table-dark">
-                <tr>
+                <tr style="line-height: 1.2;">
                   <th style="font-size: 12px;">S.No</th>
                   <th style="font-size: 12px;">Factors</th>
                   <th style="font-size: 12px;">Excellent</th>
@@ -526,26 +581,24 @@ export class InterviewScheduleComponent implements OnInit {
                 ${feedbackRows}
               </tbody>
             </table>
-            <div class="mt-1 text-right font-weight-bold">
-            Average Score: ${averageScore}
-          </div>
-  
           </div>
     
-          <div style="margin-top: 10px; text-align: left;">
-            <strong>Comments:</strong>
-            <p style="text-align: left; margin-top: 5px;">${comments || 'No comments available.'}</p>
-          </div>
+          <!-- Comments and Status Row -->
+           <div style="margin-top: 5px; text-align: left;">
+              <strong>Comments:</strong>
+               <p style="margin: 0;">${comments || 'No comments available.'}</p>
+            </div>
+           </div>
         </div>
       `;
     
       Swal.fire({
         html: detailsHtml,
-        width: '900px',
+        width: '800px',
         showConfirmButton: false,
         showCloseButton: true,
         customClass: {
-          popup: 'p-3'
+          popup: 'p-2'
         },
         buttonsStyling: false
       });

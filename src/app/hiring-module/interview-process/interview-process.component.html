@@ -30,8 +30,7 @@
             </div>
             <div class="col-md-9 d-flex justify-content-end align-items-center">
               <input type="search" class="form-control form-control-sm search-input" placeholder="🔍 Search"
-                [formControl]="searchQuery" aria-level="Search"
-                style="max-width: 150px; font-size: 13px;">
+                [formControl]="searchQuery" aria-level="Search" style="max-width: 150px; font-size: 13px;">
               <!-- <i class="fa fa-search"></i> -->
               <!-- <button type="button" (click)="toggleOffcanvas()" class="btn btn-sm custom-bg text-light">
                 Filter Options
@@ -62,9 +61,10 @@
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
                         <button class="border-none custom-bg text-white custom-action-btn px-2"
-                          (click)="handleAction(row.employeeid)">
+                          (click)="handleAction(row.employeeid, row.interviewStatus)">
                           View
                         </button>
+
                       </ng-container>
 
                       <ng-template #normal>
@@ -205,16 +205,18 @@
         <div class="col-md-9">
           <div class="d-flex">
             <span class="fw-bold custom-text mr-3">Candidate Details </span>
-            <span class="text-uppercase mr-2">Name : {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
-            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+            <span class="text-uppercase mr-2">Name : {{ candidateData?.candidatePersonalInformationDetails?.firstName
+              }}</span>
+            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
+              }}</span>
 
           </div>
-          
+
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
             class="fw-bold custom-text">Details</span>
         </div>
         <div class="col-md-3 d-flex justify-content-end align-items-center">
-          <button *ngIf="!disableFeedBack" type="button"
+          <button *ngIf="disableFeedBack" type="button"
             class="border-none custom-bg text-white custom-action-btn px-2 py-1 mr-2" (click)="viewFeedbackForm()">
             Feedback Form
           </button>
@@ -356,22 +358,23 @@
               <span class="custom-text text-decoration-underline fs-4"><strong>Experience</strong></span>
             </div>
           </div>
-        
+
           <!-- Experience Type and Notice Period Side-by-Side -->
           <div class="row">
             <div class="col-md-6">
               <strong>Experience Type:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced' }}
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher ? 'Fresher' : 'Experienced'
+              }}
             </div>
             <div class="col-md-6">
               <strong>Notice Period:</strong>
               {{ candidateData.candidateExperienceDetails.candidateJoiningDetails.joiningName }}
             </div>
           </div>
-        
+
           <!-- Show Table Only if NOT Fresher -->
           <table class="table table-bordered"
-                 *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
+            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails.is_Fresher">
             <thead class="table-dark">
               <tr class="small-header">
                 <th>Company</th>
@@ -388,10 +391,10 @@
             </tbody>
           </table>
         </div>
-        
-        
-        
-        
+
+
+
+
 
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline">
@@ -405,7 +408,7 @@
                   <th class="custom-th small-header">Candidate ID</th>
                   <th class="custom-th small-header">Interview Date</th>
                   <th class="custom-th small-header">Interview Time</th>
-                  <th class="custom-th small-header">Interviewer ID</th>
+                  <th class="custom-th small-header">Interviewer</th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
                   <th class="custom-th small-header">Feedback</th>
@@ -417,12 +420,13 @@
                     <td class="custom-td small-header">{{ exp.roundNo }}</td>
                     <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
                     <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewBy }}</td>
-                    <td class="custom-td small-header">{{ exp.level }}</td>
+                    <td class="custom-td small-header">{{exp.interviewByName}}-{{ exp.interviewBy }}</td>
+                    <td class="custom-td small-header">{{ exp.level }} ({{exp.interviewRoundName || 'Initial'}})</td>
                     <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
                     <td class="custom-td small-header text-break">
                       <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
-                        <button class="btn btn-sm custom-bg text-white text-break" (click)="feedbackView(exp)">
+                        <button class="btn btn-sm custom-bg text-white text-break"
+                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)">
                           View
                         </button>
                       </ng-container>
@@ -430,7 +434,7 @@
                         <span class="text-muted">Pending</span>
                       </ng-template>
                     </td>
-                    
+
                   </tr>
                 </ng-container>
               </tbody>
@@ -510,8 +514,10 @@
       <div class="row">
         <div class="col-md-12">
           <label for="textarea" class="form-label">Comments <span class="text-danger">*</span></label>
-          <textarea id="textarea" class="form-control form-control-sm" rows="1" formControlName="comments" placeholder="Enter text"></textarea>
-          <div *ngIf="feedbackForm.controls['comments'].invalid && feedbackForm.controls['comments'].touched" class="text-danger fs-custom">
+          <textarea id="textarea" class="form-control form-control-sm" rows="1" formControlName="comments"
+            placeholder="Enter text"></textarea>
+          <div *ngIf="feedbackForm.controls['comments'].invalid && feedbackForm.controls['comments'].touched"
+            class="text-danger fs-custom">
             Comment is required.
           </div>
         </div>
@@ -520,17 +526,18 @@
       <div class="row g-3 align-items-center mt-1">
         <div [ngClass]="(selectedHrStatus === 1005 || selectedHrStatus === 1006) ? 'col-md-6' : 'col-md-4'">
           <label for="statusSelect" class="form-label">Status <span class="text-danger">*</span></label>
-          <select id="statusSelect" class="form-select form-control form-control-sm" formControlName="status" (change)="onHrStatusChange($event.target.value)">
+          <select id="statusSelect" class="form-select form-control form-control-sm" formControlName="status"
+            (change)="onHrStatusChange($event.target.value)">
             <option value="">Select</option>
             <option *ngFor="let item of interviewStatus" [value]="item?.id">{{ item?.name }}</option>
           </select>
-          <div *ngIf="feedbackForm.controls['status'].invalid && feedbackForm.controls['status'].touched" class="text-danger fs-custom">
+          <div *ngIf="feedbackForm.controls['status'].invalid && feedbackForm.controls['status'].touched"
+            class="text-danger fs-custom">
             Status is required.
           </div>
         </div>
 
-        <div class="col-md-6 mt-4" *ngIf="selectedHrStatus === 1005 || selectedHrStatus === 1006"
-        >
+        <div class="col-md-6 mt-4" *ngIf="selectedHrStatus === 1005 || selectedHrStatus === 1006">
           <span class="fw-bold custom-text"></span>
           <div class="flex-grow-1 d-flex justify-content-center"></div>
           <span class="cursor-pointer Hover">
@@ -544,46 +551,48 @@
             <option value="">Select</option>
             <option *ngFor="let item of interviewRounds" [value]="item?.id">{{ item?.name }}</option>
           </select>
-          <div *ngIf="feedbackForm.controls['interviewRound'].invalid && feedbackForm.controls['interviewRound'].touched" class="text-danger fs-custom">
+          <div
+            *ngIf="feedbackForm.controls['interviewRound'].invalid && feedbackForm.controls['interviewRound'].touched"
+            class="text-danger fs-custom">
             Next round option is required.
           </div>
         </div>
 
-        <div class="col-md-4 position-relative" *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
-          <label for="interview_employeeid" class="form-label">Interviewer Name <span class="text-danger">*</span></label>
-          
+        <div class="col-md-4 position-relative"
+          *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
+          <label for="interview_employeeid" class="form-label">Interviewer Name <span
+              class="text-danger">*</span></label>
+
           <!-- Dropdown -->
           <ul *ngIf="showDropdown && interviewedByList.length > 0"
-              class="dropdown-menu show w-100 position-absolute custom-scroll"
-              style="bottom: 100%; top: auto; z-index: 1050;">
+            class="dropdown-menu show w-100 position-absolute custom-scroll"
+            style="bottom: 100%; top: auto; z-index: 1050;">
             <li *ngFor="let item of interviewedByList" (click)="selectInterviewer(item)"
-                class="dropdown-item cursor-pointer">
+              class="dropdown-item cursor-pointer">
               {{ item?.id }} - {{ item?.name }}
             </li>
           </ul>
-        
+
           <!-- Input field -->
           <input type="text" placeholder="Search interviewer" class="form-control form-control-sm"
-                 formControlName="interviewBy" [value]="selectedInterviewerName || ''"
-                 (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
-                 autocomplete="off">
-        
+            formControlName="interviewBy" [value]="selectedInterviewerName || ''"
+            (input)="searchInterviewer($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdown()"
+            autocomplete="off">
+
           <!-- Validation -->
           <div *ngIf="feedbackForm.controls['interviewBy'].invalid && feedbackForm.controls['interviewBy'].touched"
-               class="text-danger fs-custom">
+            class="text-danger fs-custom">
             Interviewer Name is required.
           </div>
         </div>
-        
+
       </div>
 
       <div *ngIf="finalHrRound && selectedHrStatus === 1004" class="row g-3 align-items-center mt-1">
         <div class="col-md-3">
           <label>Join Date:</label>
-          <!-- <input type="date" formControlName="joiningDate" class="form-control"> -->
-
           <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
-              formControlName="joiningDate" autocomplete="off" [bsConfig]="{
+            formControlName="joiningDate" autocomplete="off" [bsConfig]="{
                 adaptivePosition: true,
                 showWeekNumbers: false,
                 isAnimated: true,
@@ -595,37 +604,67 @@
 
         <div class="col-md-3">
           <label>Proposed CTC:</label>
-          <input type="text" formControlName="expectedCTC" class="form-control">
+          <input type="text" formControlName="expectedCTC" class="form-control" placeholder="₹ amount">
         </div>
 
         <div class="col-md-3">
           <label>Division:</label>
-          <input type="text" formControlName="division" class="form-control">
+          <select formControlName="division" class="form-control form-control-sm">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalDivisionsList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3">
           <label>Designation:</label>
-          <input type="text" formControlName="designation" class="form-control">
+          <select formControlName="designation" class="form-control form-control-sm">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalDesignationsList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3">
           <label>Department:</label>
-          <input type="text" formControlName="department" class="form-control">
+          <select formControlName="department" class="form-control form-control-sm">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalDepartmentsList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3">
           <label>State:</label>
-          <input type="text" formControlName="state" class="form-control">
+          <select formControlName="state" class="form-control form-control-sm" (change)="onStateChange($event)">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalStatesList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3">
           <label>HQ:</label>
-          <input type="text" formControlName="hq" class="form-control">
+          <select formControlName="hq" class="form-control form-control-sm">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalCitiesList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3">
           <label>Region:</label>
-          <input type="text" formControlName="region" class="form-control">
+          <select formControlName="region" class="form-control form-control-sm">
+            <option value="">Select</option>
+            <option *ngFor="let state of totalRegionsList" [value]="state.id">
+              {{ state.name }}
+            </option>
+          </select>
         </div>
 
         <div class="col-md-3 mt-4">
@@ -635,7 +674,8 @@
         </div>
       </div>
 
-      <div class="d-flex mb-2 align-items-center" *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
+      <div class="d-flex mb-2 align-items-center"
+        *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
         <span class="fw-bold custom-text"></span>
         <div class="flex-grow-1 d-flex justify-content-center"></div>
         <span class="cursor-pointer Hover">

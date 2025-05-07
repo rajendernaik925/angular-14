@@ -50,6 +50,12 @@ export class InterviewProcessComponent implements OnInit {
   finalHrRound: boolean = false;
   disableFeedBack: boolean = false;
   selectedInterviewerId: string | null = null;
+  totalDivisionsList: any;
+  totalDesignationsList: any;
+  totalDepartmentsList: any;
+  totalRegionsList: any;
+  totalStatesList: any;
+  totalCitiesList: any;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -68,7 +74,6 @@ export class InterviewProcessComponent implements OnInit {
 
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(loggedUser);
-    console.log("user data : ", this.userData.user.empID)
     this.UserId = this.userData.user.empID;
 
     this.processCandidates();
@@ -83,6 +88,13 @@ export class InterviewProcessComponent implements OnInit {
       this.searchQueryText = value.trim();
       this.processCandidates();
     });
+
+  this.totalDivisions();
+  this.totalDesignations();
+  this.totalDepartments();
+  this.totalRegions();
+  this.totalStates();
+  // this.totalCities();
   }
 
   // toggleSidebar() {
@@ -144,7 +156,7 @@ export class InterviewProcessComponent implements OnInit {
   feedbackFactors() {
     this.authService.feedbackFactors().subscribe({
       next: (res: any) => {
-        console.log("Feedback factors : ", res);
+        // // console.log("Feedback factors : ", res);
         this.feedbackFactorsData = res;
 
         const feedbackArray = this.feedbackArray;
@@ -158,7 +170,7 @@ export class InterviewProcessComponent implements OnInit {
         });
       },
       error: (err: HttpErrorResponse) => {
-        console.log("Error fetching feedback factors: ", err);
+        // console.log("Error fetching feedback factors: ", err);
       }
     });
   }
@@ -173,27 +185,27 @@ export class InterviewProcessComponent implements OnInit {
   interviewstatus() {
     this.authService.interviewstatus().subscribe({
       next: (res: any) => {
-        console.log("interview status : ", res);
+        // console.log("interview status : ", res);
         this.interviewStatus = res;
       },
       error: (err: HttpErrorResponse) => {
-        console.log("error : ", err)
+        // console.log("error : ", err)
       }
     })
   }
 
   onHrStatusChange(value: string) {
-    this.selectedHrStatus = Number(value); // ✅ Update selectedHrStatus when HR status changes
+    this.selectedHrStatus = Number(value); 
   }
 
   totalInterviewRounds() {
     this.authService.interviewRounds().subscribe({
       next: (res: any) => {
-        console.log("interview rounds : ", res);
+        // console.log("interview rounds : ", res);
         this.interviewRounds = res;
       },
       error: (err: HttpErrorResponse) => {
-        console.log("error : ", err)
+        // console.log("error : ", err)
       }
     })
   }
@@ -209,17 +221,18 @@ export class InterviewProcessComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
 
-        this.rows = res.list?.map((item: any) => ({
-          job_code: item.jcReferanceId || '--',
-          email: item.email || '--',
-          firstname: item.name || '--',
-          interviewDateTime: item?.candidateInterviewDetailsDTO?.interviewTime && item?.candidateInterviewDetailsDTO?.interviewDate
-            ? `${item.candidateInterviewDetailsDTO.interviewTime} ( ${item.candidateInterviewDetailsDTO.interviewDate} )`
-            : '--',
-          mobilenumber: item.mobileNumber || '--',
-          job_title: item.jobTitleName || '--',
-          employeeid: item.candidateId || '--',
-        })) || [];
+          this.rows = res.list?.map((item: any) => ({
+            job_code: item.jcReferanceId || '--',
+            email: item.email || '--',
+            firstname: item.name || '--',
+            interviewDateTime: item?.candidateInterviewDetailsDTO?.interviewTime && item?.candidateInterviewDetailsDTO?.interviewDate
+              ? `⏱️${item.candidateInterviewDetailsDTO.interviewTime} ( ${item.candidateInterviewDetailsDTO.interviewDate} )`
+              : item.status,
+            mobilenumber: item.mobileNumber || '--',
+            job_title: item.jobTitleName || '--',
+            employeeid: item.candidateId || '--',
+            interviewStatus: item.candidateInterviewDetailsDTO?.status || null,
+          })) || [];
         this.totalRecords = Number(res.totalCount) || 0;
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
         if (this.currentPage > this.totalPages) {
@@ -248,9 +261,9 @@ export class InterviewProcessComponent implements OnInit {
       { key: 'email', label: 'User Mail Id', uppercase: true },
       { key: 'firstname', label: 'First Name', uppercase: true },
       { key: 'mobilenumber', label: 'Mobile', uppercase: true },
-      { key: 'interviewDateTime', label: 'Interview Shift', uppercase: true },
       { key: 'job_title', label: 'Job Title', uppercase: true },
       // { key: 'status', label: 'Status', center: true },
+      { key: 'interviewDateTime', label: 'Interview Shift', uppercase: true },
       { key: 'employeeid', label: 'Action', center: true, clickable: true }
     ];
   }
@@ -263,45 +276,50 @@ export class InterviewProcessComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
-  handleAction(employeeId: any) {
+  handleAction(employeeId: any, interviewStatusCode: number | null) {
+    console.log("inter : ",interviewStatusCode)
     this.isLoading = true;
     this.employeeId = employeeId
     this.authService.registeredData(employeeId).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.candidateData = res;
-        console.log("candidate data : ", this.candidateData);
+        // console.log("candidate data : ", this.candidateData);
         const candidateInterviewDetails = this.candidateData.candidateInterviewDetails;
 
         // Check if there are interview details
         if (candidateInterviewDetails && candidateInterviewDetails.length > 0) {
           const lastInterview = candidateInterviewDetails[candidateInterviewDetails.length - 1];
+          // console.log("last interview details: ", lastInterview);
           const lastInterviewRoundName = lastInterview.interviewRoundName;
           this.interviewScheduleId = lastInterview.interviewScheduleId;
           this.candidateId = lastInterview.candidateId;
           this.roundNo = lastInterview.roundNo;
           const lastfeedback = lastInterview.candidateInterviewFeedBackDTO.length;
-          // const lastInterviewDate = lastInterview.interviewTime;
-          // console.log("last date : ",lastInterviewDate);
-          console.log("last feedback : ", lastfeedback);
-          console.log("last round : ", this.roundNo);
-          if (lastfeedback) {
-            this.disableFeedBack = true;
-            console.log("rajenderrrrrrrrrrrrr")
-          }
+          const lastInterviewDate = lastInterview.interviewTime;
+          const lastInterviewStatus = lastInterview.status;
+          // console.log("last feedback : ", lastfeedback);
+          // console.log("last round : ", this.roundNo);
+          // console.log("last date : ", lastInterviewDate);
+          // console.log("last Interview Status : ", lastInterviewStatus);
 
+          // if (lastInterviewDate && lastInterviewStatus === 1001) {
+          //   this.disableFeedBack = true;
+          // }
 
-          console.log("Last Interview Round Name:", lastInterviewRoundName);
+          this.disableFeedBack = interviewStatusCode === 1001 ? true : false;
+          
+          // console.log("Last Interview Round Name:", lastInterviewRoundName);
           if (lastInterviewRoundName === 'HR') {
             this.finalHrRound = true;
           }
         } else {
-          console.log("No interview details found.");
+          // console.log("No interview details found.");
         }
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        console.log("error : ", err)
+        // console.log("error : ", err)
       }
     })
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
@@ -342,10 +360,19 @@ export class InterviewProcessComponent implements OnInit {
   // }
 
   feedbackSubmit() {
-    console.log("this.feedbackForm.value", this.feedbackForm.value);
+    // console.log("this.feedbackForm.value", this.feedbackForm.value);
 
     this.isLoading = true;
     const formValue = this.feedbackForm.value;
+    // Format joiningDate if present
+    if (formValue.joiningDate) {
+      const dateObj = new Date(formValue.joiningDate);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      formValue.joiningDate = `${year}-${month}-${day}`; // override with formatted string
+    }
+
     const statusValue = Number(formValue.status) || 0;
     let payload: any = {
       ...formValue,
@@ -372,14 +399,15 @@ export class InterviewProcessComponent implements OnInit {
       }
     });
 
-    console.log("Filtered Payload:", filteredPayload);
+    // console.log("Filtered Payload:", filteredPayload);
 
     this.authService.feedbackSubmitForm(filteredPayload).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        console.log(res);
+        // console.log(res);
         this.close();
         this.processCandidates();
+        this.disableFeedBack = false;
         Swal.fire({
           title: 'Success',
           text: res?.message || "Operation completed successfully",
@@ -391,100 +419,161 @@ export class InterviewProcessComponent implements OnInit {
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
-        console.log(err);
+        // console.log(err);
       }
     });
   }
 
 
-  feedbackView(interview: any) {
-      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
-      const comments = interview.comments;
-  
-      const detailsHtml = `
-    <div style="font-size:12px; width:100%;">
-      <div style="margin-bottom: 10px;">
-        <h5 style="margin: 0;">Interview Feedback</h5>
-      </div>
-  
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm w-100">
-          <tbody>
-            <tr>
-              <th>Interviewer Name</th>
-              <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
-              <th>Interview Date</th>
-              <td>${interview.interviewDate || 'N/A'}</td>
-            </tr>
-            <tr>
-              <th>Interview Time</th>
-              <td>${interview.interviewTime || 'N/A'}</td>
-              <th>Round Name</th>
-              <td>${interview.interviewRoundName || 'Initial'}</td>
-            </tr>
-            <tr>
-              <th>Level</th>
-              <td>${interview.level || 'N/A'}</td>
-              <th>Mode</th>
-              <td>${interview.modeName || 'N/A'}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <div class="table-responsive">
-        <table class="table table-bordered table-sm w-100 text-center">
-          <thead class="table-dark">
-            <tr>
-              <th style="font-size: 12px;">S.No</th>
-              <th style="font-size: 12px;">Factors</th>
-              <th style="font-size: 12px;">Excellent</th>
-              <th style="font-size: 12px;">Good</th>
-              <th style="font-size: 12px;">Average</th>
-              <th style="font-size: 12px;">Below Average</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${feedBackformat.map((item: any, index: number) => {
-        const getMark = (level: string) =>
-          item.feedBackName === level
-            ? '<span style="color:green;">✔️</span>'
-            : '<span style="color:red;">❌</span>';
-        return `
-                <tr>
-                  <td>${index + 1}</td>
-                  <td class="text-start">${item.factorName}</td>
-                  <td>${getMark('Excellent')}</td>
-                  <td>${getMark('Good')}</td>
-                  <td>${getMark('Average')}</td>
-                  <td>${getMark('Below Average')}</td>
-                </tr>
-              `;
-      }).join('')}
-          </tbody>
-        </table>
-      </div>
-  
-      <div style="margin-top: 10px; text-align: left;">
-        <strong>Comments:</strong>
-        <p style="text-align: left; margin-top: 5px;">${comments || 'No comments available.'}</p>
-      </div>
-    </div>
-  `;
-  
-  
-      Swal.fire({
-        html: detailsHtml,
-        width: '900px',
-        showConfirmButton: false,
-        showCloseButton: true,
-        customClass: {
-          popup: 'p-3'
-        },
-        buttonsStyling: false
-      });
-    }
+  feedbackView(interview: any, name: any, mail: any) {
+    const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+    const comments = interview.comments;
+    const statusCode = interview.status;
 
+    const statusMap: any = {
+      '1001': 'Interview pending',
+      '1002': 'Interview Cancelled',
+      '1004': 'Selected',
+      '1005': 'Rejected',
+      '1006': 'Interview Hold',
+      // Add more statuses as needed
+    };
+
+    const statusLabel = statusMap[statusCode] || 'Unknown';
+
+    const scoreMap: any = {
+      'Excellent': 10,
+      'Good': 8,
+      'Average': 6,
+      'Below Average': 4
+    };
+
+    let totalScore = 0;
+
+    const feedbackRows = feedBackformat.map((item: any, index: number) => {
+      const getMark = (level: string) =>
+        item.feedBackName === level
+          ? '<span style="color:green;">✔️</span>'
+          : '<span style="color:red;">❌</span>';
+
+      totalScore += scoreMap[item.feedBackName] || 0;
+
+      return `
+          <tr style="line-height: 1.2;">
+            <td>${index + 1}</td>
+            <td class="text-start">${item.factorName}</td>
+            <td>${getMark('Excellent')}</td>
+            <td>${getMark('Good')}</td>
+            <td>${getMark('Average')}</td>
+            <td>${getMark('Below Average')}</td>
+          </tr>
+        `;
+    }).join('');
+
+    const averageScore = (feedBackformat.length > 0)
+      ? (totalScore / feedBackformat.length).toFixed(1)
+      : 'N/A';
+
+
+    const detailsHtml = `
+        <div style="font-size:12px; width:100%; padding: 10px; ">
+          
+          <!-- Header with status label -->
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center">
+              <span style="font-size: 16px; margin-left: 10px; font-weight: bold; color: #0072BC">
+                Average Score ${averageScore}
+              </span>
+              <span style="font-size: 14px; margin-left: 10px; padding: 2px 6px; background-color: #d9edf7; color: #31708f; border-radius: 4px;">
+                ${statusLabel}
+              </span>
+              
+            </div>
+          </div>
+    
+          <!-- Info Table -->
+          <table class="table table-bordered table-sm w-100 mb-2" style="margin: 0;">
+            <tbody>
+              <tr>
+                <th>Candidate Name</th>
+                <td>${name ? name.charAt(0).toUpperCase() + name.slice(1) : '--'}</td>
+                <th>Mail Id</th>
+                <td>${mail || '--'}</td>
+              </tr>
+              <tr>
+                <th>Interviewer Name</th>
+                <td>${interview.interviewByName || 'N/A'} - ${interview.interviewBy || ''}</td>
+                <th>Interview Date</th>
+                <td>${interview.interviewDate || 'N/A'}</td>
+              </tr>
+              <tr>
+                <th>Interview Time</th>
+                <td>${interview.interviewTime || 'N/A'}</td>
+                <th>Round Name</th>
+                <td>${interview.interviewRoundName || 'Initial'}</td>
+              </tr>
+              <tr>
+                <th>Level</th>
+                <td>${interview.level || 'N/A'}</td>
+                <th>Mode</th>
+                <td>${interview.modeName || 'N/A'}</td>
+              </tr>
+            </tbody>
+          </table>
+    
+          <!-- Watermarked Average Score + Feedback Table -->
+         <!-- <div style="position: relative; margin-top: 10px;">
+            <div style="
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-30deg);
+              font-size: 50px;
+              color: #baca5a;
+              z-index: 0;
+              white-space: nowrap;
+              pointer-events: none;
+            ">
+              Average ${averageScore}
+            </div>  -->
+    
+            <table class="table table-bordered table-sm w-100 text-center mb-1" style="z-index: 1; position: relative; margin: 0;">
+              <thead class="table-dark">
+                <tr style="line-height: 1.2;">
+                  <th style="font-size: 12px;">S.No</th>
+                  <th style="font-size: 12px;">Factors</th>
+                  <th style="font-size: 12px;">Excellent</th>
+                  <th style="font-size: 12px;">Good</th>
+                  <th style="font-size: 12px;">Average</th>
+                  <th style="font-size: 12px;">Below Average</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${feedbackRows}
+              </tbody>
+            </table>
+          </div>
+    
+          <!-- Comments and Status Row -->
+           <div style="margin-top: 5px; text-align: left;">
+              <strong>Comments:</strong>
+               <p style="margin: 0;">${comments || 'No comments available.'}</p>
+            </div>
+           </div>
+        </div>
+      `;
+
+    Swal.fire({
+      html: detailsHtml,
+      width: '800px',
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup: 'p-2'
+      },
+      buttonsStyling: false
+    });
+  }
 
   formatTime(time: string): string {
     if (!time) return '';
@@ -507,5 +596,80 @@ export class InterviewProcessComponent implements OnInit {
 
   get endIndex(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalRecords);
+  }
+
+  totalDivisions() {
+    this.authService.masterBu().subscribe({
+      next: (res:any) => {
+        console.log("total divisions : ",res);
+        this.totalDivisionsList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+  totalDesignations() {
+    this.authService.jobTitle().subscribe({
+      next: (res:any) => {
+        console.log("total designation: ",res);
+        this.totalDesignationsList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+  totalDepartments() {
+    this.authService.totalDepartments().subscribe({
+      next: (res:any) => {
+        console.log("total designation: ",res);
+        this.totalDepartmentsList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+  totalRegions() {
+    this.authService.totalRegions().subscribe({
+      next: (res:any) => {
+        console.log("total designation: ",res);
+        this.totalRegionsList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+  totalStates() {
+    this.authService.states().subscribe({
+      next: (res:any) => {
+        console.log("total designation: ",res);
+        this.totalStatesList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
+  }
+
+  onStateChange(event: Event) {
+    const selectedStateId = (event.target as HTMLSelectElement).value;
+
+    if (selectedStateId) {
+      this.totalCities(selectedStateId);
+    }
+  }
+  totalCities(id:any) {
+    this.authService.cities(id).subscribe({
+      next: (res:any) => {
+        console.log("total designation: ",res);
+        this.totalCitiesList = res;
+      },
+      error:(err:HttpErrorResponse) => {
+        // console.log("error : ",err)
+      }
+    })
   }
 }

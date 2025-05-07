@@ -41,9 +41,9 @@
 
           <!-- Table Section -->
           <div class="p-0 scroll-container">
-            <table *ngIf="vacancyValue" class="table table-striped table-hover table-bordered">
-              <thead class="custom-bg">
-                <tr class="text-light">
+            <table *ngIf="vacancyValue" class="table table-bordered">
+              <thead class="">
+                <tr class="text-light ">
                   <th class="small-header-th cursor-pointer" (click)="sortTable('jcReferenceId')">
                     Job Code
                     <span *ngIf="sortColumn === 'jcReferenceId'">
@@ -100,7 +100,7 @@
 
 
               <tbody class="" *ngIf="paginatedRows?.length > 0; else noData">
-                <tr class="small-header" *ngFor="let row of paginatedRows">
+                <tr class="small-header table-hoverr" *ngFor="let row of paginatedRows">
                   <th class="small-header text-uppercase" scope="row" [innerHTML]="highlightMatch(row.jcReferenceId)">
                   </th>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.jobTitleName)"></td>
