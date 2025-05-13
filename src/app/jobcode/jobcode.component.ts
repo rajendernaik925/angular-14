@@ -86,8 +86,6 @@ export class JobcodeComponent implements OnInit {
         }
       });
 
-
-
     this.createJobForm.get('jobExperienceMinYear')?.valueChanges.subscribe((value) => {
       this.yearMessage = '';
     });
@@ -106,7 +104,6 @@ export class JobcodeComponent implements OnInit {
     this.createJobForm.get('jobReportingManager')?.valueChanges.subscribe((value) => {
       this.managerMessage = '';
     });
-
   }
 
   highlightMatch(text: any): SafeHtml {
@@ -116,9 +113,6 @@ export class JobcodeComponent implements OnInit {
     const highlightedText = String(text).replace(regex, `<span class="text-primary" style="font-weight: bold;">$1</span>`);
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
-
-
-
 
   initializeForm() {
     this.createJobForm = this.fb.group({
@@ -164,9 +158,6 @@ export class JobcodeComponent implements OnInit {
     });
   }
 
-
-
-
   jobTitle(): void {
     this.isLoading = true;
     this.authService.jobTitle().subscribe({
@@ -183,8 +174,6 @@ export class JobcodeComponent implements OnInit {
 
   totalJobCodes() {
     this.isLoading = true;
-    
-    // Ensure values are valid
     const pageNo = this.currentPage || 1;
     const pageSize = this.pageSize || 10;
     const searchQuery = this.searchQueryText?.trim() || '';
