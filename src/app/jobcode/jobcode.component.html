@@ -99,8 +99,6 @@
                   </th>
                 </tr>
               </thead>
-
-
               <tbody class="" *ngIf="paginatedRows?.length > 0; else noData">
                 <tr class="small-header table-hoverr" *ngFor="let row of paginatedRows">
                   <th class="small-header text-uppercase" scope="row" [innerHTML]="highlightMatch(row.jcReferenceId)">
@@ -200,7 +198,7 @@
       </div>
     </div>
   </div>
-
+</div>
   <!-- loader -->
   <div class="loader attDnceLoadr" *ngIf="isLoading">
     <div class="spinner">

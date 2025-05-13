@@ -154,7 +154,7 @@
             </table>
 
 
-            <table *ngIf="viewMoreValue" class="table table-striped table-hover table-bordered">
+            <table *ngIf="viewMoreValue" class="table table-bordered">
               <thead class="custom-bg">
                 <tr class="text-light">
                   <th class="small-header-th cursor-pointer">
@@ -178,7 +178,7 @@
                 </tr>
               </thead>
               <tbody *ngIf="jobCodeData?.length > 0; else noData">
-                <tr *ngFor="let row of jobCodeData">
+                <tr *ngFor="let row of jobCodeData" class="table-hoverr">
                   <td class="small-header text-uppercase">{{ row.fullName }}</td>
                   <td class="small-header text-uppercase">{{ row.mobileNumber }}</td>
                   <td class="small-header text-uppercase">{{ row.email }}</td>

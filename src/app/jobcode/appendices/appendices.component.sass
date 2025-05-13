@@ -1,13 +1,46 @@
-.manager-candidates
-  display: flex
-  flex-wrap: wrap
-  justify-content: start
-  gap: 20px
-
-.candidate
-  width: 150px
-  text-align: center
-  border: 1px solid #ccc
-  padding: 10px
+#chart-container
+  font-family: Arial
+  height: 420px
+  border: 2px dashed #aaa
   border-radius: 5px
-  background-color: #f9f9f9
+  overflow: auto
+  text-align: center
+
+.orgchart
+  background: #fff
+
+  td.left, td.right, td.top
+    border-color: #aaa
+
+  td > .down
+    background-color: #aaa
+
+  .middle-level
+    .title
+      background-color: #006699
+    .content
+      border-color: #006699
+
+  .product-dept
+    .title
+      background-color: #009933
+    .content
+      border-color: #009933
+
+  .rd-dept
+    .title
+      background-color: #993366
+    .content
+      border-color: #993366
+
+  .pipeline1
+    .title
+      background-color: #996633
+    .content
+      border-color: #996633
+
+  .frontend1
+    .title
+      background-color: #cc0066
+    .content
+      border-color: #cc0066

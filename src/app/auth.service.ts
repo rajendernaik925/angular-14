@@ -14,7 +14,8 @@ export class AuthService {
 
   // production public path 
   // new URL    
-  baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
+  // baseUrl: any = "https://sso.heterohcl.com/heteroiconnect/";
+  baseUrl: any = "http://192.168.30.107:8000/stageheteroiconnect/";
   imgbase: any = "https://sso.heterohcl.com/";
 
 
@@ -896,7 +897,7 @@ export class AuthService {
   }
 
 
-  private jobCodeUrls: string = "http://192.168.215.162:2025/";
+  private jobCodeUrls: string = "http://192.168.214.109:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -1190,6 +1191,21 @@ export class AuthService {
   }
   totalRegions() {
     return this.http.get(`${this.jobCodeUrls}master/region`)
+  }
+
+  /// Departments List
+  
+  listOfManagersforOrganogram(empId:any) {
+    return this.http.get(`${this.jobCodeUrls}organogram/departments/${empId}`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  // Deparment Under Leads
+  listOfTeamleads(loginId:any, id:any) {
+    return this.http.get(`${this.jobCodeUrls}organogram/empdata/${loginId}/${id}`).pipe(
+      catchError(this.handleError)
+    )
   }
 
 

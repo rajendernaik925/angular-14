@@ -222,9 +222,12 @@
       <div class="row mb-2 align-items-center">
         <div class="col-md-10">
           <div class="d-flex" *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">
-            <span class="fw-bold custom-text mr-3" *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">Candidate Details </span>
-            <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
-            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+            <span class="fw-bold custom-text mr-3"
+              *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">Candidate Details </span>
+            <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName
+              }}</span>
+            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
+              }}</span>
           </div>
 
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
@@ -316,7 +319,8 @@
             </div>
           </div>
         </div>
-        <div class="card p-2 mb-3" *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
+        <div class="card p-2 mb-3"
+          *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
           <span class="custom-text text-decoration-underline"><strong>Salary Expectation</strong></span>
 
           <!-- Salary details in the same line -->
@@ -374,7 +378,8 @@
           <div class="row">
             <div class="col-md-6">
               <strong>Experience Type:</strong>
-              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' : 'Experienced'
+              {{ candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher ? 'Fresher' :
+              'Experienced'
               }}
             </div>
             <div class="col-md-6">
@@ -433,12 +438,18 @@
                     <td class="custom-td small-header">{{ exp.interviewTime }}</td>
                     <td class="custom-td small-header">{{ exp.interviewBy }}</td>
                     <td class="custom-td small-header">{{ exp.level }}</td>
-                    <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
+                    <!-- <td class="custom-td small-header text-break">{{ exp.locationName }}</td> -->
+                    <td class="custom-td small-header text-break" title="{{ exp.locationName }}"
+                      style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                      data-bs-toggle="tooltip" data-bs-placement="top">
+                      {{ exp.locationName | slice:0:40 }}{{ exp.locationName.length > 40 ? '...' : '' }}
+                    </td>
                     <td class="custom-td small-header text-break">
                       <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
                         <button class="btn btn-sm custom-bg text-white text-break"
                           [disabled]="!exp?.candidateInterviewFeedBackDTO?.length"
-                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)" tabindex="-1">
+                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)"
+                          tabindex="-1">
                           View
                         </button>
 
