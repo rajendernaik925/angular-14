@@ -2,6 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-organogram',
@@ -11,14 +12,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class OrganogramComponent implements OnInit {
 
   slideDirection = 100;
+  organogramLogo:string = 'assets/img/job-code/Isolation_Mode.svg'
   hoveredCard: number | null = null;
   activeIndex: number | null = null;
   isOpen = false;
   data: any;
+  isLoading: boolean = false;
+  candidateInfo: any;
   activeDepartmentId: string | null = null;
+  activeDepart1mentId: string | null = null;
   activeTeamLeadId: string | number | null = null;
   userData: any;
-  teamData:any;
+  teamData: any[] = [];
+  teamLeadsData: any[] = [];
+  teamEmpData: any[] = [];
 
   @ViewChild('teamLeadsScrollContainer', { static: false }) teamLeadsScrollContainer!: ElementRef;
   @ViewChild('departmentScrollContainer', { static: false }) departmentScrollContainer!: ElementRef;
@@ -26,8 +33,6 @@ export class OrganogramComponent implements OnInit {
   isDragging = false;
   startX = 0;
   scrollLeft = 0;
-  teamLeadsData: any;
-  teamEmpData:any;
   empId: any;
   constructor(
     private router: Router,
@@ -37,40 +42,50 @@ export class OrganogramComponent implements OnInit {
   ngOnInit(): void {
     let loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData')));
     this.userData = JSON.parse(loggedUser);
+    console.log("user data : ",this.userData)
     this.empId = this.userData.user.empID;
     this.listOfManagers(this.empId);
   }
 
   listOfManagers(EmpId: any) {
-    console.log("employee id : ",this.empId)
+    this.isLoading = true;
+    console.log("employee id : ", this.empId);
+    this.isOpen = false;
     this.authService.listOfManagersforOrganogram(EmpId).subscribe({
       next: (res: any) => {
+        this.isLoading = false;
         console.log("res", res);
         this.data = [...res];
+        this.teamData = [];
+        this.teamLeadsData = [];
+        this.teamEmpData = [];
       },
       error: (err: HttpErrorResponse) => {
         console.log("error : ", err);
+        this.isLoading = false
       }
     });
   }
 
 
 
-  handleDoubleClick(id: any, event: Event): void {
+  profileView(profile: any, event: Event): void {
     event.stopPropagation();
-    this.isOpen = false;
-    setTimeout(() => {
-      this.isOpen = true;
-    }, 1000);
+    this.isOpen = true;
+    this.candidateInfo = profile;
+    console.log("profile data : ",profile);
   }
 
   setActive(departmentId: string, event: Event): void {
     event.stopPropagation();
     this.activeDepartmentId = departmentId;
-    this.authService.listOfTeamleads(this.empId, departmentId).subscribe({
+    this.isOpen = false;
+    this.authService.listOfTeamleads(this.userData.user.empID, departmentId).subscribe({
       next: (res: any) => {
         console.log(res);
         this.teamLeadsData = res;
+        this.teamData = [];
+        this.teamEmpData = [];
       },
       error: (err: HttpErrorResponse) => {
         console.log("error : ", err)
@@ -80,11 +95,15 @@ export class OrganogramComponent implements OnInit {
 
   setActive1(departmentId: string, event: Event): void {
     event.stopPropagation();
-    this.activeDepartmentId = departmentId;
+    this.isOpen = false;
+    this.activeDepart1mentId = departmentId;
     this.authService.listOfTeamleads(this.empId, departmentId).subscribe({
       next: (res: any) => {
         console.log(res);
         this.teamEmpData = res;
+        if(res.length === 0) {
+          this.noDataFound();
+        }
       },
       error: (err: HttpErrorResponse) => {
         console.log("error : ", err)
@@ -95,10 +114,16 @@ export class OrganogramComponent implements OnInit {
   setActiveTeamLead(id: string | number) {
     this.activeTeamLeadId = id;
     this.empId = id;
+    this.isOpen = false;
     this.authService.listOfManagersforOrganogram(id).subscribe({
       next: (res: any) => {
         console.log(res, 'raaaaaa');
-        this.teamData = res; 
+        this.teamData = res;
+        if(res.length === 0) {
+          this.noDataFound();
+        }
+        this.teamEmpData = [];
+        this.activeDepart1mentId = null;
       },
       error: (err: HttpErrorResponse) => {
         console.log("error : ", err)
@@ -146,18 +171,16 @@ export class OrganogramComponent implements OnInit {
     this.isDragging = false;
   }
 
-
-  useDummyData() {
-    this.data = [];
-    let i = 1;
-    while (this.data.length < 20) {
-      this.data.push({
-        departmentId: (1000 + i).toString(),
-        departmentName: `DUMMY DEPARTMENT ${i}`,
-        count: Math.floor(Math.random() * 10 + 1).toString()
-      });
-      i++;
-    }
+  noDataFound() {
+    console.log("swal called ")
+    Swal.fire({
+      title: 'Warning',
+      text: 'No Data Found!',
+      icon: 'warning',
+      showConfirmButton: false,
+      timer: 1000,
+      timerProgressBar: true,
+    });
   }
 
 }

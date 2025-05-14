@@ -55,7 +55,7 @@
                       <span *ngIf="row.status === 'Rejected'" class="text-danger fw-bold">Rejected</span>
                       <span *ngIf="row.status === 'Approved'" class="text-success fw-bold">Approved</span>
                       <span *ngIf="row.status === 'Pending'" class="text-warning fw-bold">Pending</span>
-                      <span *ngIf="row.status === 'Cancelled'" class="text-orange-dark fw-bold">Cancelled</span>
+                      <span *ngIf="row.status === 'Cancelled'" class="text-danger fw-bold">Cancelled</span>
                       <span *ngIf="row.status === 'Hold'" class="text-orange-dark fw-bold">Hold</span>
                     </ng-container>
 
@@ -427,6 +427,7 @@
                   <th class="custom-th small-header">Interviewer ID</th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
+                  <th class="custom-th small-header">Status</th>
                   <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
@@ -444,6 +445,15 @@
                       data-bs-toggle="tooltip" data-bs-placement="top">
                       {{ exp.locationName | slice:0:40 }}{{ exp.locationName.length > 40 ? '...' : '' }}
                     </td>
+                    <td class="custom-td small-header" [ngSwitch]="exp.status">
+                      <span *ngSwitchCase="1001" class="text-warning">Pending</span>
+                      <span *ngSwitchCase="1002" class="text-danger">Cancelled</span>
+                      <span *ngSwitchCase="1004" class="text-success">Approved</span>
+                      <span *ngSwitchCase="1005" class="text-info">Hold</span>
+                      <span *ngSwitchCase="1006" class="text-danger">Rejected</span>
+                      <span *ngSwitchDefault>{{ exp.status }}</span> <!-- fallback -->
+                    </td>
+
                     <td class="custom-td small-header text-break">
                       <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
                         <button class="btn btn-sm custom-bg text-white text-break"
@@ -456,7 +466,7 @@
 
                       </ng-container>
                       <ng-template #pending>
-                        <span class="text-muted">Pending</span>
+                        <span class="text-warning">Not Applicable</span>
                       </ng-template>
                     </td>
 

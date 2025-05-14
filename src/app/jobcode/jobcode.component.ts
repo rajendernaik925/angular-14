@@ -246,77 +246,90 @@ export class JobcodeComponent implements OnInit {
   experienceRangeValidator(group: FormGroup): { [key: string]: boolean } | null {
     const minExp = group.get('jobExperienceMinYear')?.value;
     const maxExp = group.get('jobExperienceMaxYear')?.value;
-    if (minExp != null && maxExp != null && (minExp >= maxExp || maxExp > 60)) {
+    if (minExp != null && maxExp != null && (minExp >= maxExp || maxExp > 100)) {
       return { invalidExperienceRange: true };
     }
     return null;
   }
 
   onSubmit() {
-    this.submitted = true;
-    this.isLoading = true;
-    this.ctcMessage = '';
-    this.yearMessage = '';
-    this.managerMessage = '';
+  console.log("Form submitted.");
 
-    // Validation
-    const expMin = this.createJobForm.get('jobExperienceMinYear')?.value || 0;
-    const expMax = this.createJobForm.get('jobExperienceMaxYear')?.value || 0;
-    const ctcMin = this.createJobForm.get('jobCtcMin')?.value || 0;
-    const ctcMax = this.createJobForm.get('jobCtcMax')?.value || 0;
-    const managerSelected = this.createJobForm.get('jobReportingManagerId')?.value;
+  this.submitted = true;
+  this.isLoading = true;
 
-    let isValid = true;
+  // Clear previous validation messages
+  this.ctcMessage = '';
+  this.yearMessage = '';
+  this.managerMessage = '';
 
-    if (expMax <= expMin) {
-      this.yearMessage = 'Experience Max must be greater than Experience Min';
-      isValid = false;
-    }
+  // Defensive default values
+  const expMin = +this.createJobForm.get('jobExperienceMinYear')?.value || 0;
+  const expMax = +this.createJobForm.get('jobExperienceMaxYear')?.value || 0;
+  const ctcMin = +this.createJobForm.get('jobCtcMin')?.value || 0;
+  const ctcMax = +this.createJobForm.get('jobCtcMax')?.value || 0;
+  const managerSelected = this.createJobForm.get('jobReportingManagerId')?.value;
 
-    if (ctcMax <= ctcMin) {
-      this.ctcMessage = 'CTC Max must be greater than CTC Min';
-      isValid = false;
-    }
+  let isValid = true;
 
-    if (!managerSelected) {
-      this.managerMessage = 'Please select option';
-      isValid = false;
-    }
+  // Experience validation
+  if (expMax <= expMin) {
+    this.yearMessage = 'Experience Max must be greater than Experience Min';
+    isValid = false;
+  }
 
-    if (!isValid) {
-      return; // Stop form submission if validation fails
-    }
+  // CTC validation
+  if (ctcMax <= ctcMin) {
+    this.ctcMessage = 'CTC Max must be greater than CTC Min';
+    isValid = false;
+  }
 
-    // **Step 1: Create JSON Payload**
-    const jobPayload = {
-      jobTitle: this.createJobForm.get('jobTitle')?.value || '',
-      teamId: this.createJobForm.get('teamId')?.value || '',
-      reportingId: managerSelected || '',
-      ctcMin: `${ctcMin}`,
-      ctcMax: `${ctcMax}`,
-      expMin: `${expMin}`,
-      expMax: `${expMax}`,
-      preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
-      description: this.createJobForm.get('jobDescription')?.value || '',
-      createdBy: this.userData.user.empID || ''
-    };
+  // Manager selection validation
+  if (!managerSelected) {
+    this.managerMessage = 'Please select a reporting manager';
+    isValid = false;
+  }
 
-    console.log("Final JSON Payload:", jobPayload);
+  // Stop if validation fails
+  if (!isValid) {
+    this.isLoading = false;
+    console.warn("Validation failed. Submission stopped.");
+    return;
+  }
 
-    const jsonString = JSON.stringify(jobPayload);
-    const formData = new FormData();
-    formData.append('data', jsonString);
-    if (this.uploadedFile) {
-      formData.append('file', this.uploadedFile, this.uploadedFile.name); // Attach file
-    }
+  // Prepare the JSON payload
+  const jobPayload = {
+    jobTitle: this.createJobForm.get('jobTitle')?.value || '',
+    teamId: this.createJobForm.get('teamId')?.value || '',
+    reportingId: managerSelected,
+    ctcMin: ctcMin.toString(),
+    ctcMax: ctcMax.toString(),
+    expMin: expMin.toString(),
+    expMax: expMax.toString(),
+    preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
+    description: this.createJobForm.get('jobDescription')?.value || '',
+    createdBy: this.userData?.user?.empID || ''
+  };
 
-    console.log("Final FormData:", formData);
+  console.log("Prepared JSON Payload:", jobPayload);
 
-    this.authService.createJobCode(formData).subscribe({
-      next: (res: HttpResponse<any>) => {
-        this.isLoading = false;
-        console.log("status : ", res.status)
-        if (res?.status === 200) { 
+  // FormData for submission
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(jobPayload));
+
+  if (this.uploadedFile) {
+    formData.append('file', this.uploadedFile, this.uploadedFile.name);
+    console.log("Attached file:", this.uploadedFile.name);
+  }
+
+  console.log("Submitting job creation request...");
+
+  this.authService.createJobCode(formData).subscribe({
+    next: (res: HttpResponse<any>) => {
+      this.isLoading = false;
+      console.log("API Response status:", res?.status);
+
+      if (res?.status === 200) {
         this.closeDialog();
         Swal.fire({
           title: 'Success',
@@ -326,23 +339,115 @@ export class JobcodeComponent implements OnInit {
           timer: 1000,
           timerProgressBar: true,
         });
-          this.totalJobCodes();
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        console.error("Error creating job code:", err);
-        // Swal.fire({
-        //   title: 'OOPS',
-        //   text: err.error.message,
-        //   icon: 'error',
-        //   showConfirmButton: false,
-        //   timer: 1000,
-        //   timerProgressBar: true,
-        // });
-      },
-    });
-  }
+        this.totalJobCodes();
+      }
+    },
+    error: (err: HttpErrorResponse) => {
+      this.isLoading = false;
+      console.error("Error from API:", err);
+
+      Swal.fire({
+        title: 'Error',
+        text: err?.error?.message || 'Something went wrong!',
+        icon: 'error',
+        showConfirmButton: true
+      });
+    }
+  });
+}
+
+
+  // onSubmit() {
+  //   this.submitted = true;
+  //   this.isLoading = true;
+  //   this.ctcMessage = '';
+  //   this.yearMessage = '';
+  //   this.managerMessage = '';
+
+  //   // Validation
+  //   const expMin = this.createJobForm.get('jobExperienceMinYear')?.value || 0;
+  //   const expMax = this.createJobForm.get('jobExperienceMaxYear')?.value || 0;
+  //   const ctcMin = this.createJobForm.get('jobCtcMin')?.value || 0;
+  //   const ctcMax = this.createJobForm.get('jobCtcMax')?.value || 0;
+  //   const managerSelected = this.createJobForm.get('jobReportingManagerId')?.value;
+
+  //   let isValid = true;
+
+  //   if (expMax <= expMin) {
+  //     this.yearMessage = 'Experience Max must be greater than Experience Min';
+  //     isValid = false;
+  //   }
+
+  //   if (ctcMax <= ctcMin) {
+  //     this.ctcMessage = 'CTC Max must be greater than CTC Min';
+  //     isValid = false;
+  //   }
+
+  //   if (!managerSelected) {
+  //     this.managerMessage = 'Please select option';
+  //     isValid = false;
+  //   }
+
+  //   if (!isValid) {
+  //     return; // Stop form submission if validation fails
+  //   }
+
+  //   // **Step 1: Create JSON Payload**
+  //   const jobPayload = {
+  //     jobTitle: this.createJobForm.get('jobTitle')?.value || '',
+  //     teamId: this.createJobForm.get('teamId')?.value || '',
+  //     reportingId: managerSelected || '',
+  //     ctcMin: `${ctcMin}`,
+  //     ctcMax: `${ctcMax}`,
+  //     expMin: `${expMin}`,
+  //     expMax: `${expMax}`,
+  //     preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
+  //     description: this.createJobForm.get('jobDescription')?.value || '',
+  //     createdBy: this.userData.user.empID || ''
+  //   };
+
+  //   console.log("Final JSON Payload:", jobPayload);
+
+  //   const jsonString = JSON.stringify(jobPayload);
+  //   const formData = new FormData();
+  //   formData.append('data', jsonString);
+  //   if (this.uploadedFile) {
+  //     formData.append('file', this.uploadedFile, this.uploadedFile.name); // Attach file
+  //   }
+
+  //   console.log("Final FormData:", formData);
+
+  //   this.authService.createJobCode(formData).subscribe({
+  //     next: (res: HttpResponse<any>) => {
+  //       this.isLoading = false;
+  //       console.log("status : ", res.status)
+  //       if (res?.status === 200) { 
+  //       this.closeDialog();
+  //       Swal.fire({
+  //         title: 'Success',
+  //         text: 'Job Code Creation is Successful.',
+  //         icon: 'success',
+  //         showConfirmButton: false,
+  //         timer: 1000,
+  //         timerProgressBar: true,
+  //       });
+  //         this.totalJobCodes();
+  //       }
+  //     },
+  //     error: (err: HttpErrorResponse) => {
+  //       this.isLoading = false;
+  //       console.error("Error creating job code:", err);
+  //       // Swal.fire({
+  //       //   title: 'OOPS',
+  //       //   text: err.error.message,
+  //       //   icon: 'error',
+  //       //   showConfirmButton: false,
+  //       //   timer: 1000,
+  //       //   timerProgressBar: true,
+  //       // });
+  //     },
+  //   });
+  // }
 
   preventNegativeInput(event: KeyboardEvent): void {
     if (event.key === '-' || event.key === 'e') {

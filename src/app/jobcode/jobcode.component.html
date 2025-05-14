@@ -3,7 +3,7 @@
 </div>
 <div class="mt-3">
   <div class="row">
-    <div class="col-md-3 mb-2 mb-md-0 h-100">
+    <div class="col-md-2 mb-2 mb-md-0 h-100">
       <div class="card h-100 border-0 p-0">
         <div class="card-body h-100 p-2">
           <app-side-bar></app-side-bar>
@@ -12,15 +12,15 @@
     </div>
 
     <!-- Right side content -->
-    <div class="col-md-9">
+    <div class="col-md-10">
       <div class="card py-1 border-0">
         <div class="card-body py-1">
           <!-- Header Row -->
           <div class="row mb-2 align-items-center">
             <div class="col-md-3">
               <span class="fw-bold">
-                Job Codes
-                <span class="badge badge-light  badge bg-secondary text-white">{{rows?.length}}</span>
+                Job Registry
+                <span class="badge badge-light  badge bg-secondary text-white">{{totalRecords}}</span>
               </span>
             </div>
             <div class="col-md-9 d-flex justify-content-end align-items-center">
@@ -302,7 +302,7 @@
             Invalid CTC Range
           </div>
           <div *ngIf="ctcMessage" class="text-danger fs-5">
-            Invalid CTC Range
+            {{ctcMessage}}
           </div>
         </div>
 
@@ -323,7 +323,7 @@
             Invalid Experience Range
           </div>
           <div *ngIf="yearMessage" class="text-danger fs-5">
-            Invalid Experience Range
+            {{yearMessage}}
           </div>
         </div>
       </div>
@@ -331,7 +331,7 @@
 
       <div class="row mb-3">
         <div class="col-md-6">
-          <label for="preforable">Prefered Companies <span class="text-danger">*</span></label>
+          <label for="preforable">Prefered Companies</label>
           <textarea id="jobPreferableCompanies" formControlName="jobPreferableCompanies"
             class="form-control form-control-sm  text-uppercase" placeholder="Companies" rows="1"></textarea>
           <div *ngIf="submitted && createJobForm.get('jobPreferableCompanies').invalid" class="text-danger fs-5">

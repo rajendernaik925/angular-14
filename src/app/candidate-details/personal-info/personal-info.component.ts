@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
@@ -92,21 +92,21 @@ export class personalInfoComponent implements OnInit {
       pan: ['', [Validators.required]],
       adhar: ['', [Validators.required, Validators.pattern(/^[0-9]{12}$/)]],
       resume: ['', Validators.required],
-      photo: ['', Validators.required],
+      photo: [''],
       // address
       addressA: ['', Validators.required],
       addressB: ['', Validators.required],
       addressC: [''],
       stateId: ['', Validators.required],
       cityId: ['', Validators.required],
-      postalCode: ['', Validators.required, Validators.pattern('^[0-9]{6}$')],
+      postalCode: ['', Validators.required],
       addressFlag: ['no', Validators.required],
       permanentAddressA: ['', Validators.required],
       permanentAddressB: ['', Validators.required],
       permanentAddressC: [''],
       permanentStateId: ['', Validators.required],
       permanentCityId: ['', Validators.required],
-      permanentPostalCode: ['', Validators.required, Validators.pattern('^[0-9]{6}$')],
+      permanentPostalCode: ['', Validators.required],
       // education
       // educationTypeId: ['', Validators.required],
       // university: ['', Validators.required],
@@ -240,6 +240,7 @@ export class personalInfoComponent implements OnInit {
             addressC: res?.candidateCommunicationAddressDetails?.comAddressC || '',
             stateId: res?.candidateCommunicationAddressDetails?.stateId || null,
             cityId: res?.candidateCommunicationAddressDetails?.cityId || null,
+            postalCode: res?.candidateCommunicationAddressDetails?.postalCode,
             addressFlag: res?.candidateCommunicationAddressDetails?.addressFlag || 'no',
 
             // Permanent Address
@@ -248,6 +249,7 @@ export class personalInfoComponent implements OnInit {
             permanentAddressC: res?.candidatePermanentAddressDetails?.perAddressC || '',
             permanentStateId: res?.candidatePermanentAddressDetails?.stateId || null,
             permanentCityId: res?.candidatePermanentAddressDetails?.cityId || null,
+            permanentPostalCode: res?.candidatePermanentAddressDetails?.postalCode,
 
             // Experience Details
             isFresher: isFresher,
@@ -257,7 +259,21 @@ export class personalInfoComponent implements OnInit {
             suitableJobDescription: res?.candidateExperienceDetails?.candidateSalaryDetails?.description || '',
           });
 
-          console.log("Father Name:", res?.candidatePersonalInformationDetails?.fatherName);
+          if (res?.candidateCommunicationAddressDetails?.postalCode) {
+            this.getCities(
+              res?.candidateCommunicationAddressDetails?.stateId,
+              'communication',
+              res?.candidateCommunicationAddressDetails?.cityId
+            );
+          }
+
+          if (res?.candidatePermanentAddressDetails?.postalCode) {
+            this.getCities(
+              res?.candidatePermanentAddressDetails?.stateId,
+              'permanent',
+              res?.candidatePermanentAddressDetails?.cityId
+            );
+          }
 
           this.isAllDataPresent = [res?.candidatePersonalInformationDetails?.fatherName]
             .every(field => typeof field === 'string' && field.trim() !== '');
@@ -270,9 +286,20 @@ export class personalInfoComponent implements OnInit {
           console.log("Rajender");
 
           // Handle Education Details
+          // if (res?.candidateEducationDetails?.length) {
+          //   res.candidateEducationDetails.forEach((educationData: any) => {
+          //     this.educationArray.push(this.createEducationFormGroup(educationData));
+          //   });
+          // }
           if (res?.candidateEducationDetails?.length) {
             res.candidateEducationDetails.forEach((educationData: any) => {
-              this.educationArray.push(this.createEducationFormGroup(educationData));
+              const isDuplicate = this.educationArray.controls.some((control: AbstractControl) =>
+                control.value.qualificationName?.trim().toLowerCase() === educationData.qualificationName?.trim().toLowerCase()
+              );
+
+              if (!isDuplicate) {
+                this.educationArray.push(this.createEducationFormGroup(educationData));
+              }
             });
           }
         } else {
@@ -710,11 +737,53 @@ export class personalInfoComponent implements OnInit {
     } else {
       console.log(`No file selected for ${fieldName}`);
     }
+    let hasFile = false;
+    let formData = new FormData();
+      console.log("file array: ", this.selectedFiles);
+      formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
+
+      const documentData = {
+        candidateId: this.jobCodeData.candidateId
+      };
+      formData.append('document', JSON.stringify(documentData));
+      formData.append('moduleId', '4');
+
+      // Check if at least one file is present
+      if (this.selectedFiles['tenth']) {
+        formData.append('tenthFile', this.selectedFiles['tenth']);
+        hasFile = true;
+      }
+      if (this.selectedFiles['twelth']) {
+        formData.append('interFile', this.selectedFiles['twelth']);
+        hasFile = true;
+      }
+      if (this.selectedFiles['deploma']) {
+        formData.append('pgFile', this.selectedFiles['deploma']);
+        hasFile = true;
+      }
+      if (this.selectedFiles['degreeOrBTech']) {
+        formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
+        hasFile = true;
+      }
+      if (this.selectedFiles['others']) {
+        formData.append('otherFile', this.selectedFiles['others']);
+        hasFile = true;
+      }
+
+      // Only call finalSave if at least one file is selected
+      if (hasFile) {
+        this.finalSave('documents', formData);
+      } else {
+        Swal.fire({
+          title: 'warning',
+          text: 'Please upload File',
+          icon: 'warning',
+          showConfirmButton: false,
+          timer: 1000,
+          timerProgressBar: true,
+        });
+      }
   }
-
-
-
-
 
 
   setActiveSection(section: string) {
@@ -1213,28 +1282,47 @@ export class personalInfoComponent implements OnInit {
     }
   }
 
-  getCities(stateId: string, addressType: 'communication' | 'permanent') {
+  getCities(
+    stateId: string,
+    addressType: 'communication' | 'permanent',
+    backendCityId?: string
+  ) {
     this.authService.cities(stateId).subscribe({
-      next: (res: any) => {
-        if (res && res.length > 0) {
-          if (addressType === 'communication') {
-            this.communicationCities = res;
-            this.registrationForm.patchValue({
-              cityId: res[0]?.id || null // Automatically patch the first city ID
-            });
-          } else {
-            this.permanentCities = res;
-            this.registrationForm.patchValue({
-              permanentCityId: res[0]?.id || null // Automatically patch for permanent address
-            });
-          }
+      next: (cities: any[]) => {
+        if (!cities || cities.length === 0) {
+          this.setCitiesAndPatch(null, addressType, null);
+          return;
         }
+
+        const isValidCity = cities.some(city => city.id === backendCityId);
+        const finalCityId = isValidCity ? backendCityId : null;
+
+        this.setCitiesAndPatch(cities, addressType, finalCityId);
       },
       error: (err: HttpErrorResponse) => {
-        console.error("Error fetching cities:", err);
+        console.error('Error fetching cities:', err);
+        this.setCitiesAndPatch([], addressType, null);
       }
     });
   }
+
+  private setCitiesAndPatch(cities: any[] | null, addressType: 'communication' | 'permanent', cityId: string | null) {
+    if (addressType === 'communication') {
+      this.communicationCities = cities ?? [];
+      setTimeout(() => {
+        this.registrationForm.get('cityId')?.patchValue(cityId);
+      });
+    } else {
+      this.permanentCities = cities ?? [];
+      setTimeout(() => {
+        this.registrationForm.get('permanentCityId')?.patchValue(cityId);
+      });
+    }
+  }
+
+
+
+
 
 
   getProgressWidth(): string {
@@ -1284,5 +1372,72 @@ export class personalInfoComponent implements OnInit {
 
     return duplicates.length > 0;
   }
+
+  panCardKeydown(event: KeyboardEvent): void {
+    const input = event.target as HTMLInputElement;
+    const key = event.key;
+    const value = input?.value;
+    const pos = input.selectionStart ?? value?.length;
+
+    // Allow navigation and control keys
+    if (
+      ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete'].includes(key) ||
+      (event.ctrlKey || event.metaKey) // Ctrl+A, Ctrl+C etc.
+    ) {
+      return;
+    }
+
+    // Prevent input beyond 10 characters
+    if (value?.length >= 10 && input.selectionStart === input.selectionEnd) {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Limit Exceeded',
+        text: 'PAN number cannot be more than 10 characters.',
+        timer: 1200,
+        showConfirmButton: false
+      });
+      return;
+    }
+
+    // Validate character based on position
+    if (pos < 5) {
+      // First 5: only letters
+      if (!/^[a-zA-Z]$/.test(key)) {
+        event.preventDefault();
+        this.showInvalidPanAlert('Only letters (A-Z) allowed in first 5 characters');
+      }
+    } else if (pos >= 5 && pos < 9) {
+      // Next 4: only digits
+      if (!/^[0-9]$/.test(key)) {
+        event.preventDefault();
+        this.showInvalidPanAlert('Only digits (0-9) allowed in positions 6–9');
+      }
+    } else if (pos === 9) {
+      // Last char: letter
+      if (!/^[a-zA-Z]$/.test(key)) {
+        event.preventDefault();
+        this.showInvalidPanAlert('Last character must be a letter (A-Z)');
+      }
+    } else {
+      event.preventDefault();
+    }
+  }
+
+  // Helper method to show Swal alert with debounce to avoid spamming
+  private panAlertTimeout: any;
+  private showInvalidPanAlert(message: string): void {
+    clearTimeout(this.panAlertTimeout);
+    this.panAlertTimeout = setTimeout(() => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Invalid PAN Format',
+        text: message,
+        timer: 1200,
+        showConfirmButton: false
+      });
+    }, 0);
+  }
+
 
 }
