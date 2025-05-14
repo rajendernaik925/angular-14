@@ -50,9 +50,14 @@ export class ProfileListComponent implements OnInit {
     this.pageSize = 10;
     this.fetchShortlistedCandidates();
     this.searchQuery.valueChanges.subscribe(value => {
-      this.currentPage = 1;
-      this.searchQueryText = value.trim();
-      this.fetchShortlistedCandidates();
+      // this.currentPage = 1;
+      // this.searchQueryText = value.trim();
+      // this.fetchShortlistedCandidates();
+      if (value?.length >= 3) {
+        this.currentPage = 1;
+        this.searchQueryText = value.trim();
+        this.fetchShortlistedCandidates();
+      }
     });
   }
 
@@ -135,13 +140,13 @@ export class ProfileListComponent implements OnInit {
     this.isOpen = false;
   }
 
-  
+
 
   feedbackView(interview: any, name: any, mail: any) {
     const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
     const comments = interview.comments;
     const statusCode = interview.status;
-  
+
     const statusMap: any = {
       '1001': 'Interview pending',
       '1002': 'Interview Cancelled',
@@ -152,24 +157,24 @@ export class ProfileListComponent implements OnInit {
     };
 
     const statusLabel = statusMap[statusCode] || 'Unknown';
-  
+
     const scoreMap: any = {
       'Excellent': 10,
       'Good': 8,
       'Average': 6,
       'Below Average': 4
     };
-  
+
     let totalScore = 0;
-  
+
     const feedbackRows = feedBackformat.map((item: any, index: number) => {
       const getMark = (level: string) =>
         item.feedBackName === level
           ? '<span style="color:green;">✔️</span>'
           : '<span style="color:red;">❌</span>';
-  
+
       totalScore += scoreMap[item.feedBackName] || 0;
-  
+
       return `
         <tr style="line-height: 1.2;">
           <td>${index + 1}</td>
@@ -181,12 +186,12 @@ export class ProfileListComponent implements OnInit {
         </tr>
       `;
     }).join('');
-  
+
     const averageScore = (feedBackformat.length > 0)
       ? (totalScore / feedBackformat.length).toFixed(1)
       : 'N/A';
-  
-  
+
+
     const detailsHtml = `
       <div style="font-size:12px; width:100%; padding: 10px; ">
         
@@ -274,7 +279,7 @@ export class ProfileListComponent implements OnInit {
          </div>
       </div>
     `;
-  
+
     Swal.fire({
       html: detailsHtml,
       width: '800px',
@@ -286,14 +291,14 @@ export class ProfileListComponent implements OnInit {
       buttonsStyling: false
     });
   }
-  
-  
-  
-  
- 
-  
-  
-  
+
+
+
+
+
+
+
+
 
   sendRemainder() {
     Swal.fire({
