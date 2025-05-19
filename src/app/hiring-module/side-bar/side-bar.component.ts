@@ -1,6 +1,8 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from 'src/app/auth.service';
 
 @Component({
   selector: 'app-asset-manager-side-bar',
@@ -8,14 +10,17 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./side-bar.component.sass']
 })
 export class assetManagerSideBarComponent implements OnInit {
-
   activeTab: string | null = null;
   isSidebarOpen: boolean = false;
-  sidebarItems = [
+  userData: any;
+  employeeId: string = '';
+  sidebarItems: any[] = [];
+
+  private allSidebarItems = [
     {
       label: 'Dashboard',
       route: '/hiring-dashboard',
-      matchRoutes: ['/hiring-dashboard', '/rejected','/hold'],
+      matchRoutes: ['/hiring-dashboard', '/rejected', '/hold'],
     },
     {
       label: 'Candidate Shortlisted',
@@ -29,10 +34,6 @@ export class assetManagerSideBarComponent implements OnInit {
       label: 'Interview Process',
       route: '/process',
     },
-    // {
-    //   label: 'Processed',
-    //   route: '/procesed',
-    // },
     {
       label: 'Offer Management',
       route: '/offer-letter',
@@ -41,21 +42,12 @@ export class assetManagerSideBarComponent implements OnInit {
       label: 'Employee Onboarding',
       route: '/employee-code',
     },
-    // {
-    //   label: 'Rejected',
-    //   route: '/rejected',
-    // },
-    // {
-    //   label: 'Hold',
-    //   route: '/hold',
-    // },
-    // {
-    //   label: 'See Job Codes',
-    //   route: '/jobcode',
-    // },
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this.updateActiveTab(this.router.url);
@@ -64,6 +56,37 @@ export class assetManagerSideBarComponent implements OnInit {
       .subscribe((event: NavigationEnd) => {
         this.updateActiveTab((event as NavigationEnd).urlAfterRedirects);
       });
+
+    const loggedUser = decodeURIComponent(window.atob(localStorage.getItem('userData') || ''));
+    this.userData = JSON.parse(loggedUser);
+    this.employeeId = this.userData.user.empID;
+
+    this.loadUserRole();
+  }
+
+  loadUserRole(): void {
+    this.authService.roles().subscribe({
+      next: (res: any[]) => {
+        const matchedUser = res.find(user => user.employeeId === this.employeeId && user.role === 'admin');
+        const isAdmin = !!matchedUser;
+
+        if (isAdmin) {
+          this.sidebarItems = [...this.allSidebarItems];
+        } else {
+          this.sidebarItems = this.allSidebarItems.filter(item => item.label === 'Interview Process');
+          if (this.router.url !== '/process') {
+            this.router.navigate(['/process']);
+          }
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Error fetching roles:', err);
+        this.sidebarItems = this.allSidebarItems.filter(item => item.label === 'Interview Process');
+        if (this.router.url !== '/process') {
+          this.router.navigate(['/process']);
+        }
+      }
+    });
   }
 
   updateActiveTab(url: string): void {
@@ -80,5 +103,6 @@ export class assetManagerSideBarComponent implements OnInit {
   toggleSidebar(): void {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
-
 }
+
+
