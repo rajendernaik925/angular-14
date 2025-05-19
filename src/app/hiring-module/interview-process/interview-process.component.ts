@@ -306,7 +306,7 @@ export class InterviewProcessComponent implements OnInit {
           // if (lastInterviewDate && lastInterviewStatus === 1001) {
           //   this.disableFeedBack = true;
           // }
-
+          
           this.disableFeedBack = interviewStatusCode === 1001 ? true : false;
           
           // console.log("Last Interview Round Name:", lastInterviewRoundName);

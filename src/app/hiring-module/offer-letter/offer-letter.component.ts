@@ -1,8 +1,8 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 import * as moment from 'moment';
@@ -31,7 +31,8 @@ export class OfferLetterComponent implements OnInit {
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   searchQueryText: string;
   colorTheme = 'theme-dark-blue';
-
+  fileURL: SafeResourceUrl | null = null;
+  showPDF: boolean = false;
 
 
 
@@ -59,41 +60,25 @@ export class OfferLetterComponent implements OnInit {
 
   offerCandidates() {
     this.isLoading = true;
-  
+
     this.authService.offerCandidates().subscribe({
       next: (res: any) => {
         console.log("hold candidates : ", res);
         this.isLoading = false;
-  
+
         this.rows = res.map((item: any, index: number) => ({
           jobcodeId: item.jobcodeId || 'N/A',
           jcReferanceId: item.jcReferanceId || 'N/A',
-          employeeId: item.employeeId || 'N/A',
+          employeeId: item.candidateId || 'N/A',
           name: item.candidateName || 'N/A',
           jobTitleName: item.jobTitleName || 'N/A',
           deptName: item.deptName || 'N/A',
           expectedCtc: item.expectedCtc || 'N/A',
           joiningDate: item.joiningDate ? moment(item.joiningDate).format('YYYY-MM-DD') : null,
-          status: item.status || 'N/A'
+          status: item.status || 'N/A',
+          offerLink: item.offerLetterFile || 'N/A'
         }));
-  
-        // ✅ Ensure at least 100 dummy entries
-        // let currentLength = this.rows.length;
-        // while (this.rows.length < 5000) {
-        //   const dummyIndex = this.rows.length + 1;
-        //   this.rows.push({
-        //     jobcodeId: 1000 + dummyIndex,
-        //     jcReferanceId: `JC${1000 + dummyIndex}`,
-        //     employeeId: `DUMMY-${dummyIndex}`,
-        //     name: `Candidate ${dummyIndex}`,
-        //     jobTitleName: `Job Title ${dummyIndex}`,
-        //     deptName: `Dept ${dummyIndex}`,
-        //     expectedCtc: `${Math.floor(Math.random() * 10 + 3)} LPA`,
-        //     joiningDate: moment().add(dummyIndex, 'days').format('YYYY-MM-DD'),
-        //     status: 'N/A'
-        //   });
-        // }
-  
+
         this.originalRows = [...this.rows];
       },
       error: (err: HttpErrorResponse) => {
@@ -102,7 +87,7 @@ export class OfferLetterComponent implements OnInit {
       }
     });
   }
-  
+
 
 
 
@@ -142,21 +127,60 @@ export class OfferLetterComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
-  handleAction(employeeId: any, joiningDate:any) {
-    console.log("employeeId : ",employeeId, "joiningDate: ",joiningDate);
-    Swal.fire({
-      title: 'Success',
-      text: 'need to implement',
-      icon: 'success',
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
+  GenerateOffer(employeeId: any) {
+    this.isLoading = true;
+    console.log("employeeId : ", employeeId);
+    this.authService.GenerateOffer(employeeId).subscribe({
+      next: (res: HttpResponse<any>) => {
+        console.log(res)
+        if (res.status === 200) {
+          this.isLoading = false;
+          console.log("res : ", res);
+          this.offerCandidates();
+          Swal.fire({
+            title: 'Success',
+            text: 'Generated Successfully',
+            icon: 'success',
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+          })
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        console.log("error : ", err);
+        this.isLoading = false;
+      }
     })
 
+
+  }
+
+  viewFile(file: any) {
+    if (!file) {
+      console.error("No file available for download.");
+      return;
+    }
+
+    const byteCharacters = atob(file);
+    const byteNumbers = new Array(byteCharacters?.length)
+      .fill(0)
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+
+    const objectURL = URL.createObjectURL(blob);
+    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+    this.showPDF = true;
   }
 
   close() {
     this.dialog.closeAll();
+  }
+
+  closePDF() {
+    this.showPDF = false; // Hide the modal
+    this.fileURL = null; // Clear the URL
   }
 
   toggleOffcanvas() {
@@ -175,18 +199,6 @@ export class OfferLetterComponent implements OnInit {
     const formattedHour = hour % 12 || 12;
     const period = hour >= 12 ? 'PM' : 'AM';
     return `${formattedHour}:${minute.toString().padStart(2, '0')} ${period}`;
-  }
-
-  sendRemainder() {
-    Swal.fire({
-      title: 'Success',
-      text: 'Remainder Sent',
-      icon: 'success',
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
-    })
-    this.close()
   }
 
   get paginatedRows() {
@@ -224,15 +236,28 @@ export class OfferLetterComponent implements OnInit {
   onDateChange(date: string, row: any, key: string): void {
     const formattedDate = moment(date).format('YYYY-MM-DD');
     row[key] = formattedDate;
+    const offerLink = row.offerLink;
 
-    if (key === 'joiningDate') {
-      this.updateJoiningDate(row.employeeId, formattedDate);
+    if (offerLink && offerLink !== 'N/A') {
+      Swal.fire({
+        title: 'Warning',
+        text: 'Offer letter has already been generated. Joining date cannot be changed.',
+        icon: 'warning',
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: true,
+      });
+      return;
     }
+
+    // this.GenerateOffer(row.employeeId);
+    this.updateJoiningDate(row.employeeId, formattedDate);
+
   }
 
 
   updateJoiningDate(employeeId: string, joiningDate: string): void {
-    this.isLoading= true;
+    this.isLoading = true;
     const formData = new FormData();
     formData.append('employeeId', employeeId);
     formData.append('doj', joiningDate);

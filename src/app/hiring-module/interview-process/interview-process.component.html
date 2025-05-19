@@ -393,9 +393,6 @@
         </div>
 
 
-
-
-
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline">
             <strong>Interview</strong>
@@ -405,37 +402,61 @@
             <table class="custom-table">
               <thead>
                 <tr>
-                  <th class="custom-th small-header">Candidate ID</th>
+                  <th class="custom-th small-header">S.No</th>
                   <th class="custom-th small-header">Interview Date</th>
                   <th class="custom-th small-header">Interview Time</th>
                   <th class="custom-th small-header">Interviewer</th>
                   <th class="custom-th small-header">Round Name</th>
                   <th class="custom-th small-header">Location</th>
+                  <th class="custom-th small-header">Status</th>
                   <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
               <tbody>
                 <ng-container *ngFor="let exp of candidateData.candidateInterviewDetails">
-                  <tr *ngIf="exp.interviewTime">
-                    <td class="custom-td small-header">{{ exp.roundNo }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                    <td class="custom-td small-header">{{exp.interviewByName}}-{{ exp.interviewBy }}</td>
-                    <td class="custom-td small-header">{{ exp.level }} ({{exp.interviewRoundName || 'Initial'}})</td>
-                    <td class="custom-td small-header text-break">{{ exp.locationName }}</td>
+                  <tr *ngIf="exp.interviewScheduleId">
+                    <td class="custom-td small-header">{{ exp.roundNo || 'NA' }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewDate ? (exp.interviewDate | date: 'dd-MMM-yyyy')
+                      : 'NA' }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewTime || 'NA' }}</td>
+                    <td class="custom-td small-header">
+                      {{ (exp.interviewByName ? exp.interviewByName : 'NA') }} - {{ (exp.interviewBy ? exp.interviewBy :
+                      'NA') }}
+                    </td>
+                    <td class="custom-td small-header">
+                      {{ exp.level || 'NA' }} ({{ exp.interviewRoundName || 'Initial' }})
+                    </td>
+                    <td class="custom-td small-header text-break" [attr.title]="exp.locationName || 'NA'"
+                      style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                      data-bs-toggle="tooltip" data-bs-placement="top">
+                      {{
+                      (exp.locationName && exp.locationName.trim() !== '' ? exp.locationName.slice(0, 40) +
+                      (exp.locationName.length > 40 ? '...' : '') : 'NA')
+                      }}
+                    </td>
+                    <td class="custom-td small-header" [ngSwitch]="exp.status">
+                      <span *ngSwitchCase="1001" class="text-warning">Pending</span>
+                      <span *ngSwitchCase="1002" class="text-danger">Cancelled</span>
+                      <span *ngSwitchCase="1004" class="text-success">Approved</span>
+                      <span *ngSwitchCase="1005" class="text-info">Hold</span>
+                      <span *ngSwitchCase="1006" class="text-danger">Rejected</span>
+                      <span *ngSwitchDefault>{{ exp.status || 'NA' }}</span>
+                    </td>
                     <td class="custom-td small-header text-break">
                       <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
-                        <button class="btn btn-sm custom-bg text-white text-break"
-                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)">
+                        <button class="btn btn-sm custom-bg text-white text-break" (click)="feedbackView(
+                          exp,
+                          candidateData?.candidatePersonalInformationDetails?.firstName || 'NA',
+                          candidateData?.candidatePersonalInformationDetails?.email || 'NA')">
                           View
                         </button>
                       </ng-container>
                       <ng-template #pending>
-                        <span class="text-muted">Pending</span>
+                        <span class="text-warning">Pending</span>
                       </ng-template>
                     </td>
-
                   </tr>
+
                 </ng-container>
               </tbody>
 

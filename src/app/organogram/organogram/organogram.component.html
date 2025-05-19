@@ -10,7 +10,8 @@
            : 'https://sso.heterohealthcare.com/iconnect/assets/img/dashboard/user-female.svg'" width="40" height="40"
                     alt="Profile Image" class="rounded-circle cursor-pointer mr-2" [routerLink]="'/dashboard'" />
 
-                <span class="rounded-pill fw-bold cursor-pointer " [routerLink]="'/dashboard'" aria-label="Fields marked with asterisk are required">
+                <span class="rounded-pill fw-bold cursor-pointer " [routerLink]="'/dashboard'"
+                    aria-label="Fields marked with asterisk are required">
                     {{ userData?.user?.firstname }}
                 </span>
             </div>
@@ -52,6 +53,9 @@
                     <ng-template #noDataFound>
                         <div class="d-flex justify-content-center align-items-center">
                             <h5 class="text-muted fw-bold">NO RECORDS FOUND FOR {{userData?.user?.name}}</h5>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center mt-5">
+                        <img src="https://betechwala.com/assets/site/no-record.png" alt="">
                         </div>
                     </ng-template>
                 </div>

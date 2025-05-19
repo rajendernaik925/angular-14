@@ -1208,5 +1208,19 @@ export class AuthService {
     )
   }
 
+  roles() {
+    return this.http.get(`${this.jobCodeUrls}organogram/roles`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  GenerateOffer(id: any): Observable<HttpResponse<any>> {
+  return this.http.get(`${this.jobCodeUrls}report/generate/${id}`, {
+    observe: 'response',
+    responseType: 'text' as 'json' // Forces Angular to treat text as JSON
+  });
+}
+
+
 
 }

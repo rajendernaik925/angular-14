@@ -773,16 +773,17 @@ export class personalInfoComponent implements OnInit {
       // Only call finalSave if at least one file is selected
       if (hasFile) {
         this.finalSave('documents', formData);
-      } else {
-        Swal.fire({
-          title: 'warning',
-          text: 'Please upload File',
-          icon: 'warning',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
-      }
+      } 
+      // else {
+      //   Swal.fire({
+      //     title: 'warning',
+      //     text: 'Please upload File',
+      //     icon: 'warning',
+      //     showConfirmButton: false,
+      //     timer: 1000,
+      //     timerProgressBar: true,
+      //   });
+      // }
   }
 
 
@@ -980,9 +981,7 @@ export class personalInfoComponent implements OnInit {
       formData.append('moduleId', '3');
 
       this.finalSave('education', formData);
-    }
-
-    else if (Action === 'documents') {
+    } else if (Action === 'documents') {
       const documentsFields = ['tenth', 'twelth', 'deploma', 'degreeOrBTech', 'others'];
       let hasFile = false; // Flag to check if any file is present
 
@@ -1113,8 +1112,12 @@ export class personalInfoComponent implements OnInit {
 
 
   finalSave(action: string, formData) {
+    formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
+      formData.append('candidateId', this.jobCodeData?.candidateId);
+      console.log("education jobcode id : ",this.jobCodeData?.jobCodeId,"candidate id: ",this.jobCodeData?.candidateId)
     this.isLoading = true;
     console.log(" form data : ", formData)
+    // return false
     this.authService.hiringRegister(formData).subscribe({
       next: (res: HttpResponse<any>) => {
         this.isLoading = false;
@@ -1231,7 +1234,7 @@ export class personalInfoComponent implements OnInit {
   university() {
     this.authService.university().subscribe({
       next: (res: any) => {
-        // console.log("titles : ", res)
+        // console.log("univercities : ", res)
         this.universityOptions = res;
       },
       error: (err: HttpErrorResponse) => {
