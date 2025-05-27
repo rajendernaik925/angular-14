@@ -1,4 +1,4 @@
-<div class="">
+<div class="container-fluid">
   <app-nav></app-nav>
 </div>
 <div class="mt-3">
@@ -82,7 +82,7 @@
                     </span>
                   </th>
                   <th class="small-header-th  cursor-pointer" (click)="sortTable('createdDate')">
-                    Date
+                    Created Date
                     <span *ngIf="sortColumn === 'createdDate'">
                       <i class="ms-1"
                         [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
@@ -114,7 +114,7 @@
                     number:'1.1-1' }}L
                   </td>
                   <td class="small-header text-uppercase">
-                    {{ row.createdDate }}
+                    {{ row.createdDate | date:'dd-MM-yyyy' }}
                   </td>
                   <td class="small-header text-center">
                     <ng-container class="text-uppercase" *ngIf="row.finalStatus === 1001; else onHoldOrClose">
@@ -162,14 +162,11 @@
             <span class="small badge bg-secondary text-white">
               Showing {{ startIndex }} to {{ endIndex }} of {{ totalRecords }} Records
             </span>
-          
+
             <ul class="pagination pagination-sm mb-1">
               <li class="page-item">
-                <button 
-                  type="button" 
-                  class="border-none text-white custom-action-btn px-2 py-1 mr-2"
-                  (click)="changePage(currentPage - 1)"
-                  [disabled]="currentPage === 1"
+                <button type="button" class="border-none text-white custom-action-btn px-2 py-1 mr-2"
+                  (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1"
                   [class.disabled]="currentPage === 1"
                   [ngClass]="{'custom-bg': currentPage > 1, 'bg-secondary': currentPage === 1}">
                   <i class="bi bi-chevron-left"></i>
@@ -181,54 +178,51 @@
                 </span>
               </li>
               <li class="page-item">
-                <button 
-                  type="button" 
-                  [class.disabled]="currentPage === totalPages"
-                  class="border-none text-white custom-action-btn px-2 py-1 mr-2"
-                  (click)="changePage(currentPage + 1)"
+                <button type="button" [class.disabled]="currentPage === totalPages"
+                  class="border-none text-white custom-action-btn px-2 py-1 mr-2" (click)="changePage(currentPage + 1)"
                   [disabled]="currentPage === totalPages"
                   [ngClass]="{'custom-bg': currentPage < totalPages, 'bg-secondary': currentPage === totalPages}">
                   <i class="bi bi-chevron-right"></i>
                 </button>
               </li>
             </ul>
-          </div> 
-                 
+          </div>
+
         </div>
       </div>
     </div>
   </div>
 </div>
-  <!-- loader -->
-  <div class="loader attDnceLoadr" *ngIf="isLoading">
-    <div class="spinner">
-      <div class="bounce1"></div>
-      <div class="bounce2"></div>
-      <div class="bounce3"></div>
-    </div>
+<!-- loader -->
+<div class="loader attDnceLoadr" *ngIf="isLoading">
+  <div class="spinner">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+  </div>
+</div>
+
+<!-- dialog templates  -->
+<ng-template #jobDialog>
+  <div class="d-flex justify-content-between">
+    <span class="fw-bold"> Create new job code</span>
+    <span class="Hover" (click)="closeDialog()">
+      <i class="bi bi-x-circle fs-4 cursor-pointer"></i>
+    </span>
   </div>
 
-  <!-- dialog templates  -->
-  <ng-template #jobDialog>
-    <div class="d-flex justify-content-between">
-      <span class="fw-bold"> Create new job code</span>
-      <span class="Hover" (click)="closeDialog()">
-        <i class="bi bi-x-circle fs-4 cursor-pointer"></i>
-      </span>
-    </div>
-
-    <form class="dialog-content" [formGroup]="createJobForm" (ngSubmit)="onSubmit()">
-      <div class="row mb-3">
-        <!-- First Row (3 form controls) -->
-        <div class="col-md-4 ">
-          <label for="">Designation <span class="text-danger">*</span></label>
-          <select id="jobTitle" formControlName="jobTitle" class="form-control form-control-sm">
-            <option value="">Select</option>
-            <option *ngFor="let item of jobTitleList" [value]="item.id">
-              {{ item.name }}
-            </option>
-          </select>
-          <!-- <input
+  <form class="dialog-content" [formGroup]="createJobForm" (ngSubmit)="onSubmit()">
+    <div class="row mb-3">
+      <!-- First Row (3 form controls) -->
+      <div class="col-md-4 ">
+        <label for="">Designation <span class="text-danger">*</span></label>
+        <select id="jobTitle" formControlName="jobTitle" class="form-control form-control-sm">
+          <option value="">Select</option>
+          <option *ngFor="let item of jobTitleList" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+        <!-- <input
             id="jobTitle"
             formControlName="jobTitle"
             class="form-control form-control-sm text-uppercase"
@@ -236,140 +230,139 @@
             autocomplete="off"
             autocapitalize="off"
             type="text"> -->
-          <div *ngIf="submitted && createJobForm.get('jobTitle').invalid" class="text-danger fs-5">
-            Role Title is required.
-          </div>
+        <div *ngIf="submitted && createJobForm.get('jobTitle').invalid" class="text-danger fs-5">
+          Role Title is required.
         </div>
+      </div>
 
-        <div class="col-md-4 ">
-          <label for="jobReportingManagerId">Reportee <span class="text-danger">*</span></label>
-          <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
-            class="form-control form-control-sm">
-            <option *ngFor="let manager of managers; let i = index" [value]="manager.id">
-              {{manager.id}} - {{ manager.name }}
-            </option>
-          </select>
-          <!-- <select class="form-control" id="exampleSelect" name="exampleSelect">
+      <div class="col-md-4 ">
+        <label for="jobReportingManagerId">Reportee <span class="text-danger">*</span></label>
+        <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
+          class="form-control form-control-sm">
+          <option *ngFor="let manager of managers; let i = index" [value]="manager.id">
+            {{manager.id}} - {{ manager.name }}
+          </option>
+        </select>
+        <!-- <select class="form-control" id="exampleSelect" name="exampleSelect">
             <option value="" selected disabled>select Manager</option>
             <option *ngFor="let manager of managers; let i = index" [ngValue]="manager">
               {{ manager.name }}
             </option>
           </select> -->
-          <div
-            *ngIf="submitted && createJobForm.get('jobReportingManagerId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
-            class="text-danger fs-5">
-            Reporting Manager is required.
-          </div>
-          <div *ngIf="managerMessage" class="text-danger fs-5">
-            {{managerMessage}}
-          </div>
+        <div
+          *ngIf="submitted && createJobForm.get('jobReportingManagerId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
+          class="text-danger fs-5">
+          Reporting Manager is required.
         </div>
-
-        <div class="col-md-4 ">
-          <label for="teamId">Team <span class="text-danger">*</span></label>
-          <select id="teamId" formControlName="teamId" (change)="onSelected($event)"
-            class="form-control form-control-sm">
-            <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
-              {{ manager.name }}
-            </option>
-          </select>
-          <div
-            *ngIf="submitted && createJobForm.get('teamId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
-            class="text-danger fs-5">
-            Team is required.
-          </div>
-          <div *ngIf="managerMessage" class="text-danger fs-5">
-            {{managerMessage}}
-          </div>
+        <div *ngIf="managerMessage" class="text-danger fs-5">
+          {{managerMessage}}
         </div>
       </div>
 
-      <div class="row mb-3">
-        <!-- CTC Range -->
-        <div class="col-md-6">
-          <label for="CTC">CTC (Min-Max) <span class="text-danger">*</span></label>
-          <div class="d-flex gap-3">
-            <input id="jobCtcMin" formControlName="jobCtcMin" class="form-control form-control-sm bg-white"
-              placeholder="Min CTC" type="number" min="0"
-              [ngClass]="{ 'is-invalid': createJobForm.get('jobCtcMin').invalid && createJobForm.get('jobCtcMin').touched }"
-              (keydown)="preventNegativeInput($event)" />
-            <input id="jobCtcMax" formControlName="jobCtcMax" class="form-control form-control-sm bg-white ms-1"
-              placeholder="Max CTC" type="number" min="0"
-              [ngClass]="{ 'is-invalid': createJobForm.get('jobCtcMax').invalid && createJobForm.get('jobCtcMax').touched }"
-              (keydown)="preventNegativeInput($event)" />
-          </div>
-          <div *ngIf="submitted && createJobForm.errors?.invalidCtcRange" class="text-danger fs-5">
-            Invalid CTC Range
-          </div>
-          <div *ngIf="ctcMessage" class="text-danger fs-5">
-            {{ctcMessage}}
-          </div>
+      <div class="col-md-4 ">
+        <label for="teamId">Team <span class="text-danger">*</span></label>
+        <select id="teamId" formControlName="teamId" (change)="onSelected($event)" class="form-control form-control-sm">
+          <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
+            {{ manager.name }}
+          </option>
+        </select>
+        <div
+          *ngIf="submitted && createJobForm.get('teamId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
+          class="text-danger fs-5">
+          Team is required.
         </div>
+        <div *ngIf="managerMessage" class="text-danger fs-5">
+          {{managerMessage}}
+        </div>
+      </div>
+    </div>
 
-        <!-- Experience Range -->
-        <div class="col-md-6">
-          <label for="experience">Experience (Min-Max) <span class="text-danger">*</span></label>
-          <div class="d-flex">
-            <input id="jobExperienceMinYear" formControlName="jobExperienceMinYear"
-              class="form-control form-control-sm bg-white" placeholder="Min Years" type="number" maxlength="2" min="0"
-              (input)="validateNonNegative($event)"
-              [ngClass]="{ 'is-invalid': createJobForm.get('jobExperienceMinYear').invalid && createJobForm.get('jobExperienceMinYear').touched }" />
-            <input id="jobExperienceMaxYear" formControlName="jobExperienceMaxYear"
-              class="form-control form-control-sm bg-white ms-1" placeholder="Max Years" type="number" min="0"
-              maxlength="2" (input)="validateNonNegative($event)"
-              [ngClass]="{ 'is-invalid': createJobForm.get('jobExperienceMaxYear').invalid && createJobForm.get('jobExperienceMaxYear').touched }" />
-          </div>
-          <div *ngIf="submitted && createJobForm.errors?.invalidExperienceRange" class="text-danger fs-5">
-            Invalid Experience Range
-          </div>
-          <div *ngIf="yearMessage" class="text-danger fs-5">
-            {{yearMessage}}
-          </div>
+    <div class="row mb-3">
+      <!-- CTC Range -->
+      <div class="col-md-6">
+        <label for="CTC">CTC (Min-Max) <span class="text-danger">*</span></label>
+        <div class="d-flex gap-3">
+          <input id="jobCtcMin" formControlName="jobCtcMin" class="form-control form-control-sm bg-white"
+            placeholder="Min CTC" type="number" min="0"
+            [ngClass]="{ 'is-invalid': createJobForm.get('jobCtcMin').invalid && createJobForm.get('jobCtcMin').touched }"
+            (keydown)="preventNegativeInput($event)" />
+          <input id="jobCtcMax" formControlName="jobCtcMax" class="form-control form-control-sm bg-white ms-1"
+            placeholder="Max CTC" type="number" min="0"
+            [ngClass]="{ 'is-invalid': createJobForm.get('jobCtcMax').invalid && createJobForm.get('jobCtcMax').touched }"
+            (keydown)="preventNegativeInput($event)" />
+        </div>
+        <div *ngIf="submitted && createJobForm.errors?.invalidCtcRange" class="text-danger fs-5">
+          Invalid CTC Range
+        </div>
+        <div *ngIf="ctcMessage" class="text-danger fs-5">
+          {{ctcMessage}}
         </div>
       </div>
 
-
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label for="preforable">Prefered Companies</label>
-          <textarea id="jobPreferableCompanies" formControlName="jobPreferableCompanies"
-            class="form-control form-control-sm  text-uppercase" placeholder="Companies" rows="1"></textarea>
-          <div *ngIf="submitted && createJobForm.get('jobPreferableCompanies').invalid" class="text-danger fs-5">
-            Previous Companies is required.
-          </div>
+      <!-- Experience Range -->
+      <div class="col-md-6">
+        <label for="experience">Experience (Min-Max) <span class="text-danger">*</span></label>
+        <div class="d-flex">
+          <input id="jobExperienceMinYear" formControlName="jobExperienceMinYear"
+            class="form-control form-control-sm bg-white" placeholder="Min Years" type="number" maxlength="2" min="0"
+            (input)="validateNonNegative($event)"
+            [ngClass]="{ 'is-invalid': createJobForm.get('jobExperienceMinYear').invalid && createJobForm.get('jobExperienceMinYear').touched }" />
+          <input id="jobExperienceMaxYear" formControlName="jobExperienceMaxYear"
+            class="form-control form-control-sm bg-white ms-1" placeholder="Max Years" type="number" min="0"
+            maxlength="2" (input)="validateNonNegative($event)"
+            [ngClass]="{ 'is-invalid': createJobForm.get('jobExperienceMaxYear').invalid && createJobForm.get('jobExperienceMaxYear').touched }" />
         </div>
+        <div *ngIf="submitted && createJobForm.errors?.invalidExperienceRange" class="text-danger fs-5">
+          Invalid Experience Range
+        </div>
+        <div *ngIf="yearMessage" class="text-danger fs-5">
+          {{yearMessage}}
+        </div>
+      </div>
+    </div>
 
-        <div class="col-md-6">
-          <label for="description">Description <span class="text-danger">*</span></label>
-          <textarea id="jobDescription" formControlName="jobDescription"
-            class="form-control form-control-sm  text-uppercase" placeholder="Description" rows="1"></textarea>
-          <div *ngIf="submitted && createJobForm.get('jobDescription').invalid" class="text-danger fs-5">
-            Description is required.
-          </div>
+
+    <!-- <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="preforable">Prefered Companies <span class="text-muted">(Optional)</span></label>
+        <textarea id="jobPreferableCompanies" formControlName="jobPreferableCompanies"
+          class="form-control form-control-sm  text-uppercase" placeholder="Companies" rows="1"></textarea>
+        <div *ngIf="submitted && createJobForm.get('jobPreferableCompanies').invalid" class="text-danger fs-5">
+          Previous Companies is required.
         </div>
       </div>
 
-      <div class="row mb-3">
-        <!-- File Input -->
-        <div class="col-md-12">
-          <label for="jobDescriptionFile">Job Description <span class="text-danger">*</span></label>
-          <input id="jobDescriptionFile" formControlName="jobDescriptionFile" class="form-control form-control-sm p-1"
-            placeholder="Job Description" accept=".pdf" type="file" (change)="onFileSelect($event)" required>
-          <div *ngIf="submitted && createJobForm.get('jobDescriptionFile').invalid" class="text-danger fs-5">
-            Job Description is required and must be a .pdf
-          </div>
+      <div class="col-md-6">
+        <label for="description">Description <span class="text-muted">(Optional)</span></label>
+        <textarea id="jobDescription" formControlName="jobDescription"
+          class="form-control form-control-sm  text-uppercase" placeholder="Description" rows="1"></textarea>
+        <div *ngIf="submitted && createJobForm.get('jobDescription').invalid" class="text-danger fs-5">
+          Description is required.
         </div>
       </div>
+    </div> -->
 
-      <div class="d-flex justify-content-center mt-4">
-        <button type="submit" class="btn btn-sm custom-bg text-light me-3 " [disabled]="createJobForm.invalid"
-          [ngClass]="{ 'disabled': createJobForm.invalid }">
-          Submit
-        </button>
-        <button type="button" class="btn btn-sm btn-danger" (click)="closeDialog()">Cancel</button>
+    <div class="row mb-3">
+      <!-- File Input -->
+      <div class="col-md-12">
+        <label for="jobDescriptionFile">Job Description <span class="text-danger">*</span></label>
+        <input id="jobDescriptionFile" formControlName="jobDescriptionFile" class="form-control form-control-sm p-1"
+          placeholder="Job Description" accept=".pdf" type="file" (change)="onFileSelect($event)" required>
+        <div *ngIf="submitted && createJobForm.get('jobDescriptionFile').invalid" class="text-danger fs-5">
+          Job Description is required and must be a .pdf
+        </div>
       </div>
-    </form>
-  </ng-template>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+      <button type="submit" class="btn btn-sm custom-bg text-light me-3 " [disabled]="createJobForm.invalid"
+        [ngClass]="{ 'disabled': createJobForm.invalid }">
+        Submit
+      </button>
+      <button type="button" class="btn btn-sm btn-danger" (click)="closeDialog()">Cancel</button>
+    </div>
+  </form>
+</ng-template>
 
 
-  <!-- <img src="../../assets/img/icons/not-found.gif" alt=""> -->
+<!-- <img src="../../assets/img/icons/not-found.gif" alt=""> -->

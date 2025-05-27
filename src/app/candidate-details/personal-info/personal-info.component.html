@@ -5,76 +5,92 @@
   <!-- <div class="card border-0 p-0">
   <div class="card-body"> -->
   <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center">
 
+    <!-- Desktop Header -->
+    <div class="d-none d-md-flex justify-content-between align-items-center py-2">
       <!-- Left Buttons -->
-      <div class="d-inline-flex">
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+      <div class="d-flex flex-wrap">
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'personal', 'btn-secondary': activeTab !== 'personal' }"
-          (click)="setActiveSection('personal')">
-          Personal Info
-        </button>
+          (click)="setActiveSection('personal')">Personal Info</button>
 
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'address', 'btn-secondary': activeTab !== 'address' }"
-          (click)="setActiveSection('address')">
-          Address
-        </button>
+          (click)="setActiveSection('address')">Address</button>
 
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'education', 'btn-secondary': activeTab !== 'education' }"
-          (click)="setActiveSection('education')">
-          Education
-        </button>
+          (click)="setActiveSection('education')">Education</button>
 
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'documents', 'btn-secondary': activeTab !== 'documents' }"
-          (click)="setActiveSection('documents')">
-          Documents
-        </button>
+          (click)="setActiveSection('documents')">Documents</button>
 
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'experience', 'btn-secondary': activeTab !== 'experience' }"
-          (click)="setActiveSection('experience')">
-          Experience
-        </button>
+          (click)="setActiveSection('experience')">Experience</button>
 
-        <button class="btn btn-sm shadow-none border-0 mr-2 px-4"
+        <button class="btn btn-sm shadow-none border-0 m-1 px-4"
           [ngClass]="{ 'custom-bg text-white': activeTab === 'status', 'btn-secondary': activeTab !== 'status' }"
-          (click)="setActiveSection('status')">
-          Status
-        </button>
-
-        <!-- <button class="btn btn-sm shadow-none border-0 mr-2 px-4 position-relative"
-          [ngClass]="{ 'custom-bg text-white': activeTab === 'status', 'btn-secondary': activeTab !== 'status' }"
-          (click)="setActiveSection('status')" (mouseenter)="hovering = true" (mouseleave)="hovering = false">
-          <span *ngIf="!hovering">Status</span>
-          <span *ngIf="hovering">{{ statusPercentage }}%</span>
-        </button> -->
-
+          (click)="setActiveSection('status')">Status</button>
       </div>
 
-      <!-- Right Side Buttons -->
+      <!-- Right Info -->
       <div class="d-flex align-items-center">
-        <h6 class="custom-text mr-3 cursor-pointer" [routerLink]="'/dashboard'">
+        <h6 class="custom-text mr-3 cursor-pointer text-uppercase" [routerLink]="'/dashboard'">
           {{ jobCodeData.name }}
         </h6>
-
-        <!-- <img [routerLink]="'/dashboard'" class="cursor-pointer mr-3"
-            src="https://cdn-icons-png.flaticon.com/512/560/560512.png" alt="refresh" width="24" height="24"> -->
-
         <button class="btn btn-secondary shadow-none btn-sm" (click)="logout()">
-          <i class="fa fa-sign-out"></i>Logout
+          <i class="fa fa-sign-out"></i> Logout
         </button>
       </div>
     </div>
-    <!-- <div class="progress-1 mt-2" *ngIf="activeTab !== 'status'">
-        <div class="progress-bar-1" role="progressbar" style="width: 50%;" aria-valuenow="50"
-             aria-valuemin="0" aria-valuemax="100">
-          50%
-        </div>
-      </div> -->
+
+    <!-- Mobile Header -->
+    <div class="d-flex d-md-none justify-content-between align-items-center p-2 border-bottom">
+      <span class="font-weight-bold">Job Portal</span>
+      <div (click)="toggleSidebar()" class="cursor-pointer">
+        {{ jobCodeData.name }} <i class="fa fa-bars ml-2"></i>
+      </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="mobile-sidebar-overlay" *ngIf="showSidebar" (click)="toggleSidebar()"></div>
+
+    <!-- Mobile Sidebar -->
+    <!-- Mobile Sidebar -->
+    <div class="mobile-sidebar bg-light p-3" [class.open]="showSidebar">
+      <ul class="list-unstyled mb-0">
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'personal' }"
+          (click)="setActiveSection('personal'); toggleSidebar()">Personal Info</li>
+
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'address' }"
+          (click)="setActiveSection('address'); toggleSidebar()">Address</li>
+
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'education' }"
+          (click)="setActiveSection('education'); toggleSidebar()">Education</li>
+
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'documents' }"
+          (click)="setActiveSection('documents'); toggleSidebar()">Documents</li>
+
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'experience' }"
+          (click)="setActiveSection('experience'); toggleSidebar()">Experience</li>
+
+        <li class="mobile-nav-item" [ngClass]="{ 'active': activeTab === 'status' }"
+          (click)="setActiveSection('status'); toggleSidebar()">Status</li>
+
+        <li class="mt-4">
+          <button class="btn btn-secondary btn-sm w-100" (click)="logout()">
+            <i class="fa fa-sign-out"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+
+
   </div>
+
+
 
   <!-- </div>
   </div> -->
@@ -134,15 +150,16 @@
                   </div>
                   <div class="col-md-3">
                     <label>Date of Birth <span class="text-danger">*</span></label>
-                    <input type="text" id="dob" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
+                    <input type="text" id="dob" class="form-control form-control-sm" placeholder="dd-mm-yyyy"
                       formControlName="dob" autocomplete="off" [bsConfig]="{
-                      adaptivePosition: true,
-                      showWeekNumbers: false,
-                      isAnimated: true,
-                      containerClass: colorTheme,
-                      customTodayClass: 'custom-today-class',
-                      dateInputFormat: 'YYYY-MM-DD'
+                        adaptivePosition: true,
+                        showWeekNumbers: false,
+                        isAnimated: true,
+                        containerClass: colorTheme,
+                        customTodayClass: 'custom-today-class',
+                        dateInputFormat: 'DD-MM-YYYY'
                       }" bsDatepicker required readonly />
+
                     <div *ngIf="registrationForm.get('dob')?.touched && registrationForm.get('dob')?.invalid"
                       class="text-danger fs-custom">
                       Date of Birth is required
@@ -176,8 +193,8 @@
 
                   <div class="col-md-3">
                     <label>Middle Name</label>
-                    <input type="text" [readOnly]="isAllDataPresent" formControlName="middleName" placeholder="Middle Name"
-                      class="form-control form-control-sm" />
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="middleName"
+                      placeholder="Middle Name" class="form-control form-control-sm" />
                   </div>
                   <div class="col-md-3">
                     <label>Last Name <span class="text-danger">*</span></label>
@@ -231,14 +248,69 @@
                   </div>
                   <div class="col-md-3">
                     <label>District <span class="text-danger">*</span></label>
-                    <input type="text" [readOnly]="isAllDataPresent" formControlName="district"
-                      placeholder="District" class="form-control form-control-sm" />
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="district" placeholder="District"
+                      class="form-control form-control-sm" />
                     <div *ngIf="registrationForm.get('district')?.touched && registrationForm.get('district')?.invalid"
                       class="text-danger fs-custom">
                       District is required
                     </div>
                   </div>
                 </div>
+
+
+
+                <!-- New adding -->
+
+
+                <div class="row mt-2">
+                  <div class="col-md-3">
+                    <label>Blood Group <span class="text-muted">(Optional)</span></label>
+                    <select formControlName="bloodGroupId" [attr.disabled]="isAllDataPresent ? true : null"
+                      class="form-control form-control-sm">
+                      <option value="">Select</option>
+                      <option *ngFor="let status of bloodGroupOptions" [value]="status.id">
+                        {{ status.name }}
+                      </option>
+                    </select>
+                    <div
+                      *ngIf="registrationForm.get('bloodGroupId')?.touched && registrationForm.get('bloodGroupId')?.invalid"
+                      class="text-danger fs-custom">
+                      Blood Group is required
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <label>UAN Number <span class="text-muted">(Optional)</span></label>
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="uan"
+                      placeholder="UAN Number" class="form-control form-control-sm" />
+                    <div
+                      *ngIf="registrationForm.get('uan')?.touched && registrationForm.get('uan')?.invalid"
+                      class="text-danger fs-custom">
+                      UAN Number is required
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Passport Number <span class="text-muted">(Optional)</span></label>
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="passport"
+                      placeholder="Passport Number" class="form-control form-control-sm" />
+                    <div
+                      *ngIf="registrationForm.get('passport')?.touched && registrationForm.get('passport')?.invalid"
+                      class="text-danger fs-custom">
+                      Passport Number is required
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <label>Driving licence Number <span class="text-muted">(Optional)</span></label>
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="licence" placeholder="DL Number"
+                      class="form-control form-control-sm" />
+                    <div *ngIf="registrationForm.get('licence')?.touched && registrationForm.get('licence')?.invalid"
+                      class="text-danger fs-custom">
+                      DL Number is required
+                    </div>
+                  </div>
+                </div>
+
+
 
                 <div class="row mt-2">
                   <!-- <div class="col-md-3">
@@ -270,7 +342,7 @@
                   </div>
 
                   <div class="col-md-3">
-                    <label>Aadhaar <span class="text-danger">*</span></label>
+                    <label>Aadhar <span class="text-danger">*</span></label>
                     <input type="text" [readOnly]="isAllDataPresent" formControlName="adhar" placeholder="987698769876"
                       class="form-control form-control-sm" (keydown)="onlyNumbers($event)" maxlength="12" />
                     <div *ngIf="registrationForm.get('adhar')?.touched && registrationForm.get('adhar')?.invalid"
@@ -568,8 +640,8 @@
                 <div class="fw-bold text-start custom-text">{{ 'Education Details' | uppercase }}
                 </div>
                 <span class="fs-custom rounded-pill text-danger ml-2"
-                    aria-label="Fields marked with asterisk are required">(Minimum 3 Qualification are Required)
-                  </span>
+                  aria-label="Fields marked with asterisk are required">(Minimum 3 Qualification are Required)
+                </span>
                 <div class="text-end mt-0 align-items-center">
                   <span class="fs-custom rounded-pill text-danger"
                     aria-label="Fields marked with asterisk are required">(*) Required Fields
@@ -601,12 +673,15 @@
                         <div class="col-md-2">
                           <label *ngIf="!education.disabled">University/Institute <span
                               class="text-danger">*</span></label>
-                          <select formControlName="universityId" class="form-control form-control-sm"
+                          <select formControlName="universityId" class="form-control form-control-sm py-1"
                             [disabled]="education.disabled">
                             <option value="">Select</option>
-                            <option *ngFor="let university of universityOptions" [value]="university.id">{{
-                              university.name }}</option>
+                            <option *ngFor="let university of universityOptions" [value]="university.id">
+                              {{ university.name }}
+                            </option>
                           </select>
+
+
                           <div *ngIf="education.get('universityId')?.touched && education.get('universityId')?.invalid"
                             class="text-danger fs-custom">
                             University/Institute is required
@@ -702,6 +777,71 @@
                   </tr>
                 </thead> -->
                 <tbody>
+
+                  <!-- Aadhar card   -->
+                  <tr>
+                    <td class="fw-bold py-1 px-2">Aadhar card
+                      <span class="text-danger">*</span>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="aadharFile; else aadharFileInput">
+                          <button class="btn btn-info badge  badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(aadharFile)">View Document</button>
+                        </ng-container>
+                        <ng-template #aadharFileInput>
+                          <input type="file" formControlName="aadharFile" accept=".pdf" id="aadharFile" #aadharFileInput
+                            (change)="onFileSelect($event, 'aadharFile')"
+                            class="form-control form-control-sm file-input" />
+                        </ng-template>
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="aadharFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                          (click)="deleteFile('6')">Delete</button>
+                        <!-- <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
+                          (click)="setValidation('documents')">Save</button> -->
+                        <button *ngIf="aadharFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
+                          (click)="updateDocument('aadharFile')">Update</button>
+                      </div>
+                    </td>
+                  </tr>
+
+
+                  <!-- pan card -->
+
+                  <tr>
+                    <td class="fw-bold py-1 px-2">Pan card
+                      <span class="text-danger">*</span>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="panFile; else panFileInput">
+                          <button class="btn btn-info badge  badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(panFile)">View Document</button>
+                        </ng-container>
+                        <ng-template #panFileInput>
+                          <input type="file" formControlName="panFile" accept=".pdf" id="panFile" #panFileInput
+                            (change)="onFileSelect($event, 'panFile')"
+                            class="form-control form-control-sm file-input" />
+                        </ng-template>
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="panFile  && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                          (click)="deleteFile('7')">Delete</button>
+                        <!-- <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
+                          (click)="setValidation('documents')">Save</button> -->
+                        <button *ngIf="panFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                          (click)="updateDocument('panFile')">Update</button>
+                      </div>
+                    </td>
+                  </tr>
                   <!-- 10th Document -->
                   <tr>
                     <td class="fw-bold py-1 px-2">SSC (10th)
@@ -897,7 +1037,7 @@
                     </div>
                   </div>
                   <div class="col-md-2">
-                    <label>Joining Time <span class="text-danger">*</span></label>
+                    <label>Tentative Joining Date <span class="text-danger">*</span></label>
                     <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="joiningTime"
                       class="form-control form-control-sm">
                       <option value="">Select</option>
@@ -954,6 +1094,38 @@
                     </div>
                   </div>
                 </div>
+                <div *ngIf="!isFresher" class="row mb-2">
+
+                  <!-- Payslip Upload or View -->
+                  <div class="col-md-3">
+                    <ng-container *ngIf="!paySlipFilePath; else viewPayslip">
+                      <label *ngIf="editButtonDisplay">Payslip <span class="text-danger">*</span></label>
+                      <input *ngIf="editButtonDisplay" type="file" class="form-control form-control-sm"
+                        (change)="onFileChange($event, 'payslipFile')" />
+                    </ng-container>
+                    <ng-template #viewPayslip>
+                      <button class="btn btn-info btn-sm w-100 mt-4" (click)="viewFile(paySlipFilePath)">
+                        View Payslip
+                      </button>
+                    </ng-template>
+                  </div>
+
+                  <!-- Service Letter Upload or View -->
+                  <div class="col-md-3">
+                    <ng-container *ngIf="!serviceFilePath; else viewServiceLetter">
+                      <label *ngIf="editButtonDisplay">Service Letter <span class="text-danger">*</span></label>
+                      <input *ngIf="editButtonDisplay" type="file" class="form-control form-control-sm"
+                        (change)="onFileChange($event, 'serviceLetterFile')" />
+                    </ng-container>
+                    <ng-template #viewServiceLetter>
+                      <button class="btn btn-info btn-sm w-100 mt-4" (click)="viewFile(serviceFilePath)">
+                        View Service Letter
+                      </button>
+                    </ng-template>
+                  </div>
+
+                </div>
+
                 <hr *ngIf="editButtonDisplay && !isFresher" class="custom-h mb-1 mt-1" />
                 <div *ngIf="!isFresher">
                   <div class="row mt-3 mb-4">
@@ -986,15 +1158,16 @@
                       <!-- <input type="date" formControlName="LastOrStill_Working_Date"
                         class="form-control form-control-sm" /> -->
                       <input *ngIf="editButtonDisplay" type="text" id="LastOrStill_Working_Date"
-                        class="form-control form-control-sm" placeholder="yyyy-dd-mm"
+                        class="form-control form-control-sm" placeholder="dd-mm-yyyy"
                         formControlName="LastOrStill_Working_Date" autocomplete="off" [bsConfig]="{
-                        adaptivePosition: true,
-                        showWeekNumbers: false,
-                        isAnimated: true,
-                        containerClass: colorTheme,
-                        customTodayClass: 'custom-today-class',
-                        dateInputFormat: 'YYYY-MM-DD'
+                          adaptivePosition: true,
+                          showWeekNumbers: false,
+                          isAnimated: true,
+                          containerClass: colorTheme,
+                          customTodayClass: 'custom-today-class',
+                          dateInputFormat: 'DD-MM-YYYY'
                         }" bsDatepicker required readonly />
+
 
                       <div
                         *ngIf="registrationForm.get('LastOrStill_Working_Date')?.touched && registrationForm.get('LastOrStill_Working_Date')?.invalid"
@@ -1002,6 +1175,7 @@
                         Last Date is required
                       </div>
                     </div>
+
 
                     <div class="col-md-2 mt-4" *ngIf="editButtonDisplay">
                       <div class="">
@@ -1035,8 +1209,7 @@
                     </div>
 
                     <div class="col-md-2">
-                      <input type="text" class="form-control" [value]="lastWorkingformatDate(exp.lastWorkingDate)"
-                        readonly>
+                      <input type="text" class="form-control" [value]="exp.lastWorkingDate" readonly>
                     </div>
 
                     <div class="col-md-1 d-flex align-items-end" *ngIf="editButtonDisplay">
@@ -1291,4 +1464,13 @@
     <button class="close-btn" (click)="closePDF()">✖</button>
     <iframe [src]="fileURL" width="100%" height="100%"></iframe>
   </div>
+</div>
+
+
+
+<div *ngIf="panAlertMessage" class="custom-alert alert alert-warning alert-dismissible fade show slide-in" role="alert">
+  <strong>Warning!</strong> {{ panAlertMessage }}
+  <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
+    <span aria-hidden="true">&times;</span>
+  </button>
 </div>

@@ -124,7 +124,7 @@ export class JobcodeComponent implements OnInit {
       jobCtcMin: [null, Validators.required],
       jobCtcMax: [null, Validators.required],
       jobPreferableCompanies: [''],
-      jobDescription: ['', Validators.required],
+      jobDescription: [null],
       jobDescriptionFile: [{ value: null, disabled: false }, Validators.required]
     });
     { validators: [this.ctcRangeValidator, this.experienceRangeValidator] }

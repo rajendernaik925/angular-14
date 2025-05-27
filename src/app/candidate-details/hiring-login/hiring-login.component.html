@@ -1,10 +1,10 @@
 <div class="d-flex justify-content-center align-items-center full-height-90" *ngIf="logginStatus">
     <div class="card shadow p-4" style="width: 400px;">
         <img [src]="companyImage" alt="">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off"> 
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
             <div class="mb-3">
                 <input type="email" id="id" class="form-control" formControlName="email" placeholder="Enter your email"
-                 autocomplete="off" />
+                    autocomplete="off" />
                 <div *ngIf="submitted && loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')"
                     class="text-danger">
                     <small>ID is required.</small>
@@ -35,11 +35,33 @@
         </form>
     </div>
 </div>
-
+<!-- 
 <div class="loader attDnceLoadr" *ngIf="isLoading">
     <div class="spinner">
       <div class="bounce1"></div>
       <div class="bounce2"></div>
       <div class="bounce3"></div>
     </div>
-  </div>
+  </div> -->
+
+<div *ngIf="!logginStatus" class="container d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="bg-white rounded shadow-sm p-4 text-center" style="max-width: 500px; width: 100%;">
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+            <i class="bi bi-x-circle-fill me-2 fs-4"></i>
+            <div>
+                <strong>Authentication failed.</strong> Your login link may have expired; please send yourself a new
+                sign in link.
+            </div>
+        </div>
+        <h3 class="fw-bold mb-2">Login Link Expired</h3>
+        <p class="text-muted mb-4">
+            Link expired or used. Contact admin for a new one
+        </p>
+        <!-- <button *ngIf="!requestToSendLInk" class="btn btn-primary px-4 py-2 rounded-pill" (click)="newLink()">
+            Send me a new link
+        </button>
+        <span *ngIf="requestToSendLInk" class="text-muted mb-4">
+            A new login link has been sent. Please check your email and wait for the link.
+        </span> -->
+    </div>
+</div>

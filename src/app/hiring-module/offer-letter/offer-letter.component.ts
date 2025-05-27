@@ -33,6 +33,10 @@ export class OfferLetterComponent implements OnInit {
   colorTheme = 'theme-dark-blue';
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
+  today: Date = new Date();
+  panAlertMessage: string | null = null;
+  private panAlertTimeout: any;
+
 
 
 
@@ -69,12 +73,13 @@ export class OfferLetterComponent implements OnInit {
         this.rows = res.map((item: any, index: number) => ({
           jobcodeId: item.jobcodeId || 'N/A',
           jcReferanceId: item.jcReferanceId || 'N/A',
-          employeeId: item.candidateId || 'N/A',
+          employeeId: item.employeeId || 'N/A',
+          candidateId: item.candidateId || 'N/A',
           name: item.candidateName || 'N/A',
           jobTitleName: item.jobTitleName || 'N/A',
           deptName: item.deptName || 'N/A',
           expectedCtc: item.expectedCtc || 'N/A',
-          joiningDate: item.joiningDate ? moment(item.joiningDate).format('YYYY-MM-DD') : null,
+          joiningDate: item.joiningDate,
           status: item.status || 'N/A',
           offerLink: item.offerLetterFile || 'N/A'
         }));
@@ -95,16 +100,14 @@ export class OfferLetterComponent implements OnInit {
   generateColumns() {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
-      { key: 'expectedCtc', label: 'Propoesed CTC', uppercase: true },
+      { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
       { key: 'name', label: 'Candidate Name', uppercase: true },
       { key: 'deptName', label: 'Dept Name', uppercase: true },
-      // { key: 'jobTitleName', label: 'Job Title', uppercase: true },
       { key: 'joiningDate', label: 'Actual Date Of Join (editable)', uppercase: true },
-      // { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
-      // { key: 'createdBy', label: 'Created By', uppercase: true },
-      // { key: 'status', label: 'Status', uppercase: true },
       { key: 'employeeId', label: 'Action', center: true, clickable: true }
     ];
+
+
   }
 
 
@@ -252,31 +255,33 @@ export class OfferLetterComponent implements OnInit {
 
     // this.GenerateOffer(row.employeeId);
     this.updateJoiningDate(row.employeeId, formattedDate);
-
+    console.log(row.employeeId)
   }
 
 
   updateJoiningDate(employeeId: string, joiningDate: string): void {
+    console.log(employeeId)
     this.isLoading = true;
     const formData = new FormData();
     formData.append('employeeId', employeeId);
     formData.append('doj', joiningDate);
 
     this.authService.updateJoingDate(formData).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
         console.log('Updated successfully');
-        Swal.fire({
-          title: 'Success',
-          text: 'Date Updated Successfully!',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
+        // Swal.fire({
+        //   title: 'Success',
+        //   text: 'Date Updated Successfully!',
+        //   icon: 'success',
+        //   showConfirmButton: false,
+        //   timer: 1000,
+        //   timerProgressBar: true,
+        // });
+        this.showInvalidPanAlert('Date Updated Successfully!');
         this.offerCandidates();
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.isLoading = false;
         Swal.fire({
           title: 'OOPS',
@@ -290,7 +295,21 @@ export class OfferLetterComponent implements OnInit {
     });
   }
 
+  private showInvalidPanAlert(message: string): void {
+    this.panAlertMessage = message;
 
+    clearTimeout(this.panAlertTimeout);
+    this.panAlertTimeout = setTimeout(() => {
+      this.panAlertMessage = null;
+    }, 2000); // alert visible for 2 seconds
+  }
+
+
+
+
+  closeAlert() {
+    this.panAlertMessage = null;
+  }
 
 
 

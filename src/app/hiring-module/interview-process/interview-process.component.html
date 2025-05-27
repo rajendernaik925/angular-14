@@ -392,6 +392,80 @@
           </table>
         </div>
 
+        <div class="card p-3 mb-3">
+          <div class="row mb-2">
+            <div class="col">
+              <h6 class="text-decoration-underline fw-bold mb-0">Files</h6>
+            </div>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Resume
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Photo
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Aadhar
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  PAN Card
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  10th
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Intermediate
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  B.Tech
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Payslip
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Service Letter
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
 
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline">
@@ -707,7 +781,12 @@
   </div>
 </ng-template>
 
-
+<div *ngIf="showPDF" class="overlay">
+  <div class="pdf-container">
+    <button class="close-btn" (click)="closePDF()">✖</button>
+    <iframe [src]="fileURL" width="100%" height="100%"></iframe>
+  </div>
+</div>
 
 
 

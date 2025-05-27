@@ -45,43 +45,22 @@
                             </thead>
                             <tbody *ngIf="paginatedRows.length > 0; else noData">
                                 <tr *ngFor="let row of paginatedRows" class="table-hoverr">
-                                    <td *ngFor="let col of columns" class="small-header"
-                                        [ngClass]="{ 'text-uppercase': col.uppercase, 'text-center': col.center }"
-                                        [hidden]="col.key === 'status' && row['status'] === '1001'">
-
-                                        <!-- Action button cell -->
-                                        <ng-container
-                                            *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
-                                            <button
-                                                *ngIf="row['offerLink'] && row['offerLink'] !== 'N/A'; else generateButton"
-                                                class="border-none custom-action-btn px-2 custom-bg text-white"
-                                                (click)="moveToHrms(row[col.key])">
-                                                Move To HRMS
-                                            </button>
-
-                                            <ng-template #generateButton>
-                                                <button class="border-none custom-action-btn px-2"
-                                                    [ngClass]="row['status'] === '1002' ? 'bg-secondary text-white' : 'text-muted'"
-                                                    [disabled]="row['status'] === '1002'">
-                                                    {{ row['status'] === '1002' ? 'Offer Letter Pending' : 'Offer Letter Pending' }}
-                                                </button>
-                                            </ng-template>
-                                        </ng-container>
-
-                                        <!-- Normal cell handling -->
-                                        <ng-template #normalCell>
-                                            <ng-container *ngIf="col.key === 'joiningDate'; else defaultCell">
-                                                <span>{{ row[col.key] ? (row[col.key] | date: 'yyyy-MM-dd') : '--'
-                                                    }}</span>
-                                            </ng-container>
-                                            <ng-template #defaultCell>
-                                                <span [innerHTML]="highlightMatch(row[col.key])"></span>
-                                            </ng-template>
-                                        </ng-template>
-
+                                    <td class="small-header text-uppercase">{{ row.jcReferanceId || '--' }}</td>
+                                    <td class="small-header text-uppercase">{{ row.expectedCtc || '--' }}</td>
+                                    <td class="small-header text-uppercase">{{ row.name || '--' }}</td>
+                                    <td class="small-header text-uppercase">{{ row.deptName || '--' }}</td>
+                                    <td class="small-header text-uppercase">
+                                        {{ row.joiningDate ? (row.joiningDate) : '--' }}
+                                    </td>
+                                    <td class="small-header text-center">
+                                        <button class="border-none custom-action-btn px-2 custom-bg text-white"
+                                            (click)="moveToHrms(row.employeeId)">
+                                            Move To HRMS
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
+
 
 
 

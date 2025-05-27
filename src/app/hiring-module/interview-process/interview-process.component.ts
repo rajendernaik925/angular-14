@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { debounceTime } from 'rxjs';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
@@ -56,6 +56,9 @@ export class InterviewProcessComponent implements OnInit {
   totalRegionsList: any;
   totalStatesList: any;
   totalCitiesList: any;
+  resumeFile: string | null = null;
+  fileURL: SafeResourceUrl | null = null;
+  showPDF: boolean = false;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -89,12 +92,12 @@ export class InterviewProcessComponent implements OnInit {
       this.processCandidates();
     });
 
-  this.totalDivisions();
-  this.totalDesignations();
-  this.totalDepartments();
-  this.totalRegions();
-  this.totalStates();
-  // this.totalCities();
+    this.totalDivisions();
+    this.totalDesignations();
+    this.totalDepartments();
+    this.totalRegions();
+    this.totalStates();
+    // this.totalCities();
   }
 
   // toggleSidebar() {
@@ -195,7 +198,7 @@ export class InterviewProcessComponent implements OnInit {
   }
 
   onHrStatusChange(value: string) {
-    this.selectedHrStatus = Number(value); 
+    this.selectedHrStatus = Number(value);
   }
 
   totalInterviewRounds() {
@@ -221,18 +224,18 @@ export class InterviewProcessComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
 
-          this.rows = res.list?.map((item: any) => ({
-            job_code: item.jcReferanceId || '--',
-            email: item.email || '--',
-            firstname: item.name || '--',
-            interviewDateTime: item?.candidateInterviewDetailsDTO?.interviewTime && item?.candidateInterviewDetailsDTO?.interviewDate
-              ? `⏱️${item.candidateInterviewDetailsDTO.interviewTime} ( ${item.candidateInterviewDetailsDTO.interviewDate} )`
-              : item.status,
-            mobilenumber: item.mobileNumber || '--',
-            job_title: item.jobTitleName || '--',
-            employeeid: item.candidateId || '--',
-            interviewStatus: item.candidateInterviewDetailsDTO?.status || null,
-          })) || [];
+        this.rows = res.list?.map((item: any) => ({
+          job_code: item.jcReferanceId || '--',
+          email: item.email || '--',
+          firstname: item.name || '--',
+          interviewDateTime: item?.candidateInterviewDetailsDTO?.interviewTime && item?.candidateInterviewDetailsDTO?.interviewDate
+            ? `⏱️${item.candidateInterviewDetailsDTO.interviewTime} ( ${item.candidateInterviewDetailsDTO.interviewDate} )`
+            : item.status,
+          mobilenumber: item.mobileNumber || '--',
+          job_title: item.jobTitleName || '--',
+          employeeid: item.candidateId || '--',
+          interviewStatus: item.candidateInterviewDetailsDTO?.status || null,
+        })) || [];
         this.totalRecords = Number(res.totalCount) || 0;
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
         if (this.currentPage > this.totalPages) {
@@ -259,7 +262,7 @@ export class InterviewProcessComponent implements OnInit {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
       { key: 'email', label: 'User Mail Id', uppercase: true },
-      { key: 'firstname', label: 'First Name', uppercase: true },
+      { key: 'firstname', label: 'Candidate Name', uppercase: true },
       { key: 'mobilenumber', label: 'Mobile', uppercase: true },
       { key: 'job_title', label: 'Job Title', uppercase: true },
       // { key: 'status', label: 'Status', center: true },
@@ -277,13 +280,14 @@ export class InterviewProcessComponent implements OnInit {
   }
 
   handleAction(employeeId: any, interviewStatusCode: number | null) {
-    console.log("inter : ",interviewStatusCode)
+    console.log("inter : ", interviewStatusCode)
     this.isLoading = true;
     this.employeeId = employeeId
     this.authService.registeredData(employeeId).subscribe({
-      next: (res) => {
+      next: (res:any) => {
         this.isLoading = false;
         this.candidateData = res;
+         this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
         // console.log("candidate data : ", this.candidateData);
         const candidateInterviewDetails = this.candidateData.candidateInterviewDetails;
 
@@ -306,9 +310,9 @@ export class InterviewProcessComponent implements OnInit {
           // if (lastInterviewDate && lastInterviewStatus === 1001) {
           //   this.disableFeedBack = true;
           // }
-          
+
           this.disableFeedBack = interviewStatusCode === 1001 ? true : false;
-          
+
           // console.log("Last Interview Round Name:", lastInterviewRoundName);
           if (lastInterviewRoundName === 'HR') {
             this.finalHrRound = true;
@@ -600,55 +604,55 @@ export class InterviewProcessComponent implements OnInit {
 
   totalDivisions() {
     this.authService.masterBu().subscribe({
-      next: (res:any) => {
-        console.log("total divisions : ",res);
+      next: (res: any) => {
+        console.log("total divisions : ", res);
         this.totalDivisionsList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
   }
   totalDesignations() {
     this.authService.jobTitle().subscribe({
-      next: (res:any) => {
-        console.log("total designation: ",res);
+      next: (res: any) => {
+        console.log("total designation: ", res);
         this.totalDesignationsList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
   }
   totalDepartments() {
     this.authService.totalDepartments().subscribe({
-      next: (res:any) => {
-        console.log("total designation: ",res);
+      next: (res: any) => {
+        console.log("total designation: ", res);
         this.totalDepartmentsList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
   }
   totalRegions() {
     this.authService.totalRegions().subscribe({
-      next: (res:any) => {
-        console.log("total designation: ",res);
+      next: (res: any) => {
+        console.log("total designation: ", res);
         this.totalRegionsList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
   }
   totalStates() {
     this.authService.states().subscribe({
-      next: (res:any) => {
-        console.log("total designation: ",res);
+      next: (res: any) => {
+        console.log("total designation: ", res);
         this.totalStatesList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
@@ -661,15 +665,38 @@ export class InterviewProcessComponent implements OnInit {
       this.totalCities(selectedStateId);
     }
   }
-  totalCities(id:any) {
+  totalCities(id: any) {
     this.authService.cities(id).subscribe({
-      next: (res:any) => {
-        console.log("total designation: ",res);
+      next: (res: any) => {
+        console.log("total designation: ", res);
         this.totalCitiesList = res;
       },
-      error:(err:HttpErrorResponse) => {
+      error: (err: HttpErrorResponse) => {
         // console.log("error : ",err)
       }
     })
+  }
+
+  viewFile(file: any) {
+    this.dialog.closeAll();
+    if (!file) {
+      console.error("No file available for download.");
+      return;
+    }
+
+    const byteCharacters = atob(file);
+    const byteNumbers = new Array(byteCharacters?.length)
+      .fill(0)
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
+    const objectURL = URL.createObjectURL(blob);
+    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+    this.showPDF = true;
+  }
+
+  closePDF() {
+    this.showPDF = false; // Hide the modal
+    this.fileURL = null; // Clear the URL
   }
 }

@@ -156,3 +156,94 @@ button
 
 .filled-bg
   background-color: rgba(0, 123, 255, 0.1)
+
+
+
+
+.custom-alert
+  position: fixed
+  top: 50%          // vertical center
+  left: 50%         // horizontal center
+  transform: translate(-50%, -50%)  // center both ways
+  min-width: 250px
+  z-index: 1050
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2)
+  transition: opacity 0.4s ease-in-out
+  opacity: 0
+  pointer-events: none
+
+.custom-alert.slide-in
+  opacity: 1
+  pointer-events: auto
+
+.custom-alert.slide-out
+  opacity: 0
+  pointer-events: none
+
+
+
+.mobile-sidebar
+  position: fixed
+  top: 0
+  right: -250px
+  width: 250px
+  height: 100%
+  z-index: 1050
+  transition: right 0.3s ease
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1)
+  overflow-y: auto
+
+  &.open
+    right: 0
+
+.mobile-sidebar-overlay
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  background: rgba(0,0,0,0.5)
+  z-index: 1049
+
+
+
+.mobile-sidebar
+  position: fixed
+  top: 0
+  right: -250px
+  width: 250px
+  height: 100%
+  z-index: 1050
+  background: #fff
+  transition: right 0.3s ease
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1)
+  overflow-y: auto
+
+  &.open
+    right: 0
+
+  ul
+    padding: 0
+
+.mobile-nav-item
+  padding: 0.75rem 1rem
+  font-size: 1rem
+  border-radius: 0.25rem
+  cursor: pointer
+  transition: background 0.2s ease
+  &:hover
+    background: #f0f0f0
+
+  &.active
+    background: #007bff
+    color: #fff
+    font-weight: 600
+
+.mobile-sidebar-overlay
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  background: rgba(0, 0, 0, 0.5)
+  z-index: 1049

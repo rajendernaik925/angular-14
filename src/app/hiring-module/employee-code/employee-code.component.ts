@@ -60,20 +60,20 @@ export class EmployeeCodeComponent implements OnInit {
   offerCandidates() {
     this.isLoading = true;
 
-    this.authService.offerCandidates().subscribe({
+    this.authService.employeeOnboarding().subscribe({
       next: (res: any) => {
         console.log("hold candidates : ", res);
         this.isLoading = false;
 
         this.rows = res.map((item: any, index: number) => ({
-          jobcodeId: item.jobcodeId || 'N/A',
-          jcReferanceId: item.jcReferanceId || 'N/A',
-          employeeId: item.candidateId || 'N/A',
+          jobcodeId: item.jobcodeId || 'N/A',              // You had jcReferanceId in columns, but mapping jobcodeId here
+          jcReferanceId: item.jcReferanceId || 'N/A',      // Keep this if you want both or choose one
+          employeeId: item.candidateId || 'N/A',           // candidateId mapped to employeeId for action
           name: item.candidateName || 'N/A',
           jobTitleName: item.jobTitleName || 'N/A',
           deptName: item.deptName || 'N/A',
           expectedCtc: item.expectedCtc || 'N/A',
-          joiningDate: item.joiningDate ? moment(item.joiningDate).format('YYYY-MM-DD') : null,
+          joiningDate: item.joiningDate, // formatted to dd-mm-yyyy
           status: item.status || 'N/A',
           offerLink: item.offerLetterFile || 'N/A'
         }));
@@ -93,16 +93,12 @@ export class EmployeeCodeComponent implements OnInit {
 
   generateColumns() {
     this.columns = [
-      { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
-      { key: 'expectedCtc', label: 'Propoesed CTC', uppercase: true },
+      { key: 'jcReferanceId', label: 'Job Code', uppercase: true },    // Use jcReferanceId if you want Job Code as per columns
+      { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
       { key: 'name', label: 'Candidate Name', uppercase: true },
       { key: 'deptName', label: 'Dept Name', uppercase: true },
-      // { key: 'jobTitleName', label: 'Job Title', uppercase: true },
       { key: 'joiningDate', label: 'Date Of Join', uppercase: true },
-      // { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
-      // { key: 'createdBy', label: 'Created By', uppercase: true },
-      // { key: 'status', label: 'Status', uppercase: true },
-      { key: 'employeeId', label: 'Action', center: true, clickable: true }
+      { key: 'employeeId', label: 'Action', center: true, clickable: true }  // action button uses employeeId (candidateId)
     ];
   }
 
