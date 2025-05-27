@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from 'src/app/auth.service';
 import Swal from 'sweetalert2';
 
@@ -17,7 +17,7 @@ export class ProfileListComponent implements OnInit {
   columns = [
     { key: 'job_code', label: 'Job Code', uppercase: true },
     { key: 'email', label: 'User Mail ID', uppercase: true },
-    { key: 'firstname', label: 'First Name', uppercase: true },
+    { key: 'firstname', label: 'Candidate Name', uppercase: true },
     { key: 'mobilenumber', label: 'Mobile', uppercase: true },
     { key: 'job_title', label: 'Job Title', uppercase: true },
     { key: 'status', label: 'Status', uppercase: true },
@@ -34,6 +34,9 @@ export class ProfileListComponent implements OnInit {
   searchQueryText: string = '';
   totalRecords: number = 0;
   totalPages: number = 1;
+  resumeFile: string | null = null;
+  fileURL: SafeResourceUrl | null = null;
+  showPDF: boolean = false;
 
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   private dialogRef: any;
@@ -102,9 +105,10 @@ export class ProfileListComponent implements OnInit {
 
     this.isLoading = true;
     this.authService.registeredData(employeeId).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
         this.candidateData = res || {};
+        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
         this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
         console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
         this.openDialog();
@@ -116,8 +120,49 @@ export class ProfileListComponent implements OnInit {
     });
   }
 
+  viewFile(file: any) {
+    this.dialog.closeAll();
+    if (!file) {
+      console.error("No file available for download.");
+      return;
+    }
 
+    const byteCharacters = atob(file);
+    const byteNumbers = new Array(byteCharacters?.length)
+      .fill(0)
+      .map((_, i) => byteCharacters.charCodeAt(i));
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: "application/pdf" });
 
+    const objectURL = URL.createObjectURL(blob);
+
+    // ✅ Sanitize the URL before assigning
+    this.fileURL = this.sanitizer.bypassSecurityTrustResourceUrl(objectURL);
+    this.showPDF = true;
+    // if (!file) {
+    //   console.error("No file available for download.");
+    //   return;
+    // }
+
+    // const byteCharacters = atob(file); 
+    // const byteNumbers = new Array(byteCharacters?.length)
+    //   .fill(0)
+    //   .map((_, i) => byteCharacters.charCodeAt(i));
+    // const byteArray = new Uint8Array(byteNumbers);
+    // const blob = new Blob([byteArray], { type: "application/pdf" }); 
+
+    // const a = document.createElement("a");
+    // a.href = URL.createObjectURL(blob);
+    // a.download = "document.pdf";
+    // document.body.appendChild(a);
+    // a.click();
+    // document.body.removeChild(a);
+  }
+
+  closePDF() {
+    this.showPDF = false; // Hide the modal
+    this.fileURL = null; // Clear the URL
+  }
 
   openDialog() {
     this.dialogRef = this.dialog.open(this.aboutCandidateDialog, {
@@ -291,14 +336,6 @@ export class ProfileListComponent implements OnInit {
       buttonsStyling: false
     });
   }
-
-
-
-
-
-
-
-
 
   sendRemainder() {
     Swal.fire({

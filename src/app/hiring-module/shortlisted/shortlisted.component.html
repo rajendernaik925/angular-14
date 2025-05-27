@@ -154,70 +154,10 @@
   </div>
 </div>
 
-<!-- loader -->
-<div class="loader attDnceLoadr" *ngIf="">
-  <div class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  </div>
-</div>
 
-
-<div class="offcanvas-right" [class.show]="isOpen">
-  <div class="offcanvas-header">
-    <h5 class="custom-text fw-bold">Filter </h5>
-    <button type="button" class="close" (click)="closeOffcanvas()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="container mt-3">
-    <!-- Name Filter -->
-    <div class="form-group">
-      <label for="nameFilter">Select Name</label>
-      <select class="form-control form-control-sm" id="nameFilter">
-        <option value="">Select</option>
-        <option value="rajender">Rajender</option>
-        <option value="sisisha">Sirisha</option>
-        <option value="anusha">Anusha</option>
-        <option value="durga">Durga</option>
-      </select>
-    </div>
-
-    <!-- Date Filter -->
-    <div class="form-group">
-      <label for="dateFilter">Select Date</label>
-      <input type="date" class="form-control form-control-sm" id="dateFilter">
-    </div>
-
-    <!-- Category Filter -->
-    <div class="form-group">
-      <label for="categoryFilter">Category</label>
-      <select class="form-control form-control-sm" id="categoryFilter">
-        <option value="">Select</option>
-        <option value="category1">Category 1</option>
-        <option value="category2">Category 2</option>
-        <option value="category3">Category 3</option>
-      </select>
-    </div>
-
-    <!-- Buttons -->
-    <div class="form-group">
-      <div class="row">
-        <div class="col-6">
-          <button class="btn btn-sm custom-bg text-light w-100" (click)="applyFilter()">Filter</button>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-sm btn-danger w-100" (click)="closeOffcanvas()">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
 
 <ng-template #aboutCandidateDialog>
-  <div class="animate-zoom">
+  <div class="animate-zoom modal-body">
     <div class="container">
       <div class="row mb-2 align-items-center">
         <div class="col-md-10">
@@ -245,6 +185,7 @@
         class="scroll-container">
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline"><strong>Basic Details</strong></span>
+
           <div class="row">
             <div class="col-md-4">
               <strong>Name:</strong>
@@ -342,16 +283,17 @@
 
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline"><strong>Education</strong></span>
-          <table class="table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Type</th>
-                <th>University</th>
-                <th>Qualification</th>
-                <th>Year</th>
-                <th>Percentage</th>
+          <table  class="custom-table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
+            <thead>
+              <tr>
+                <th class="small-header">Type</th>
+                <th class="small-header">University</th>
+                <th class="small-header">Qualification</th>
+                <th class="small-header">Year</th>
+                <th class="small-header">Percentage</th>
               </tr>
             </thead>
+            
             <tbody>
               <tr *ngFor="let edu of candidateData?.candidateEducationDetails">
                 <td class="small-header">{{ edu?.educationTypeName }}</td>
@@ -389,27 +331,101 @@
           </div>
 
           <!-- Show Table Only if NOT Fresher -->
-          <table class="table table-bordered"
+          <div class="table-container">
+            <table class="custom-table"
             *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
-            <thead class="table-dark">
-              <tr class="small-header">
-                <th>Company</th>
-                <th>Total Experience (Years)</th>
-                <th>Last Working Date</th>
+            <thead>
+              <tr>
+                <th class="custom-th small-header-dialog">Company</th>
+                <th class="custom-th small-header-dialog">Total Experience (Years)</th>
+                <th class="custom-th small-header-dialog">Last Working Date</th>
               </tr>
             </thead>
+            
             <tbody>
               <tr *ngFor="let exp of candidateData.candidateExperienceDetails.candidateCompanyDetails">
                 <td class="small-header">{{ exp.companyName }}</td>
                 <td class="small-header">{{ exp.totalExp }}</td>
-                <td class="small-header">{{ exp.lastWorkingDate | date: 'dd-MM-yyyy' }}</td>
+                <td class="small-header">{{ exp.lastWorkingDate }}</td>
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
 
+        <div class="card p-3 mb-3">
+          <div class="row mb-2">
+            <div class="col">
+              <h6 class="text-decoration-underline fw-bold mb-0">Files</h6>
+            </div>
+          </div>
 
-
+          <div class="row g-2">
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Resume
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Photo
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Aadhar
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  PAN Card
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  10th
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Intermediate
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  B.Tech
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Payslip
+                </button>
+              </ng-container>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-1">
+              <ng-container *ngIf="resumeFile">
+                <button class="btn btn-outline-custom btn-sm w-100 shadow-sm small" (click)="viewFile(resumeFile)">
+                  Service Letter
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </div>
 
 
         <div class="card p-2 mb-3">
@@ -426,46 +442,57 @@
                   <th class="custom-th small-header">Interview Time</th>
                   <th class="custom-th small-header">Interviewer</th>
                   <th class="custom-th small-header">Round Name</th>
-                  <th class="custom-th small-header">Location</th>
+                  <!-- <th class="custom-th small-header">Location</th> -->
                   <th class="custom-th small-header">Status</th>
                   <th class="custom-th small-header">Feedback</th>
                 </tr>
               </thead>
               <tbody>
                 <ng-container *ngFor="let exp of candidateData.candidateInterviewDetails">
-                  <tr *ngIf="exp.interviewTime">
-                    <td class="custom-td small-header">{{ exp.roundNo }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewDate | date: 'dd-MMM-yyyy' }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewTime }}</td>
-                    <td class="custom-td small-header">{{exp.interviewByName}}-{{ exp.interviewBy }}</td>
-                    <td class="custom-td small-header">{{ exp.level }} ({{exp.interviewRoundName || 'Initial'}})</td>
-                    <!-- <td class="custom-td small-header text-break">{{ exp.locationName }}</td> -->
-                     <td class="custom-td small-header text-break" title="{{ exp.locationName }}"
+                  <tr *ngIf="exp.interviewScheduleId">
+                    <td class="custom-td small-header">{{ exp.roundNo || 'NA' }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewDate ? (exp.interviewDate )
+                      : 'NA' }}</td>
+                    <td class="custom-td small-header">{{ exp.interviewTime || 'NA' }}</td>
+                    <td class="custom-td small-header">
+                      {{ (exp.interviewByName ? exp.interviewByName : 'NA') }} - {{ (exp.interviewBy ? exp.interviewBy :
+                      'NA') }}
+                    </td>
+                    <td class="custom-td small-header">
+                      {{ exp.level || 'NA' }} ({{ exp.interviewRoundName || 'Initial' }})
+                    </td>
+                    <!-- <td class="custom-td small-header text-break" [attr.title]="exp.locationName || 'NA'"
                       style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
                       data-bs-toggle="tooltip" data-bs-placement="top">
-                      {{ exp.locationName | slice:0:40 }}{{ exp.locationName.length > 40 ? '...' : '' }}
-                    </td>
+                      {{
+                      (exp.locationName && exp.locationName.trim() !== '' ? exp.locationName.slice(0, 40) +
+                      (exp.locationName.length > 40 ? '...' : '') : 'NA')
+                      }}
+                    </td> -->
                     <td class="custom-td small-header" [ngSwitch]="exp.status">
                       <span *ngSwitchCase="1001" class="text-warning">Pending</span>
                       <span *ngSwitchCase="1002" class="text-danger">Cancelled</span>
                       <span *ngSwitchCase="1004" class="text-success">Approved</span>
                       <span *ngSwitchCase="1005" class="text-info">Hold</span>
                       <span *ngSwitchCase="1006" class="text-danger">Rejected</span>
-                      <span *ngSwitchDefault>{{ exp.status }}</span> <!-- fallback -->
+                      <span *ngSwitchDefault>{{ exp.status || 'NA' }}</span>
                     </td>
                     <td class="custom-td small-header text-break">
                       <ng-container *ngIf="exp.candidateInterviewFeedBackDTO?.length > 0; else pending">
-                        <button class="btn btn-sm custom-bg text-white text-break"
-                          (click)="feedbackView(exp,candidateData?.candidatePersonalInformationDetails?.firstName,candidateData?.candidatePersonalInformationDetails?.email)">
+                        <button type="button" class="btn btn-sm custom-bg text-white text-break" (click)="feedbackView(
+                          exp,
+                          candidateData?.candidatePersonalInformationDetails?.firstName || 'NA',
+                          candidateData?.candidatePersonalInformationDetails?.email || 'NA')">
                           View
                         </button>
+
                       </ng-container>
                       <ng-template #pending>
                         <span class="text-warning">Pending</span>
                       </ng-template>
                     </td>
-
                   </tr>
+
                 </ng-container>
               </tbody>
 
@@ -490,7 +517,12 @@
   </div>
 </ng-template>
 
-
+<div *ngIf="showPDF" class="overlay">
+  <div class="pdf-container">
+    <button class="close-btn" (click)="closePDF()">✖</button>
+    <iframe [src]="fileURL" width="100%" height="100%"></iframe>
+  </div>
+</div>
 
 
 <div class="loader attDnceLoadr" *ngIf="isLoading">

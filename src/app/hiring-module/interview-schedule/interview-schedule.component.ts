@@ -163,7 +163,7 @@ export class InterviewScheduleComponent implements OnInit {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
       { key: 'email', label: 'User Mail Id', uppercase: true },
-      { key: 'firstname', label: 'First Name', uppercase: true },
+      { key: 'firstname', label: 'Candidate Name', uppercase: true },
       // { key: 'lastname', label: 'Last Name', uppercase: true },
       { key: 'mobilenumber', label: 'Mobile', uppercase: true },
       { key: 'job_title', label: 'Job Title', uppercase: true },
@@ -314,18 +314,42 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
 
-  generateTimeSlots() {
-    this.timeSlots = []; // Clear existing slots if needed
-    const interval = 15; // 15-minute intervals
+  // generateTimeSlots() {
+  //   this.timeSlots = []; // Clear existing slots if needed
+  //   const interval = 15; // 15-minute intervals
 
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minutes = 0; minutes < 60; minutes += interval) {
-        const h = hour.toString().padStart(2, '0');
-        const m = minutes.toString().padStart(2, '0');
-        this.timeSlots.push(`${h}:${m}`);
-      }
+  //   for (let hour = 0; hour < 24; hour++) {
+  //     for (let minutes = 0; minutes < 60; minutes += interval) {
+  //       const h = hour.toString().padStart(2, '0');
+  //       const m = minutes.toString().padStart(2, '0');
+  //       this.timeSlots.push(`${h}:${m}`);
+  //     }
+  //   }
+  // }
+
+  generateTimeSlots() {
+  this.timeSlots = [];
+  const interval = 15; // 15-minute intervals
+  const startHour = 8; // 8:00 AM
+  const endHour = 22;  // 10:00 PM
+
+  for (let hour = startHour; hour <= endHour; hour++) {
+    for (let minutes = 0; minutes < 60; minutes += interval) {
+      if (hour === endHour && minutes > 0) break; // don't add times after 10:00 PM
+
+      const date = new Date();
+      date.setHours(hour);
+      date.setMinutes(minutes);
+
+      let hours12 = hour % 12 || 12;
+      const ampm = hour < 12 ? 'AM' : 'PM';
+      const minStr = minutes.toString().padStart(2, '0');
+
+      this.timeSlots.push(`${hours12}:${minStr} ${ampm}`);
     }
   }
+}
+
 
 
 

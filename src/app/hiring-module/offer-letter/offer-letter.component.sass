@@ -244,3 +244,25 @@ $z-index-offcanvas: 1050
 .blink-border
   animation: blink-border 1s infinite
 
+
+.custom-alert
+  position: fixed
+  top: 20px
+  left: 50%
+  transform: translateX(-50%)
+  min-width: 250px
+  z-index: 1050
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2)
+  transition: opacity 0.4s ease-in-out
+  opacity: 0
+  pointer-events: none
+
+  &.slide-in
+    opacity: 1
+    pointer-events: auto
+
+  &.slide-out
+    opacity: 0
+    pointer-events: none
+
+

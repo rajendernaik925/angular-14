@@ -897,7 +897,7 @@ export class AuthService {
   }
 
 
-  private jobCodeUrls: string = "http://192.168.214.109:2025/";
+  private jobCodeUrls: string = "http://192.168.214.248:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -1008,6 +1008,12 @@ export class AuthService {
 
   states() {
     return this.http.get(`${this.jobCodeUrls}master/states`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
+  bloodGroup() {
+    return this.http.get(`${this.jobCodeUrls}master/bloodgroup`).pipe(
       catchError(this.handleError)
     )
   }
@@ -1168,6 +1174,12 @@ export class AuthService {
     )
   }
 
+  employeeOnboarding() {
+    return this.http.get(`${this.jobCodeUrls}hiring/employeeonboarding`).pipe(
+      catchError(this.handleError)
+    )
+  }
+
   onBoardingCandidates() {
     return this.http.get(`${this.jobCodeUrls}hiring/employeeonboarding`).pipe(
       catchError(this.handleError)
@@ -1185,7 +1197,7 @@ export class AuthService {
       catchError(this.handleError)
     )
   }
-  
+
   totalDepartments() {
     return this.http.get(`${this.jobCodeUrls}master/department`)
   }
@@ -1194,15 +1206,15 @@ export class AuthService {
   }
 
   /// Departments List
-  
-  listOfManagersforOrganogram(empId:any) {
+
+  listOfManagersforOrganogram(empId: any) {
     return this.http.get(`${this.jobCodeUrls}organogram/departments/${empId}`).pipe(
       catchError(this.handleError)
     )
   }
 
   // Deparment Under Leads
-  listOfTeamleads(loginId:any, id:any) {
+  listOfTeamleads(loginId: any, id: any) {
     return this.http.get(`${this.jobCodeUrls}organogram/empdata/${loginId}/${id}`).pipe(
       catchError(this.handleError)
     )
@@ -1215,11 +1227,30 @@ export class AuthService {
   }
 
   GenerateOffer(id: any): Observable<HttpResponse<any>> {
-  return this.http.get(`${this.jobCodeUrls}report/generate/${id}`, {
-    observe: 'response',
-    responseType: 'text' as 'json' // Forces Angular to treat text as JSON
-  });
-}
+    return this.http.get(`${this.jobCodeUrls}report/generate/${id}`, {
+      observe: 'response',
+      responseType: 'text' as 'json' // Forces Angular to treat text as JSON
+    });
+  }
+
+
+
+
+
+
+
+
+
+
+  // fakeAPI
+  getData() {
+    return this.http.get(`https://fakestoreapi.com/products`)
+  }
+
+  getCategoryData(name:string) {
+    return this.http.get(`https://fakestoreapi.com/products/category/${name}`)
+  }
+
 
 
 

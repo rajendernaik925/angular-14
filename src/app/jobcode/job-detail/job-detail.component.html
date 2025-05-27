@@ -4,14 +4,14 @@
 
 <div class="mt-3">
   <div class="row">
-    <div class="col-md-3 mb-2">
+    <div class="col-md-2 mb-2">
       <div class="card border-0 p-0">
         <div class="card-body p-2">
           <app-side-bar></app-side-bar>
         </div>
       </div>
     </div>
-    <div class="col-md-9 slide-in">
+    <div class="col-md-10 slide-in">
       <div class="card border-0 shadow-sm">
         <div *ngIf="jobCodeResData?.jcReferenceId" class="card-body">
           <div class="d-flex justify-content-between align-items-center">
@@ -64,17 +64,19 @@
                 </div>
                 <div class="col-md-6">
                   <span class="d-block opacity-50 fs-5">Published Date</span>
-                  <span class="d-block fw-bold fs-5">{{jobCodeResData?.publishedDate}}</span>
+                  <span class="d-block fw-bold fs-5">
+                    {{ jobCodeResData?.publishedDate ? (jobCodeResData.publishedDate | date:'dd-MM-yyyy') : '--' }}
+                  </span>
                 </div>
               </div>
-              <div class="d-block mt-3">
+              <!-- <div class="d-block mt-3">
                 <span class="d-block opacity-50 fs-5">Prefered Companies</span>
                 <span class="d-block fw-bold fs-5">{{jobCodeResData?.preferredCompany}}</span>
               </div>
               <div class="d-block mt-3">
                 <span class="d-block opacity-50 fs-5">Description</span>
-                <span class="d-block fw-bold fs-5">{{jobCodeResData?.description}}</span>
-              </div>
+                <span class="d-block fw-bold fs-5">{{jobCodeResData?.description || '--'}}</span>
+              </div> -->
             </div>
             <div class="col-md-8 full-height">
               <div *ngIf="safeUrl">
