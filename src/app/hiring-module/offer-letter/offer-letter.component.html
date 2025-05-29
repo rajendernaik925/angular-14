@@ -50,14 +50,12 @@
 
                     <!-- Action button cell -->
                     <ng-container *ngIf="col.clickable && col.key === 'employeeId'; else normalCell">
-                      <!-- Show "View" button if offerLink exists and is not 'N/A' -->
                       <button *ngIf="row['offerLink'] && row['offerLink'] !== 'N/A'; else generateButton"
                         class="border-none custom-action-btn px-2 bg-info text-white"
                         (click)="viewFile(row['offerLink'])">
                         View
                       </button>
 
-                      <!-- Generate button -->
                       <ng-template #generateButton>
                         <button class="border-none custom-action-btn px-2"
                           [ngClass]="row['status'] === '1002' ? 'bg-secondary text-white' : 'bg-success text-white'"
@@ -70,20 +68,26 @@
                     <!-- Normal cells -->
                     <ng-template #normalCell>
                       <ng-container *ngIf="col.key === 'joiningDate'; else defaultCell">
-                        <input type="text" readonly class="form-control extra-small-input cursor-pointer"
-                          placeholder="dd-mm-yyyy" [bsConfig]="{
-                            adaptivePosition: true,
-                            showWeekNumbers: false,
-                            isAnimated: true,
-                            containerClass: colorTheme,
-                            customTodayClass: 'custom-today-class',
-                            dateInputFormat: 'DD-MM-YYYY',
-                            minDate: today
-                          }" bsDatepicker [ngModel]="row[col.key]" (ngModelChange)="onDateChange($event, row, col.key)" autocomplete="off"
-                          required />
+                        <!-- Display plain date if offerLink exists -->
+                        <ng-container *ngIf="row['offerLink'] && row['offerLink'] !== 'N/A'; else editableDate">
+                          <span>{{ row[col.key] }}</span>
+                        </ng-container>
 
+                        <!-- Editable date input if offer not generated -->
+                        <ng-template #editableDate>
+                          <input type="text" readonly class="form-control extra-small-input cursor-pointer"
+                            placeholder="dd-mm-yyyy" [bsConfig]="{
+                              adaptivePosition: true,
+                              showWeekNumbers: false,
+                              isAnimated: true,
+                              containerClass: colorTheme,
+                              customTodayClass: 'custom-today-class',
+                              dateInputFormat: 'DD-MM-YYYY',
+                              minDate: today
+                            }" bsDatepicker [ngModel]="row[col.key]" (ngModelChange)="onDateChange($event, row, col.key)"
+                            autocomplete="off" required />
+                        </ng-template>
                       </ng-container>
-
 
                       <ng-template #defaultCell>
                         <span [innerHTML]="highlightMatch(row[col.key])"></span>
@@ -93,8 +97,6 @@
                   </td>
                 </tr>
               </tbody>
-
-
 
 
               <ng-template #noData>
@@ -176,12 +178,8 @@
   </div>
 </div>
 
-<div 
-  *ngIf="panAlertMessage" 
-  class="custom-alert alert alert-success alert-dismissible fade show" 
-  [ngClass]="{ 'slide-in': panAlertMessage, 'slide-out': !panAlertMessage }" 
-  role="alert"
->
+<div *ngIf="panAlertMessage" class="custom-alert alert alert-success alert-dismissible fade show"
+  [ngClass]="{ 'slide-in': panAlertMessage, 'slide-out': !panAlertMessage }" role="alert">
   {{ panAlertMessage }}
   <button type="button" class="close" aria-label="Close" (click)="closeAlert()">
     <span aria-hidden="true">&times;</span>

@@ -47,14 +47,14 @@
                     </span>
                   </th>
                   <th class="small-header-th  cursor-pointer" (click)="sortTable('jobTitleName')">
-                    Role Title
+                    Designation
                     <span *ngIf="sortColumn === 'jobTitleName'">
                       <i class="ms-1"
                         [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
                     </span>
                   </th>
                   <th class="small-header-th  cursor-pointer" (click)="sortTable('reportingName')">
-                    Manager
+                    Reporting Manager
                     <span *ngIf="sortColumn === 'reportingName'">
                       <i class="ms-1"
                         [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
@@ -236,7 +236,7 @@
       </div>
 
       <div class="col-md-4 ">
-        <label for="jobReportingManagerId">Reportee <span class="text-danger">*</span></label>
+        <label for="jobReportingManagerId">Reporting Manager <span class="text-danger">*</span></label>
         <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
           class="form-control form-control-sm">
           <option *ngFor="let manager of managers; let i = index" [value]="manager.id">

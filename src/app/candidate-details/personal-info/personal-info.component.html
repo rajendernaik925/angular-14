@@ -281,10 +281,9 @@
 
                   <div class="col-md-3">
                     <label>UAN Number <span class="text-muted">(Optional)</span></label>
-                    <input type="text" [readOnly]="isAllDataPresent" formControlName="uan"
-                      placeholder="UAN Number" class="form-control form-control-sm" />
-                    <div
-                      *ngIf="registrationForm.get('uan')?.touched && registrationForm.get('uan')?.invalid"
+                    <input type="text" [readOnly]="isAllDataPresent" formControlName="uan" placeholder="UAN Number"
+                      class="form-control form-control-sm" />
+                    <div *ngIf="registrationForm.get('uan')?.touched && registrationForm.get('uan')?.invalid"
                       class="text-danger fs-custom">
                       UAN Number is required
                     </div>
@@ -293,8 +292,7 @@
                     <label>Passport Number <span class="text-muted">(Optional)</span></label>
                     <input type="text" [readOnly]="isAllDataPresent" formControlName="passport"
                       placeholder="Passport Number" class="form-control form-control-sm" />
-                    <div
-                      *ngIf="registrationForm.get('passport')?.touched && registrationForm.get('passport')?.invalid"
+                    <div *ngIf="registrationForm.get('passport')?.touched && registrationForm.get('passport')?.invalid"
                       class="text-danger fs-custom">
                       Passport Number is required
                     </div>
@@ -725,7 +723,7 @@
                         <div class="col-md-2">
                           <label *ngIf="!education.disabled">Percentage <span class="text-danger">*</span></label>
                           <input type="text" formControlName="percentage" maxlength="2" (keydown)="onlyNumbers($event)"
-                            placeholder="87" class="form-control form-control-sm" [disabled]="education.disabled" />
+                            placeholder="percentage %" class="form-control form-control-sm" [disabled]="education.disabled" />
                           <div *ngIf="education.get('percentage')?.touched && education.get('percentage')?.invalid"
                             class="text-danger fs-custom">
                             Percentage is required
@@ -1062,7 +1060,7 @@
                   <div *ngIf="!isFresher" class="col-md-2">
                     <label>Current Salary <span class="text-danger">*</span></label>
                     <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
-                      formControlName="currentSalary" placeholder="₹400000" (keydown)="onlyNumbers($event)"
+                      formControlName="currentSalary" placeholder="₹" (keydown)="onlyNumbers($event)"
                       class="form-control form-control-sm" />
                     <div
                       *ngIf="registrationForm.get('currentSalary')?.touched && registrationForm.get('currentSalary')?.invalid"
@@ -1074,7 +1072,7 @@
                   <div *ngIf="!isFresher" class="col-md-2">
                     <label>Expected Salary <span class="text-danger">*</span></label>
                     <input [attr.disabled]="!editButtonDisplay ? true : null" type="text"
-                      formControlName="expectedSalary" placeholder="₹600000" (keydown)="onlyNumbers($event)"
+                      formControlName="expectedSalary" placeholder="₹" (keydown)="onlyNumbers($event)"
                       class="form-control form-control-sm" />
                     <div
                       *ngIf="registrationForm.get('expectedSalary')?.touched && registrationForm.get('expectedSalary')?.invalid"
@@ -1144,7 +1142,7 @@
 
                     <div class="col-md-2">
                       <label *ngIf="editButtonDisplay">Total Experience<span class="text-danger">*</span></label>
-                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience" placeholder="5"
+                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience" placeholder="Experience"
                         maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
                         class="form-control form-control-sm" />
                       <div
@@ -1190,8 +1188,9 @@
 
                 <hr *ngIf="!isFresher" class="custom-h mb-1 mt-1" />
                 <div class="col-md-12 mt-3 px-0 mx-0" *ngIf="experienceArray?.length > 0 && !isFresher">
-                  <!-- Table Header -->
-                  <div class="row fw-bold pb-2">
+
+                  <!-- Desktop Table Header -->
+                  <div class="row fw-bold pb-2 d-none d-md-flex">
                     <div class="col-md-2">Company Name</div>
                     <div class="col-md-2">Total Experience</div>
                     <div class="col-md-2">Last Working Date</div>
@@ -1199,26 +1198,51 @@
                   </div>
 
                   <!-- Experience List -->
-                  <div class="row mb-2" *ngFor="let exp of experienceArray; let i = index">
-                    <div class="col-md-2">
-                      <input type="text" class="form-control" [value]="exp.companyName" readonly>
+                  <div class="mb-2" *ngFor="let exp of experienceArray; let i = index">
+
+                    <!-- Desktop Row -->
+                    <div class="row d-none d-md-flex mb-2">
+                      <div class="col-md-2">
+                        <input type="text" class="form-control" [value]="exp.companyName" readonly>
+                      </div>
+                      <div class="col-md-2">
+                        <input type="text" class="form-control" [value]="exp.totalExp + ' Years'" readonly>
+                      </div>
+                      <div class="col-md-2">
+                        <input type="text" class="form-control" [value]="exp.lastWorkingDate" readonly>
+                      </div>
+                      <div class="col-md-1 d-flex align-items-end" *ngIf="editButtonDisplay">
+                        <button class="btn btn-danger btn-sm w-100" (click)="deleteExperience(exp.experienceMapId, i)">
+                          Delete
+                        </button>
+                      </div>
                     </div>
 
-                    <div class="col-md-2">
-                      <input type="text" class="form-control" [value]="exp.totalExp + ' Years'" readonly>
+                    <!-- Mobile Card -->
+                    <div class="border rounded p-3 d-flex flex-column gap-2 d-md-none">
+                      <div>
+                        <strong>Company Name:</strong><br>
+                        <input type="text" class="form-control mt-1" [value]="exp.companyName" readonly>
+                      </div>
+                      <div>
+                        <strong>Total Experience:</strong><br>
+                        <input type="text" class="form-control mt-1" [value]="exp.totalExp + ' Years'" readonly>
+                      </div>
+                      <div>
+                        <strong>Last Working Date:</strong><br>
+                        <input type="text" class="form-control mt-1" [value]="exp.lastWorkingDate" readonly>
+                      </div>
+                      <div *ngIf="editButtonDisplay">
+                        <button class="btn btn-danger btn-sm w-100 mt-2"
+                          (click)="deleteExperience(exp.experienceMapId, i)">
+                          Delete
+                        </button>
+                      </div>
                     </div>
 
-                    <div class="col-md-2">
-                      <input type="text" class="form-control" [value]="exp.lastWorkingDate" readonly>
-                    </div>
-
-                    <div class="col-md-1 d-flex align-items-end" *ngIf="editButtonDisplay">
-                      <button class="btn btn-danger btn-sm w-100" (click)="deleteExperience(exp.experienceMapId, i)">
-                        Delete
-                      </button>
-                    </div>
                   </div>
                 </div>
+
 
               </div>
             </div>
@@ -1373,8 +1397,9 @@
 
               <div *ngIf="loadedData?.candidateInterviewDetails?.length" class="container p-3">
                 <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name }})</h6>
-                <!-- Headings -->
-                <div class="row fw-semibold text-muted mb-2 px-2">
+
+                <!-- Headings for Desktop -->
+                <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">
                   <div class="col-md-1">Status</div>
                   <div class="col-md-2">Round Title</div>
                   <div class="col-md-2">Date</div>
@@ -1384,51 +1409,36 @@
                 </div>
 
                 <!-- Interview Loop -->
-                <div *ngFor="let interview of loadedData.candidateInterviewDetails" class=" rounded mb-3" [ngClass]="{
+                <div *ngFor="let interview of loadedData.candidateInterviewDetails"
+                  class="rounded mb-3 p-3 p-md-2 border interview-card" [ngClass]="{
                     'filled-bg': interview.candidateInterviewFeedBackDTO?.length,
                     'custom-bg text-white': !interview.candidateInterviewFeedBackDTO?.length
                   }">
-                  <div class="row align-items-center">
-                    <!-- Status Icon -->
+
+                  <!-- Desktop Layout -->
+                  <div class="row align-items-center p-0 d-none d-md-flex">
                     <div class="col-md-1 text-center">
                       <i [ngClass]="{
-                          'bi bi-check-circle-fill text-success': interview.candidateInterviewFeedBackDTO?.length,
-                          'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
-                        }" style="font-size: 1.5rem;"></i>
+                        'bi bi-check-circle-fill text-success': interview.candidateInterviewFeedBackDTO?.length,
+                        'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }" style="font-size: 1.5rem;"></i>
                     </div>
-
-                    <!-- Round Title -->
                     <div class="col-md-2 fw-semibold">
                       {{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : '' }}
                     </div>
-
-                    <!-- Date -->
-                    <div class="col-md-2">
-                      {{ interview.interviewDate || '--' }}
-                    </div>
-
-                    <!-- Time -->
-                    <div class="col-md-2">
-                      {{ interview.interviewTime || '--' }}
-                    </div>
-
-                    <!-- Location (truncated with tooltip) -->
+                    <div class="col-md-2">{{ interview.interviewDate || '--' }}</div>
+                    <div class="col-md-2">{{ interview.interviewTime || '--' }}</div>
                     <div class="col-md-3 text-truncate" [attr.title]="interview.locationName || '--'"
                       style="max-width: 100%;">
-                      {{
-                      interview.locationName?.length > 25
-                      ? (interview.locationName | slice: 0:25) + '...'
-                      : (interview.locationName || '--')
-                      }}
+                      {{ interview.locationName?.length > 25 ? (interview.locationName | slice: 0:25) + '...' :
+                      (interview.locationName || '--') }}
                     </div>
-
-                    <!-- Feedback Status -->
                     <div class="col-md-2 fw-medium" [ngClass]="{
                       'text-success': interview.status === 1004,
                       'text-warning': interview.status === 1001,
                       'text-danger': interview.status === 1002 || interview.status === 1005,
                       'text-primary': interview.status === 1006
-                       }">
+                    }">
                       {{
                       interview.status === 1001 ? 'Pending' :
                       interview.status === 1002 ? 'Cancelled' :
@@ -1437,10 +1447,41 @@
                       interview.status === 1006 ? 'On Hold' : 'Unknown'
                       }}
                     </div>
-
                   </div>
+
+                  <!-- Mobile Layout -->
+                  <div class="d-flex d-md-none flex-column gap-1">
+                    <div class="d-flex align-items-center gap-2">
+                      <i [ngClass]="{
+                        'bi bi-check-circle-fill text-success mr-1': interview.candidateInterviewFeedBackDTO?.length,
+                        'bi bi-hourglass-split text-white': !interview.candidateInterviewFeedBackDTO?.length
+                      }" style="font-size: 1.3rem;"></i>
+                      <strong>{{ interview.interviewRoundName }} {{ interview.level ? '(' + interview.level + ')' : ''
+                        }}</strong>
+                    </div>
+                    <div><strong>Date:</strong> {{ interview.interviewDate || '--' }}</div>
+                    <div><strong>Time:</strong> {{ interview.interviewTime || '--' }}</div>
+                    <!-- <div><strong>Location:</strong> {{ interview.locationName || '--' }}</div> -->
+                    <div [ngClass]="{
+                      'text-success': interview.status === 1004,
+                      'text-warning': interview.status === 1001,
+                      'text-danger': interview.status === 1002 || interview.status === 1005,
+                      'text-primary': interview.status === 1006
+                    }"><strong>Status:</strong>
+                      {{
+                      interview.status === 1001 ? 'Pending' :
+                      interview.status === 1002 ? 'Cancelled' :
+                      interview.status === 1004 ? 'Completed' :
+                      interview.status === 1005 ? 'Rejected' :
+                      interview.status === 1006 ? 'On Hold' : 'Unknown'
+                      }}
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
+
 
             </div>
           </form>
