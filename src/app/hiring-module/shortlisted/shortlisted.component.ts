@@ -16,10 +16,10 @@ export class ProfileListComponent implements OnInit {
   }
   columns = [
     { key: 'job_code', label: 'Job Code', uppercase: true },
-    { key: 'email', label: 'User Mail ID', uppercase: true },
-    { key: 'firstname', label: 'Candidate Name', uppercase: true },
-    { key: 'mobilenumber', label: 'Mobile', uppercase: true },
-    { key: 'job_title', label: 'Job Title', uppercase: true },
+    { key: 'email', label: 'Mail ID', uppercase: true },
+    { key: 'firstname', label: 'Name', uppercase: true },
+    { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
+    { key: 'job_title', label: 'Designation', uppercase: true },
     { key: 'status', label: 'Status', uppercase: true },
     { key: 'employeeid', label: 'Action', center: true, clickable: true }
   ];
@@ -34,9 +34,20 @@ export class ProfileListComponent implements OnInit {
   searchQueryText: string = '';
   totalRecords: number = 0;
   totalPages: number = 1;
-  resumeFile: string | null = null;
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
+  
+  resumeFile: string | null = null;
+  photoFile: string | null = null;
+  aadharFile: string | null = null;
+  pancardFile: string | null = null;
+  tenthFile: string | null = null;
+  InterFile: string | null = null;
+  BTechFile: string | null = null;
+  mTechFile: string | null = null;
+  otherFile: string | null = null;
+  ServiceLetterFile: string | null = null;
+  paySlipFile: string | null = null;
 
   @ViewChild('aboutCandidateDialog', { static: true }) aboutCandidateDialog!: TemplateRef<any>;
   private dialogRef: any;
@@ -109,6 +120,16 @@ export class ProfileListComponent implements OnInit {
         this.isLoading = false;
         this.candidateData = res || {};
         this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
+        this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
+        this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
+        this.pancardFile = res?.candidateDocumentDetails?.panFile || null;
+        this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
+        this.InterFile = res?.candidateDocumentDetails?.intermediateFile || null;
+        this.BTechFile = res?.candidateDocumentDetails?.degreeFile || null;
+        this.mTechFile = res?.candidateDocumentDetails?.pgFile || null;
+        this.otherFile = res?.candidateDocumentDetails?.otherFile || null;
+        this.ServiceLetterFile = res?.candidateExperienceDetails?.candidateSalaryDetails?.serviceFile || null;
+        this.paySlipFile = res?.candidateExperienceDetails?.candidateSalaryDetails?.paySlipFileA || null;
         this.candidateData.candidateEducationDetails = this.candidateData.candidateEducationDetails || [];
         console.log("Updated Education Details: ", this.candidateData?.candidateEducationDetails);
         this.openDialog();

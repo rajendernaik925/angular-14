@@ -83,6 +83,24 @@ export class OfferLetterComponent implements OnInit {
           status: item.status || 'N/A',
           offerLink: item.offerLetterFile || 'N/A'
         }));
+        // let i = this.rows.length;
+
+        // while (i < 100) {
+        //   this.rows.push({
+        //     jobcodeId: 'JCID' + Math.floor(1000 + Math.random() * 9000),
+        //     jcReferanceId: 'JC' + Math.floor(1000 + Math.random() * 9000),
+        //     employeeId: 'EMP' + (i + 1),
+        //     candidateId: 'CAND' + (i + 1).toString().padStart(4, '0'),
+        //     name: ['Raj', 'Alice', 'John', 'Nina', 'Leo'][i % 5],
+        //     jobTitleName: ['Software Engineer', 'Data Analyst', 'UI Designer', 'DevOps Engineer'][i % 4],
+        //     deptName: ['IT', 'HR', 'Finance', 'Marketing'][i % 4],
+        //     expectedCtc: (3 + Math.random() * 7).toFixed(2) + ' LPA',
+        //     joiningDate: null,  // or use a fake date if required
+        //     status: ['1001', '1002', 'Pending', 'Approved', 'Rejected'][i % 5],
+        //     offerLink: 'N/A'
+        //   });
+        //   i++;
+        // }
 
         this.originalRows = [...this.rows];
       },
@@ -101,8 +119,8 @@ export class OfferLetterComponent implements OnInit {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
       { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
-      { key: 'name', label: 'Candidate Name', uppercase: true },
-      { key: 'deptName', label: 'Dept Name', uppercase: true },
+      { key: 'name', label: 'Name', uppercase: true },
+      { key: 'deptName', label: 'Department Name', uppercase: true },
       { key: 'joiningDate', label: 'Actual Date Of Join (editable)', uppercase: true },
       { key: 'employeeId', label: 'Action', center: true, clickable: true }
     ];

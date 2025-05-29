@@ -1233,25 +1233,5 @@ export class AuthService {
     });
   }
 
-
-
-
-
-
-
-
-
-
-  // fakeAPI
-  getData() {
-    return this.http.get(`https://fakestoreapi.com/products`)
-  }
-
-  getCategoryData(name:string) {
-    return this.http.get(`https://fakestoreapi.com/products/category/${name}`)
-  }
-
-
-
-
 }
+

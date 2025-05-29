@@ -61,7 +61,7 @@ export class InterviewScheduleComponent implements OnInit {
   ) {
     this.addNewRoundForm = this.fb.group({
       locationId: ['', Validators.required],
-      mode: ['', Validators.required],
+      mode: ['1', Validators.required],
       interviewDate: ['', Validators.required],
       interviewTime: ['', Validators.required],
       interviewBy: ['', Validators.required],
@@ -162,11 +162,11 @@ export class InterviewScheduleComponent implements OnInit {
   generateColumns() {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
-      { key: 'email', label: 'User Mail Id', uppercase: true },
-      { key: 'firstname', label: 'Candidate Name', uppercase: true },
+      { key: 'email', label: 'Mail Id', uppercase: true },
+      { key: 'firstname', label: 'Name', uppercase: true },
       // { key: 'lastname', label: 'Last Name', uppercase: true },
-      { key: 'mobilenumber', label: 'Mobile', uppercase: true },
-      { key: 'job_title', label: 'Job Title', uppercase: true },
+      { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
+      { key: 'job_title', label: 'Designation', uppercase: true },
       { key: 'status', label: 'Status', uppercase: true },
       { key: 'employeeid', label: 'Action', center: true, clickable: true },
     ];
@@ -183,14 +183,51 @@ export class InterviewScheduleComponent implements OnInit {
     );
   }
 
+  // onModeChange(event: Event): void {
+  //   const selectedValue = (event.target as HTMLSelectElement).value;
+
+  //   if (selectedValue === '1') {
+  //     this.isMeetingLinkDisabled = true;
+  //     this.addNewRoundForm.removeControl('link');
+  //   } else {
+  //     this.isMeetingLinkDisabled = false;
+  //     if (!this.addNewRoundForm.get('link')) {
+  //       this.addNewRoundForm.addControl(
+  //         'link',
+  //         new FormControl('', [Validators.required, Validators.pattern(/https?:\/\/.+/)])
+  //       );
+  //     }
+  //   }
+  // }
+
   onModeChange(event: Event): void {
     const selectedValue = (event.target as HTMLSelectElement).value;
-  
+
     if (selectedValue === '1') {
       this.isMeetingLinkDisabled = true;
-      this.addNewRoundForm.removeControl('link');
-    } else {
+
+      // Remove 'link' control if it exists
+      if (this.addNewRoundForm.get('link')) {
+        this.addNewRoundForm.removeControl('link');
+      }
+
+      // Ensure 'locationId' exists
+      if (!this.addNewRoundForm.get('locationId')) {
+        this.addNewRoundForm.addControl(
+          'locationId',
+          new FormControl('', Validators.required)
+        );
+      }
+
+    } else if (selectedValue === '2') {
       this.isMeetingLinkDisabled = false;
+
+      // Remove 'locationId' control if it exists
+      if (this.addNewRoundForm.get('locationId')) {
+        this.addNewRoundForm.removeControl('locationId');
+      }
+
+      // Ensure 'link' exists
       if (!this.addNewRoundForm.get('link')) {
         this.addNewRoundForm.addControl(
           'link',
@@ -199,7 +236,8 @@ export class InterviewScheduleComponent implements OnInit {
       }
     }
   }
-  
+
+
   highlightMatch(text: any): SafeHtml {
     if (!this.searchQueryText || !text) return text;
     const escapedQuery = this.searchQueryText.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
@@ -328,27 +366,27 @@ export class InterviewScheduleComponent implements OnInit {
   // }
 
   generateTimeSlots() {
-  this.timeSlots = [];
-  const interval = 15; // 15-minute intervals
-  const startHour = 8; // 8:00 AM
-  const endHour = 22;  // 10:00 PM
+    this.timeSlots = [];
+    const interval = 15; // 15-minute intervals
+    const startHour = 8; // 8:00 AM
+    const endHour = 22;  // 10:00 PM
 
-  for (let hour = startHour; hour <= endHour; hour++) {
-    for (let minutes = 0; minutes < 60; minutes += interval) {
-      if (hour === endHour && minutes > 0) break; // don't add times after 10:00 PM
+    for (let hour = startHour; hour <= endHour; hour++) {
+      for (let minutes = 0; minutes < 60; minutes += interval) {
+        if (hour === endHour && minutes > 0) break; // don't add times after 10:00 PM
 
-      const date = new Date();
-      date.setHours(hour);
-      date.setMinutes(minutes);
+        const date = new Date();
+        date.setHours(hour);
+        date.setMinutes(minutes);
 
-      let hours12 = hour % 12 || 12;
-      const ampm = hour < 12 ? 'AM' : 'PM';
-      const minStr = minutes.toString().padStart(2, '0');
+        let hours12 = hour % 12 || 12;
+        const ampm = hour < 12 ? 'AM' : 'PM';
+        const minStr = minutes.toString().padStart(2, '0');
 
-      this.timeSlots.push(`${hours12}:${minStr} ${ampm}`);
+        this.timeSlots.push(`${hours12}:${minStr} ${ampm}`);
+      }
     }
   }
-}
 
 
 
@@ -479,39 +517,39 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
   feedbackView(interview: any, name: any, mail: any) {
-      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
-      const comments = interview.comments;
-      const statusCode = interview.status;
-    
-      const statusMap: any = {
-        '1001': 'Interview pending',
-        '1002': 'Interview Cancelled',
-        '1004': 'Selected',
-        '1005': 'Rejected',
-        '1006': 'Interview Hold',
-        // Add more statuses as needed
-      };
-  
-      const statusLabel = statusMap[statusCode] || 'Unknown';
-    
-      const scoreMap: any = {
-        'Excellent': 10,
-        'Good': 8,
-        'Average': 6,
-        'Below Average': 4
-      };
-    
-      let totalScore = 0;
-    
-      const feedbackRows = feedBackformat.map((item: any, index: number) => {
-        const getMark = (level: string) =>
-          item.feedBackName === level
-            ? '<span style="color:green;">✔️</span>'
-            : '<span style="color:red;">❌</span>';
-    
-        totalScore += scoreMap[item.feedBackName] || 0;
-    
-        return `
+    const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+    const comments = interview.comments;
+    const statusCode = interview.status;
+
+    const statusMap: any = {
+      '1001': 'Interview pending',
+      '1002': 'Interview Cancelled',
+      '1004': 'Selected',
+      '1005': 'Rejected',
+      '1006': 'Interview Hold',
+      // Add more statuses as needed
+    };
+
+    const statusLabel = statusMap[statusCode] || 'Unknown';
+
+    const scoreMap: any = {
+      'Excellent': 10,
+      'Good': 8,
+      'Average': 6,
+      'Below Average': 4
+    };
+
+    let totalScore = 0;
+
+    const feedbackRows = feedBackformat.map((item: any, index: number) => {
+      const getMark = (level: string) =>
+        item.feedBackName === level
+          ? '<span style="color:green;">✔️</span>'
+          : '<span style="color:red;">❌</span>';
+
+      totalScore += scoreMap[item.feedBackName] || 0;
+
+      return `
           <tr style="line-height: 1.2;">
             <td>${index + 1}</td>
             <td class="text-start">${item.factorName}</td>
@@ -521,14 +559,14 @@ export class InterviewScheduleComponent implements OnInit {
             <td>${getMark('Below Average')}</td>
           </tr>
         `;
-      }).join('');
-    
-      const averageScore = (feedBackformat.length > 0)
-        ? (totalScore / feedBackformat.length).toFixed(1)
-        : 'N/A';
-    
-    
-      const detailsHtml = `
+    }).join('');
+
+    const averageScore = (feedBackformat.length > 0)
+      ? (totalScore / feedBackformat.length).toFixed(1)
+      : 'N/A';
+
+
+    const detailsHtml = `
         <div style="font-size:12px; width:100%; padding: 10px; ">
           
           <!-- Header with status label -->
@@ -615,17 +653,17 @@ export class InterviewScheduleComponent implements OnInit {
            </div>
         </div>
       `;
-    
-      Swal.fire({
-        html: detailsHtml,
-        width: '800px',
-        showConfirmButton: false,
-        showCloseButton: true,
-        customClass: {
-          popup: 'p-2'
-        },
-        buttonsStyling: false
-      });
-    }
+
+    Swal.fire({
+      html: detailsHtml,
+      width: '800px',
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup: 'p-2'
+      },
+      buttonsStyling: false
+    });
+  }
 
 }

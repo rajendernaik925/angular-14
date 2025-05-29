@@ -30,8 +30,7 @@
             </div>
             <div class="col-md-9 d-flex justify-content-end align-items-center">
               <input type="search" class="form-control form-control-sm search-input" placeholder="🔍 Search"
-                [formControl]="searchQuery" aria-level="Search"
-                style="max-width: 150px; font-size: 13px;">
+                [formControl]="searchQuery" aria-level="Search" style="max-width: 150px; font-size: 13px;">
               <!-- <i class="fa fa-search"></i> -->
               <!-- <button type="button" (click)="toggleOffcanvas()" class="btn btn-sm custom-bg text-light">
                 Filter Options
@@ -258,17 +257,17 @@
             </div>
           </div>
 
+
+
           <div class="col-md-6">
-            <label for="roundTitle" class="form-label">Location <span class="text-danger">*</span></label>
-            <!-- <input type="text" id="roundTitle" class="form-control form-control-sm" placeholder="Enter round title"
-                    formControlName="roundTitle"> -->
-            <select class="form-control" formControlName="locationId" name="" id="">
-              <option value="">select</option>
-              <option *ngFor="let item of interviewLocationData" [value]="item?.id">{{ item?.name }}</option>
+            <label for="time" class="form-label">Time <span class="text-danger">*</span></label>
+            <select id="time" class="form-control form-control-sm" formControlName="interviewTime">
+              <option value="" disabled selected>Select Time</option>
+              <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
             </select>
-            <div class="text-danger fs-custom"
-              *ngIf="addNewRoundForm.get('locationTd')?.hasError('required') && addNewRoundForm.get('locationId')?.touched">
-              Round title is required.
+            <div class="fs-custom text-danger"
+              *ngIf="addNewRoundForm.get('interviewTime')?.hasError('required') && addNewRoundForm.get('interviewTime')?.touched">
+              Time is required.
             </div>
           </div>
 
@@ -292,7 +291,7 @@
               Date is required.
             </div>
           </div>
-          <div class="col-md-6">
+          <!-- <div class="col-md-6">
             <label for="time" class="form-label">Time <span class="text-danger">*</span></label>
             <select id="time" class="form-control form-control-sm" formControlName="interviewTime">
               <option value="" disabled selected>Select Time</option>
@@ -302,11 +301,8 @@
               *ngIf="addNewRoundForm.get('interviewTime')?.hasError('required') && addNewRoundForm.get('interviewTime')?.touched">
               Time is required.
             </div>
-          </div>
+          </div> -->
 
-        </div>
-
-        <div class="row mb-3">
 
           <div class="col-md-6">
             <label for="interviewerName" class="form-label">Interview Mode<span class="text-danger">*</span></label>
@@ -320,7 +316,27 @@
             </select>
             <div *ngIf="addNewRoundForm.get('mode')?.touched && addNewRoundForm.get('mode')?.invalid"
               class="text-danger fs-custom">
-              Interview Round is required
+              Interview Mode is required
+            </div>
+          </div>
+
+
+
+        </div>
+
+        <div class="row mb-3">
+
+          <div class="col-md-6" *ngIf="isMeetingLinkDisabled">
+            <label for="roundTitle" class="form-label">Location <span class="text-danger">*</span></label>
+            <!-- <input type="text" id="roundTitle" class="form-control form-control-sm" placeholder="Enter round title"
+                    formControlName="roundTitle"> -->
+            <select class="form-control" formControlName="locationId" name="" id="">
+              <option value="">select</option>
+              <option *ngFor="let item of interviewLocationData" [value]="item?.id">{{ item?.name }}</option>
+            </select>
+            <div class="text-danger fs-custom"
+              *ngIf="addNewRoundForm.get('locationId')?.hasError('required') && addNewRoundForm.get('locationId')?.touched">
+              Location is required.
             </div>
           </div>
 
@@ -341,7 +357,13 @@
               </div>
             </div>
           </div>
-          <button type="submit" class="btn text-white custom-bg w-100 mt-4">Submit</button>
+          <!-- <button type="submit" class="btn btn-sm text-white custom-bg w-100 mt-4">Schedule</button> -->
+          <!-- <div class="row"> -->
+            <div class="col-md-6">
+              <button type="submit" class="btn text-white custom-bg w-100 mt-4">Submit</button>
+            </div>
+          <!-- </div> -->
+
         </div>
       </form>
     </div>
@@ -362,10 +384,10 @@
       <div class="row mb-2 align-items-center">
         <div class="col-md-10">
           <div class="d-flex">
-            <span class="fw-bold custom-text mr-3">Candidate Details </span>
+            <!-- <span class="fw-bold custom-text mr-3">Candidate Details </span> -->
             <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName
-              }}</span>
-            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
+              }}</span> |
+            <span class="text-uppercase ms-4">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
               }}</span>
           </div>
 
@@ -403,14 +425,15 @@
                 <tr *ngFor="let exp of candidateData.candidateInterviewDetails">
                   <td class="custom-td small-header">{{ exp?.roundNo }}</td>
                   <td class="custom-td small-header">
-                    {{ exp?.interviewDate ? (exp.interviewDate | date: 'dd-MMM-yyyy') : '--' }}
+                    {{ exp?.interviewDate ? (exp.interviewDate ) : '--' }}
                   </td>
                   <td class="custom-td small-header">{{ exp?.interviewTime || '--' }}</td>
                   <td class="custom-td small-header">{{exp?.interviewByName}} - {{ exp?.interviewBy }}</td>
                   <td class="custom-td small-header">{{ exp?.level }} ({{exp?.interviewRoundName || 'Initial'}})</td>
                   <!-- <td class="custom-td small-header text-break">{{ exp.locationName }}</td> -->
                   <td class="custom-td small-header text-single-line">
-                    <button (click)="cancelInterview(exp?.interviewScheduleId)" *ngIf="exp.status === 1001  && exp.interviewTime"
+                    <button (click)="cancelInterview(exp?.interviewScheduleId)"
+                      *ngIf="exp.status === 1001  && exp.interviewTime"
                       class="btn btn-sm btn-danger border-0 px-2 py-1 text-white mr-2">
                       Cancel
                     </button>

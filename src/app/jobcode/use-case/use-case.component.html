@@ -1,60 +1,21 @@
-<!-- <body class="vh-100 d-flex justify-content-center align-items-center bg-light"> -->
-<div class="container mt-1">
-    <div class="d-flex justify-content-between align-items-start ms-3 mt-3 mb-2 me-3">
-        <div class="d-flex gap-2">
-            <select class="form-select form-select-sm custom-select mr-2" style="width: 150px;" [(ngModel)]="month"
-                (change)="onMonthChange()">
-                <option *ngFor="let m of months; index as i" [value]="i">{{ m }}</option>
-            </select>
-            <select class="form-select form-select-sm custom-select" style="width: 150px;" [(ngModel)]="year"
-                (change)="onYearChange()">
-                <option *ngFor="let y of years" [value]="y">{{ y }}</option>
-            </select>
-        </div>
-        <div class="d-flex gap-3 align-items-center">
-            <div class="d-flex align-items-center mr-2">
-                <div class="bg-success rounded-circle mr-1" style="width: 15px; height: 15px;"></div>
-                <small>Completed</small>
-            </div>
-            <div class="d-flex align-items-center mr-2">
-                <div class="bg-danger rounded-circle mr-1" style="width: 15px; height: 15px;"></div>
-                <small>Holiday</small>
-            </div>
-            <div class="d-flex align-items-center mr-2">
-                <div class="bg-warning rounded-circle mr-1" style="width: 15px; height: 15px;"></div>
-                <small>No Data Filled</small>
-            </div>
-            <div class="d-flex align-items-center mr-2">
-                <div class="bg-secondary rounded-circle mr-1" style="width: 15px; height: 15px;"></div>
-                <small>Futute Date</small>
-            </div>
-        </div>
-    </div>
-    <div class="row fw-bold text-center">
-        <div class="col border py-2 bg-dark text-white rounded-top">Sun</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Mon</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Tue</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Wed</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Thu</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Fri</div>
-        <div class="col border py-2 bg-dark text-white rounded-top">Sat</div>
-    </div>
-    <div class="row text-center">
-        <ng-container *ngFor="let day of days; let i = index">
-            <div class="col border p-3 rounded" [ngClass]="{
-              'bg-success': !day.isEmpty && day.status === 'success',
-              'bg-warning': !day.isEmpty && day.status === 'warning',
-              'bg-danger': !day.isEmpty && day.status === 'danger',
-              'bg-secondary': !day.isEmpty && day.status === 'primary',
-              'text-white': !day.isEmpty,
-              'cursor-pointer': !day.isEmpty
-            }" [attr.title]="!day.isEmpty ? day.tooltip : null"
-                style="height: 70px; transition: background-color 0.3s ease; text-align: center; display: flex; justify-content: center; align-items: center;"
-                (mouseenter)="hoverDay(day)" (mouseleave)="resetHover()" data-bs-toggle="tooltip">
-                <span *ngIf="!day.isEmpty">{{ day.day }}</span>
-            </div>
-            <div class="w-100" *ngIf="(i + 1) % 7 === 0"></div>
-        </ng-container>
-    </div>
+<div class="use-case-container">
+  <h2>{{ title }}</h2>
+  <p>{{ message }}</p>
+
+  <div class="file-section">
+    <label for="resume">Upload Resume:</label>
+    <input type="file" id="resume" (change)="onResumeUpload($event)" />
+  </div>
+
+  <div class="file-section">
+    <label for="jd">Paste Job Description:</label>
+    <textarea id="jd" [(ngModel)]="jobDescription" rows="5" class="form-control"></textarea>
+  </div>
+
+  <button class="btn btn-outline-custom" (click)="compare()">Compare</button>
+
+  <div *ngIf="result">
+    <h4>Match Result:</h4>
+    <pre>{{ result }}</pre>
+  </div>
 </div>
-<!-- </body> -->

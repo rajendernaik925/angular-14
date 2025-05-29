@@ -56,11 +56,23 @@ export class InterviewProcessComponent implements OnInit {
   totalRegionsList: any;
   totalStatesList: any;
   totalCitiesList: any;
-  resumeFile: string | null = null;
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
+  interviewStatusCode:Number | null = null;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
+
+  resumeFile: string | null = null;
+  photoFile: string | null = null;
+  aadharFile: string | null = null;
+  pancardFile: string | null = null;
+  tenthFile: string | null = null;
+  InterFile: string | null = null;
+  BTechFile: string | null = null;
+  mTechFile: string | null = null;
+  otherFile: string | null = null;
+  ServiceLetterFile: string | null = null;
+  paySlipFile: string | null = null;
 
   constructor(
     private render: Renderer2,
@@ -261,12 +273,12 @@ export class InterviewProcessComponent implements OnInit {
   generateColumns() {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
-      { key: 'email', label: 'User Mail Id', uppercase: true },
-      { key: 'firstname', label: 'Candidate Name', uppercase: true },
-      { key: 'mobilenumber', label: 'Mobile', uppercase: true },
-      { key: 'job_title', label: 'Job Title', uppercase: true },
+      { key: 'email', label: 'Mail Id', uppercase: true },
+      { key: 'firstname', label: 'Name', uppercase: true },
+      { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
+      { key: 'job_title', label: 'Designation', uppercase: true },
       // { key: 'status', label: 'Status', center: true },
-      { key: 'interviewDateTime', label: 'Interview Shift', uppercase: true },
+      { key: 'interviewDateTime', label: 'Interview Timing', uppercase: true },
       { key: 'employeeid', label: 'Action', center: true, clickable: true }
     ];
   }
@@ -279,16 +291,27 @@ export class InterviewProcessComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
-  handleAction(employeeId: any, interviewStatusCode: number | null) {
+  handleAction(employeeId: any, interviewStatusCode: Number | null) {
     console.log("inter : ", interviewStatusCode)
     this.isLoading = true;
-    this.employeeId = employeeId
+    this.employeeId = employeeId;
+    this.interviewStatusCode = interviewStatusCode;
     this.authService.registeredData(employeeId).subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         this.isLoading = false;
         this.candidateData = res;
-         this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
-        // console.log("candidate data : ", this.candidateData);
+        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
+        this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
+        this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
+        this.pancardFile = res?.candidateDocumentDetails?.panFile || null;
+        this.tenthFile = res?.candidateDocumentDetails?.tenthFile || null;
+        this.InterFile = res?.candidateDocumentDetails?.intermediateFile || null;
+        this.BTechFile = res?.candidateDocumentDetails?.degreeFile || null;
+        this.mTechFile = res?.candidateDocumentDetails?.pgFile || null;
+        this.otherFile = res?.candidateDocumentDetails?.otherFile || null;
+        this.ServiceLetterFile = res?.candidateExperienceDetails?.candidateSalaryDetails?.serviceFile || null;
+        this.paySlipFile = res?.candidateExperienceDetails?.candidateSalaryDetails?.paySlipFileA || null;
+        console.log("candidate data : ", this.candidateData);
         const candidateInterviewDetails = this.candidateData.candidateInterviewDetails;
 
         // Check if there are interview details
@@ -304,14 +327,16 @@ export class InterviewProcessComponent implements OnInit {
           const lastInterviewStatus = lastInterview.status;
           // console.log("last feedback : ", lastfeedback);
           // console.log("last round : ", this.roundNo);
-          // console.log("last date : ", lastInterviewDate);
+          console.log("last date : ", lastInterviewDate);
           // console.log("last Interview Status : ", lastInterviewStatus);
 
           // if (lastInterviewDate && lastInterviewStatus === 1001) {
           //   this.disableFeedBack = true;
           // }
 
-          this.disableFeedBack = interviewStatusCode === 1001 ? true : false;
+          console.log("last date : ", lastInterviewDate);
+          this.disableFeedBack = interviewStatusCode === 1001 && lastInterviewDate !== null ? true : false;
+
 
           // console.log("Last Interview Round Name:", lastInterviewRoundName);
           if (lastInterviewRoundName === 'HR') {
@@ -698,5 +723,6 @@ export class InterviewProcessComponent implements OnInit {
   closePDF() {
     this.showPDF = false; // Hide the modal
     this.fileURL = null; // Clear the URL
+    this.handleAction(this.employeeId,this.interviewStatusCode);
   }
 }

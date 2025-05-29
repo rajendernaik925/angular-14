@@ -95,8 +95,8 @@ export class EmployeeCodeComponent implements OnInit {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },    // Use jcReferanceId if you want Job Code as per columns
       { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
-      { key: 'name', label: 'Candidate Name', uppercase: true },
-      { key: 'deptName', label: 'Dept Name', uppercase: true },
+      { key: 'name', label: 'Name', uppercase: true },
+      { key: 'deptName', label: 'Department Name', uppercase: true },
       { key: 'joiningDate', label: 'Date Of Join', uppercase: true },
       { key: 'employeeId', label: 'Action', center: true, clickable: true }  // action button uses employeeId (candidateId)
     ];
