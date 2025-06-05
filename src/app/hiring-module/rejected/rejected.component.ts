@@ -107,9 +107,9 @@ export class RejectedComponent implements OnInit {
       { key: 'name', label: 'Candidate Name', uppercase: true },
       { key: 'mobileNumber', label: 'Mobile', uppercase: true },
       { key: 'jobTitleName', label: 'Job Title', uppercase: true },
-      { key: 'teamName', label: 'Team', uppercase: true },
-      { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
-      { key: 'createdBy', label: 'Created By', uppercase: true },
+      // { key: 'teamName', label: 'Team', uppercase: true },
+      // { key: 'reportingManager', label: 'Reporting Manager', uppercase: true },
+      // { key: 'createdBy', label: 'Created By', uppercase: true },
       // { key: 'status', label: 'Status', uppercase: true },
       { key: 'candidateId', label: 'Action', center: true, clickable: true }
     ];

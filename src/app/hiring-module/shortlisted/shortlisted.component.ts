@@ -17,7 +17,7 @@ export class ProfileListComponent implements OnInit {
   columns = [
     { key: 'job_code', label: 'Job Code', uppercase: true },
     { key: 'email', label: 'Mail ID', uppercase: true },
-    { key: 'firstname', label: 'Name', uppercase: true },
+    { key: 'firstname', label: 'Full Name', uppercase: true },
     { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
     { key: 'job_title', label: 'Designation', uppercase: true },
     { key: 'status', label: 'Status', uppercase: true },
@@ -27,6 +27,8 @@ export class ProfileListComponent implements OnInit {
   rows: any[] = [];
   searchQuery = new FormControl();
   isOpen = false;
+  employeeId: string | null = null;
+  interviewStatusCode:Number | null = null;
   isLoading = false;
   candidateData: any = {};
   currentPage = 1;
@@ -111,7 +113,9 @@ export class ProfileListComponent implements OnInit {
     return this.sanitizer.bypassSecurityTrustHtml(highlightedText);
   }
 
-  handleAction(employeeId: any) {
+  handleAction(employeeId: any,interviewStatusCode:any) {
+    this.employeeId = employeeId;
+     this.interviewStatusCode = interviewStatusCode;
     if (this.isLoading) return; // prevent double call
 
     this.isLoading = true;
@@ -183,6 +187,7 @@ export class ProfileListComponent implements OnInit {
   closePDF() {
     this.showPDF = false; // Hide the modal
     this.fileURL = null; // Clear the URL
+    this.handleAction(this.employeeId,this.interviewStatusCode);
   }
 
   openDialog() {

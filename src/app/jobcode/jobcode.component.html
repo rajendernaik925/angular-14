@@ -260,7 +260,7 @@
       </div>
 
       <div class="col-md-4 ">
-        <label for="teamId">Team <span class="text-danger">*</span></label>
+        <label for="teamId">Team <span class="text-muted">(Optional)</span></label>
         <select id="teamId" formControlName="teamId" (change)="onSelected($event)" class="form-control form-control-sm">
           <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
             {{ manager.name }}
@@ -359,7 +359,7 @@
         [ngClass]="{ 'disabled': createJobForm.invalid }">
         Submit
       </button>
-      <button type="button" class="btn btn-sm btn-danger" (click)="closeDialog()">Cancel</button>
+      <button type="button" class="btn btn-sm btn-danger" (click)="closeDialog()">Exit</button>
     </div>
   </form>
 </ng-template>
