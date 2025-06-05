@@ -119,7 +119,7 @@ export class OfferLetterComponent implements OnInit {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
       { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
-      { key: 'name', label: 'Name', uppercase: true },
+      { key: 'name', label: 'Full Name', uppercase: true },
       { key: 'deptName', label: 'Department Name', uppercase: true },
       { key: 'joiningDate', label: 'Actual Date Of Join (editable)', uppercase: true },
       { key: 'employeeId', label: 'Action', center: true, clickable: true }

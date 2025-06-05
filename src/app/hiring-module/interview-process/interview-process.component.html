@@ -146,57 +146,6 @@
 </div>
 
 
-<div class="offcanvas-right" [class.show]="isOpen">
-  <div class="offcanvas-header">
-    <h5 class="custom-text fw-bold">Filter </h5>
-    <button type="button" class="close" (click)="closeOffcanvas()" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="container mt-3">
-    <!-- Name Filter -->
-    <div class="form-group">
-      <label for="nameFilter">Select Name</label>
-      <select class="form-control form-control-sm" id="nameFilter">
-        <option value="">Select</option>
-        <option value="rajender">Rajender</option>
-        <option value="sisisha">Sirisha</option>
-        <option value="anusha">Anusha</option>
-        <option value="durga">Durga</option>
-      </select>
-    </div>
-
-    <!-- Date Filter -->
-    <div class="form-group">
-      <label for="dateFilter">Select Date</label>
-      <input type="date" class="form-control form-control-sm" id="dateFilter">
-    </div>
-
-    <!-- Category Filter -->
-    <div class="form-group">
-      <label for="categoryFilter">Category</label>
-      <select class="form-control form-control-sm" id="categoryFilter">
-        <option value="">Select</option>
-        <option value="category1">Category 1</option>
-        <option value="category2">Category 2</option>
-        <option value="category3">Category 3</option>
-      </select>
-    </div>
-
-    <!-- Buttons -->
-    <div class="form-group">
-      <div class="row">
-        <div class="col-6">
-          <button class="btn btn-sm custom-bg text-light w-100" (click)="applyFilter()">Filter</button>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-sm btn-danger w-100" (click)="closeOffcanvas()">Cancel</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
 
 <ng-template #aboutCandidateDialog>
   <div class="animate-zoom">
@@ -204,11 +153,26 @@
       <div class="row mb-2 align-items-center">
         <div class="col-md-9">
           <div class="d-flex">
-            <span class="fw-bold custom-text mr-3">Candidate Details </span>
-            <span class="text-uppercase mr-2">Name : {{ candidateData?.candidatePersonalInformationDetails?.firstName
-              }}</span>
-            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
-              }}</span>
+            <!-- <span class="fw-bold custom-text mr-3">Candidate Details </span> -->
+            <span class="small text-uppercase mr-2">
+              Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <!-- <span class="small text-uppercase mr-2">
+              Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}
+            </span>
+            <span class="small text-muted mr-2">|</span>  -->
+
+            <span class="small text-uppercase mr-2">
+              Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase">
+              Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName }}
+            </span>
+
 
           </div>
 
@@ -220,7 +184,7 @@
             class="border-none custom-bg text-white custom-action-btn px-2 py-1 mr-2" (click)="viewFeedbackForm()">
             Feedback Form
           </button>
-          <span class="cursor-pointer Hover" (click)="close()">
+          <span class="cursor-pointer text-danger Hover" (click)="close()">
             <i class="bi bi-x-circle"></i>
           </span>
         </div>
@@ -244,12 +208,12 @@
               <strong>Mobile:</strong> {{ candidateData?.candidatePersonalInformationDetails?.mobileNumber }}
             </div>
             <div class="col-md-2">
-              <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob | date: 'dd-MM-yyyy' }}
+              <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-7 mt-1">
               <strong>Email:</strong> {{ candidateData?.candidatePersonalInformationDetails?.email }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5 mt-1">
               <strong>Marital Status:</strong> {{ candidateData?.candidatePersonalInformationDetails?.maritalStatusName
               }}
             </div>
@@ -266,17 +230,18 @@
                 {{ candidateData?.candidateCommunicationAddressDetails?.comAddressC }}
               </p>
             </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
+            
+            <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.stateName
                 }}</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.cityName }}
               </p>
+            </div>
+            <div class="col-md-2">
+              <p class="mb-0"><strong>Postal Code:</strong> {{
+                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
             </div>
           </div>
         </div>
@@ -292,16 +257,17 @@
                 {{ candidateData?.candidatePermanentAddressDetails?.perAddressC }}
               </p>
             </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
+            
+            <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidatePermanentAddressDetails?.stateName }}
               </p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidatePermanentAddressDetails?.cityName }}</p>
+            </div>
+            <div class="col-md-2">
+              <p class="mb-0"><strong>Postal Code:</strong> {{
+                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
             </div>
           </div>
         </div>
@@ -395,7 +361,8 @@
         <div class="card p-3 mb-3">
           <div class="row mb-2">
             <div class="col">
-              <h6 class="text-decoration-underline fw-bold mb-0 custom-text">Files <i class="bi bi-file-earmark-arrow-down-fill"></i></h6>
+              <h6 class="text-decoration-underline fw-bold mb-0 custom-text">Files <i
+                  class="bi bi-file-earmark-arrow-down-fill"></i></h6>
             </div>
           </div>
 
@@ -504,8 +471,10 @@
                 <ng-container *ngFor="let exp of candidateData.candidateInterviewDetails">
                   <tr *ngIf="exp.interviewScheduleId">
                     <td class="custom-td small-header">{{ exp.roundNo || 'NA' }}</td>
-                    <td class="custom-td small-header">{{ exp.interviewDate ? (exp.interviewDate)
-                      : 'NA' }}</td>
+                    <td class="custom-td small-header">
+                      {{ exp.interviewDate ? (exp.interviewDate ) : 'NA' }}
+                    </td>
+
                     <td class="custom-td small-header">{{ exp.interviewTime || 'NA' }}</td>
                     <td class="custom-td small-header">
                       {{ (exp.interviewByName ? exp.interviewByName : 'NA') }} - {{ (exp.interviewBy ? exp.interviewBy :
@@ -706,7 +675,7 @@
                 containerClass: colorTheme,
                 customTodayClass: 'custom-today-class',
                 dateInputFormat: 'YYYY-MM-DD'
-              }" [minDate]="minDate" bsDatepicker required />
+              }" [minDate]="minDate" bsDatepicker required readonly />
         </div>
 
         <div class="col-md-3">

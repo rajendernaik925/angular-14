@@ -136,7 +136,7 @@
                     </div>
                   </div>
                   <div class="col-md-3">
-                    <label>Mobile <span class="text-danger">*</span></label>
+                    <label>Mobile Number<span class="text-danger">*</span></label>
                     <input type="text" [readOnly]="isAllDataPresent" formControlName="mobileNumber"
                       placeholder="9876543210" class="form-control form-control-sm" (keydown)="onlyNumbers($event)"
                       maxlength="10" />
@@ -723,7 +723,8 @@
                         <div class="col-md-2">
                           <label *ngIf="!education.disabled">Percentage <span class="text-danger">*</span></label>
                           <input type="text" formControlName="percentage" maxlength="2" (keydown)="onlyNumbers($event)"
-                            placeholder="percentage %" class="form-control form-control-sm" [disabled]="education.disabled" />
+                            placeholder="percentage %" class="form-control form-control-sm"
+                            [disabled]="education.disabled" />
                           <div *ngIf="education.get('percentage')?.touched && education.get('percentage')?.invalid"
                             class="text-danger fs-custom">
                             Percentage is required
@@ -841,7 +842,7 @@
                     </td>
                   </tr>
                   <!-- 10th Document -->
-                  <tr>
+                  <!-- <tr>
                     <td class="fw-bold py-1 px-2">SSC (10th)
                       <span class="text-danger">*</span>
                     </td>
@@ -862,11 +863,46 @@
                         <button *ngIf="tenthFile  && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile('1')">Delete</button>
-                        <!-- <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">Save</button> -->
                         <button *ngIf="tenthFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('tenth')">Update</button>
+                      </div>
+                    </td>
+                  </tr> -->
+                  <tr>
+                    <td class="fw-bold py-1 px-2">
+                      SSC (10th) <span class="text-danger">*</span>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="tenthFile; else tenthFileInput">
+                          <button class="btn btn-info badge badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(tenthFile)">
+                            View Document
+                          </button>
+                        </ng-container>
+
+                        <ng-template #tenthFileInput>
+                          <input type="file" formControlName="tenth" accept=".pdf" id="tenth" #tenthFileInput
+                            (change)="onFileSelect($event, 'tenth')" class="form-control form-control-sm file-input" />
+                        </ng-template>
+
+                        <!-- Hidden input always available for update click -->
+                        <input type="file" formControlName="tenth" accept=".pdf" #hiddenTenthInput
+                          (change)="onFileSelect($event, 'tenth')" class="d-none" />
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="tenthFile && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2" (click)="deleteFile('1')">
+                          Delete
+                        </button>
+
+                        <button *ngIf="tenthFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0" (click)="openTenthFileInput()">
+                          Update
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -1020,24 +1056,27 @@
                   <div class="col-md-3">
                     <div class="mb-3">
                       <label class="d-block">Are you a Fresher or Experienced?</label>
+
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="fresher"
                           value="fresher" (change)="handleExperienceToggle('fresher')"
-                          [attr.disabled]="!editButtonDisplay ? true : null" />
+                          [attr.disabled]="isExperienceBoolean || !editButtonDisplay ? true : null" />
                         <label class="form-check-label" for="fresher">Fresher</label>
                       </div>
+
                       <div class="form-check form-check-inline">
                         <input type="radio" formControlName="isFresher" class="form-check-input" id="experienced"
                           value="experienced" (change)="handleExperienceToggle('experienced')"
-                          [attr.disabled]="!editButtonDisplay ? true : null" />
+                          [attr.disabled]="isExperienceBoolean || !editButtonDisplay ? true : null" />
                         <label class="form-check-label" for="experienced">Experienced</label>
                       </div>
                     </div>
+
                   </div>
                   <div class="col-md-2">
                     <label>Tentative Joining Date <span class="text-danger">*</span></label>
                     <select [attr.disabled]="!editButtonDisplay ? true : null" formControlName="joiningTime"
-                      class="form-control form-control-sm">
+                      [attr.disabled]="isExperienceBoolean ? true : null" class="form-control form-control-sm">
                       <option value="">Select</option>
                       <option *ngFor="let joining of joiningOptions" [value]="joining.id">
                         {{ joining.name }}
@@ -1051,9 +1090,15 @@
                   </div>
                   <div *ngIf="isFresher" class="col-md-1 mt-4">
                     <div class="">
-                      <button type="submit" class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
+                      <button *ngIf="isFresher && !isExperienceBoolean" type="submit"
+                        class="btn custom-bg text-white btn-sm shadow-none border-0 mt-2"
                         (click)="setValidation('experience')">
                         Save
+                      </button>
+
+                      <button *ngIf="isExperienceBoolean && isFresher" type="submit"
+                        class="btn bg-success text-white btn-sm shadow-none border-0 mt-2" (click)="edit('experience')">
+                        Edit
                       </button>
                     </div>
                   </div>
@@ -1082,7 +1127,7 @@
                   </div>
                   <div *ngIf="!isFresher" class="col-md-3">
                     <label>Description <span class="text-danger">*</span></label>
-                    <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1"
+                    <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="500"
                       formControlName="suitableJobDescription" class="form-control form-control-sm"
                       placeholder="Description"></textarea>
                     <div
@@ -1101,12 +1146,18 @@
                       <input *ngIf="editButtonDisplay" type="file" class="form-control form-control-sm"
                         (change)="onFileChange($event, 'payslipFile')" />
                     </ng-container>
+                    <div
+                      *ngIf="registrationForm.get('payslipFile')?.touched && registrationForm.get('payslipFile')?.invalid"
+                      class="text-danger fs-custom">
+                      Payslip is required
+                    </div>
                     <ng-template #viewPayslip>
                       <button class="btn btn-info btn-sm w-100 mt-4" (click)="viewFile(paySlipFilePath)">
                         View Payslip
                       </button>
                     </ng-template>
                   </div>
+
 
                   <!-- Service Letter Upload or View -->
                   <div class="col-md-3">
@@ -1115,6 +1166,11 @@
                       <input *ngIf="editButtonDisplay" type="file" class="form-control form-control-sm"
                         (change)="onFileChange($event, 'serviceLetterFile')" />
                     </ng-container>
+                    <div
+                      *ngIf="registrationForm.get('serviceLetterFile')?.touched && registrationForm.get('serviceLetterFile')?.invalid"
+                      class="text-danger fs-custom">
+                      Service Letter is required
+                    </div>
                     <ng-template #viewServiceLetter>
                       <button class="btn btn-info btn-sm w-100 mt-4" (click)="viewFile(serviceFilePath)">
                         View Service Letter
@@ -1142,8 +1198,8 @@
 
                     <div class="col-md-2">
                       <label *ngIf="editButtonDisplay">Total Experience<span class="text-danger">*</span></label>
-                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience" placeholder="Experience"
-                        maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
+                      <input *ngIf="editButtonDisplay" type="text" formControlName="totalExperience"
+                        placeholder="Experience" maxlength="6" (keydown)="onlyNumbersWithDot($event)" maxlength="3"
                         class="form-control form-control-sm" />
                       <div
                         *ngIf="registrationForm.get('totalExperience')?.touched && registrationForm.get('totalExperience')?.invalid"
@@ -1212,10 +1268,20 @@
                         <input type="text" class="form-control" [value]="exp.lastWorkingDate" readonly>
                       </div>
                       <div class="col-md-1 d-flex align-items-end" *ngIf="editButtonDisplay">
-                        <button class="btn btn-danger btn-sm w-100" (click)="deleteExperience(exp.experienceMapId, i)">
+                        <button class="btn btn-danger btn-sm w-100 custom-disabled-btn"
+                          [disabled]="experienceArray.length <= 1" (click)="deleteExperience(exp.experienceMapId, i)">
                           Delete
                         </button>
                       </div>
+
+                      <!-- <div class="col-md-1 d-flex align-items-end"
+                        *ngIf="editButtonDisplay && experienceArray.length > 1">
+                        <button class="btn btn-danger btn-sm w-100" (click)="deleteExperience(exp.experienceMapId, i)">
+                          Delete
+                        </button>
+                      </div> -->
+
+
                     </div>
 
                     <!-- Mobile Card -->

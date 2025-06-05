@@ -118,7 +118,7 @@ export class JobcodeComponent implements OnInit {
     this.createJobForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
       jobReportingManagerId: ['', [Validators.required]],
-      teamId: ['', Validators.required],
+      teamId: [''],
       jobExperienceMinYear: [null, Validators.required],
       jobExperienceMaxYear: [null, Validators.required],
       jobCtcMin: [null, Validators.required],

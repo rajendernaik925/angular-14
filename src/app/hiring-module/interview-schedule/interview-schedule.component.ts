@@ -1,6 +1,6 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Component, OnInit, Renderer2, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { debounceTime } from 'rxjs/operators';
@@ -47,6 +47,7 @@ export class InterviewScheduleComponent implements OnInit {
   roundNo: number | null = null;
   interviewScheduleTo: string | null = null;
   isMeetingLinkDisabled = false;
+  InterviewerError: string = ''
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -64,7 +65,7 @@ export class InterviewScheduleComponent implements OnInit {
       mode: ['1', Validators.required],
       interviewDate: ['', Validators.required],
       interviewTime: ['', Validators.required],
-      interviewBy: ['', Validators.required],
+      interviewBy: ['', [Validators.required]], // ✅ SYNC validator
       link: [
         '',
         [
@@ -163,7 +164,7 @@ export class InterviewScheduleComponent implements OnInit {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
       { key: 'email', label: 'Mail Id', uppercase: true },
-      { key: 'firstname', label: 'Name', uppercase: true },
+      { key: 'firstname', label: 'Full Name', uppercase: true },
       // { key: 'lastname', label: 'Last Name', uppercase: true },
       { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
       { key: 'job_title', label: 'Designation', uppercase: true },
@@ -271,17 +272,10 @@ export class InterviewScheduleComponent implements OnInit {
     this.dialog.closeAll();
   }
 
-  toggleOffcanvas() {
-    this.isOpen = !this.isOpen;
-  }
-
-  closeOffcanvas() {
-    this.isOpen = false;
-  }
-
-  applyFilter() { }
   onSubmit() {
+    console.log(this.addNewRoundForm.value);
     if (this.addNewRoundForm.invalid) {
+    this.InterviewerError  = 'please enter valid interviewer'
       Object.keys(this.addNewRoundForm.controls).forEach((field) => {
         const control = this.addNewRoundForm.get(field);
         if (control?.invalid) {
@@ -332,24 +326,28 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
 
-  searchInterviewer(query: string) {
+  searchInterviewer(query: string): void {
+    this.InterviewerError = ''
+    this.selectedInterviewerName = query;
+    this.addNewRoundForm.patchValue({ interviewBy: '' }); // clear ID unless selected
     if (query.trim().length < 1) {
       this.interviewedByList = [];
       return;
     }
+
     const formData = new FormData();
-    formData.append("name", query)
-    // Debounce API call
-    this.authService.interviewedBy(formData).pipe(debounceTime(300)).subscribe({
-      next: (res: any) => {
+    formData.append("name", query);
+    this.authService.interviewedBy(formData).subscribe({
+      next: (res: any[]) => {
         this.interviewedByList = Array.isArray(res) ? res : [];
         this.showDropdown = this.interviewedByList.length > 0;
       },
-      error: (err: HttpErrorResponse) => {
+      error: () => {
         this.interviewedByList = [];
       }
     });
   }
+
 
 
   // generateTimeSlots() {
@@ -504,17 +502,46 @@ export class InterviewScheduleComponent implements OnInit {
     this.interviewedByList = [];
     this.employeeId = id;
     this.addNewRoundForm.reset();
-    if (this.employeeId) {
-      this.addNewRoundForm.patchValue({
-        interviewBy: this.interviewScheduleTo
-      });
-      this.dialogRef = this.dialog.open(this.interviewDialog, {
-        width: '400px',
-        height: 'auto',
-        hasBackdrop: true,
+
+    if (this.employeeId && this.interviewScheduleTo) {
+      // Call your existing search function to get interviewer by ID
+      const formData = new FormData();
+      formData.append("name", this.interviewScheduleTo); // assuming API returns single match
+
+      this.authService.interviewedBy(formData).subscribe({
+        next: (res: any[]) => {
+          const matched = res.find(item => item.id === this.interviewScheduleTo);
+          console.log(matched)
+          if (matched) {
+            this.selectedInterviewerName = matched.name;
+            this.addNewRoundForm.patchValue({
+              interviewBy: matched.id
+            });
+          }
+
+          this.dialogRef = this.dialog.open(this.interviewDialog, {
+            width: '400px',
+            height: 'auto',
+            hasBackdrop: true,
+          });
+        },
+        error: () => {
+          // fallback if not found
+          this.selectedInterviewerName = '';
+          this.addNewRoundForm.patchValue({
+            interviewBy: this.interviewScheduleTo
+          });
+
+          this.dialogRef = this.dialog.open(this.interviewDialog, {
+            width: '400px',
+            height: 'auto',
+            hasBackdrop: true,
+          });
+        }
       });
     }
   }
+
 
   feedbackView(interview: any, name: any, mail: any) {
     const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
@@ -665,5 +692,13 @@ export class InterviewScheduleComponent implements OnInit {
       buttonsStyling: false
     });
   }
+
+  validateInterviewerSelection(control: AbstractControl): ValidationErrors | null {
+    const selectedId = control.value;
+    const isValid = this.interviewedByList.some(item => item.id === selectedId);
+    return isValid ? null : { invalidSelection: true };
+  }
+
+
 
 }

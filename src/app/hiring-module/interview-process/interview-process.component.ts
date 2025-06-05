@@ -274,7 +274,7 @@ export class InterviewProcessComponent implements OnInit {
     this.columns = [
       { key: 'job_code', label: 'Job Code', uppercase: true },
       { key: 'email', label: 'Mail Id', uppercase: true },
-      { key: 'firstname', label: 'Name', uppercase: true },
+      { key: 'firstname', label: 'Full Name', uppercase: true },
       { key: 'mobilenumber', label: 'Mobile Number', uppercase: true },
       { key: 'job_title', label: 'Designation', uppercase: true },
       // { key: 'status', label: 'Status', center: true },
@@ -399,7 +399,7 @@ export class InterviewProcessComponent implements OnInit {
       const year = dateObj.getFullYear();
       const month = String(dateObj.getMonth() + 1).padStart(2, '0');
       const day = String(dateObj.getDate()).padStart(2, '0');
-      formValue.joiningDate = `${year}-${month}-${day}`; // override with formatted string
+      formValue.joiningDate = `${year}-${month}-${day}`; 
     }
 
     const statusValue = Number(formValue.status) || 0;

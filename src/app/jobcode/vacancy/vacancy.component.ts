@@ -205,9 +205,7 @@ export class VacancyComponent implements OnInit {
               title: 'Success',
               text: 'Candidate Added Successfully.',
               icon: 'success',
-              showConfirmButton: false,
-              timer: 1000,
-              timerProgressBar: true,
+              confirmButtonText: 'OK',
             });
             this.dialogRef.close();
             this.viewMore(this.candidateId, this.referenceJobCode)
@@ -218,10 +216,9 @@ export class VacancyComponent implements OnInit {
 
         error: (error: HttpErrorResponse) => {
           this.isLoading = false;
-          this.dialogRef.close();
           this.viewMore(this.candidateId, this.referenceJobCode)
-          this.addCandidateForm.reset();
-          this.uploadedFile = null;
+          // this.addCandidateForm.reset();
+          // this.uploadedFile = null;
           if (error.status === 409) {
             Swal.fire({
               title: 'Warning',

@@ -67,11 +67,10 @@
                     <ng-template #default>
                       <ng-container *ngIf="col.key === 'employeeid'; else normal">
                         <button class="border-none custom-bg text-white custom-action-btn px-2" [disabled]="isLoading"
-                          (click)="handleAction(row.employeeid)">
+                          (click)="handleAction(row.employeeid,row.interviewStatus)">
                           View
                         </button>
                       </ng-container>
-
 
                       <!-- <ng-template #normal>
                         {{ row[col.key] }}
@@ -162,19 +161,35 @@
       <div class="row mb-2 align-items-center">
         <div class="col-md-10">
           <div class="d-flex" *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">
-            <span class="fw-bold custom-text mr-3"
-              *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">Candidate Details </span>
-            <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName
-              }}</span>
-            <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email
-              }}</span>
+            <!-- <span class="fw-bold custom-text mr-3"
+              *ngIf="candidateData?.candidatePersonalInformationDetails?.firstName">Candidate Details </span> -->
+            <span class="small text-uppercase mr-2">
+              Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <!-- <span class="small text-uppercase mr-2">
+              Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}
+            </span>
+            <span class="small text-muted mr-2">|</span> -->
+
+            <span class="small text-uppercase mr-2">
+              Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase">
+              Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName }}
+            </span>
+
+
           </div>
 
           <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
             class="fw-bold custom-text">Details</span>
         </div>
         <div class="col-md-2 d-flex justify-content-end align-items-center">
-          <span class="cursor-pointer Hover" (click)="close()">
+          <span class="cursor-pointer text-danger Hover" (click)="close()">
             <i class="bi bi-x-circle"></i>
           </span>
         </div>
@@ -201,10 +216,10 @@
             <div class="col-md-2">
               <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-7 mt-1">
               <strong>Email:</strong> {{ candidateData?.candidatePersonalInformationDetails?.email }}
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5 mt-1">
               <strong>Marital Status:</strong> {{ candidateData?.candidatePersonalInformationDetails?.maritalStatusName
               }}
             </div>
@@ -221,17 +236,18 @@
                 {{ candidateData?.candidateCommunicationAddressDetails?.comAddressC }}
               </p>
             </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
+            
+            <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.stateName
                 }}</p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.cityName }}
               </p>
+            </div>
+            <div class="col-md-2">
+              <p class="mb-0"><strong>Postal Code:</strong> {{
+                candidateData?.candidateCommunicationAddressDetails?.postalCode }}</p>
             </div>
           </div>
         </div>
@@ -247,16 +263,17 @@
                 {{ candidateData?.candidatePermanentAddressDetails?.perAddressC }}
               </p>
             </div>
-            <div class="col-md-4">
-              <p class="mb-0"><strong>Postal Code:</strong> {{
-                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
-            </div>
-            <div class="col-md-2">
+            
+            <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidatePermanentAddressDetails?.stateName }}
               </p>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
               <p class="mb-0"><strong>City:</strong> {{ candidateData?.candidatePermanentAddressDetails?.cityName }}</p>
+            </div>
+            <div class="col-md-2">
+              <p class="mb-0"><strong>Postal Code:</strong> {{
+                candidateData?.candidatePermanentAddressDetails?.postalCode }}</p>
             </div>
           </div>
         </div>
@@ -283,7 +300,7 @@
 
         <div class="card p-2 mb-3">
           <span class="custom-text text-decoration-underline"><strong>Education</strong></span>
-          <table  class="custom-table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
+          <table class="custom-table table-bordered" *ngIf="candidateData?.candidateEducationDetails?.length">
             <thead>
               <tr>
                 <th class="small-header">Type</th>
@@ -293,7 +310,7 @@
                 <th class="small-header">Percentage</th>
               </tr>
             </thead>
-            
+
             <tbody>
               <tr *ngFor="let edu of candidateData?.candidateEducationDetails">
                 <td class="small-header">{{ edu?.educationTypeName }}</td>
@@ -333,23 +350,23 @@
           <!-- Show Table Only if NOT Fresher -->
           <div class="table-container ">
             <table class="custom-table table-bordered"
-            *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
-            <thead>
-              <tr>
-                <th class="custom-th small-header-dialog">Company</th>
-                <th class="custom-th small-header-dialog">Total Experience (Years)</th>
-                <th class="custom-th small-header-dialog">Last Working Date</th>
-              </tr>
-            </thead>
-            
-            <tbody>
-              <tr *ngFor="let exp of candidateData.candidateExperienceDetails.candidateCompanyDetails">
-                <td class="small-header">{{ exp.companyName }}</td>
-                <td class="small-header">{{ exp.totalExp }}</td>
-                <td class="small-header">{{ exp.lastWorkingDate }}</td>
-              </tr>
-            </tbody>
-          </table>
+              *ngIf="!candidateData.candidateExperienceDetails.candidateJoiningDetails?.is_Fresher">
+              <thead>
+                <tr>
+                  <th class="custom-th small-header-dialog">Company</th>
+                  <th class="custom-th small-header-dialog">Total Experience (Years)</th>
+                  <th class="custom-th small-header-dialog">Last Working Date</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr *ngFor="let exp of candidateData.candidateExperienceDetails.candidateCompanyDetails">
+                  <td class="small-header">{{ exp.companyName }}</td>
+                  <td class="small-header">{{ exp.totalExp }}</td>
+                  <td class="small-header">{{ exp.lastWorkingDate }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

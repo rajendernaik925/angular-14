@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 export class personalInfoComponent implements OnInit {
 
   @ViewChild('fileInput') fileInput!: ElementRef;
+  @ViewChild('hiddenTenthInput') hiddenTenthInput!: ElementRef;
   registrationForm: FormGroup;
   universityOptions: any[] = [];
   qualificationOptions: any[] = [];
@@ -39,8 +40,10 @@ export class personalInfoComponent implements OnInit {
   isLoading: boolean = false;
   isUpdateMode: boolean = false;
   isAllDataPresent: boolean = false;
+  isExperienceBoolean: boolean = false;
   isAllAddressDataPresent: boolean = false;
   personalUpdate: boolean = false;
+  experienceUpdate: boolean = false;
   addressUpadte: boolean = false;
   colorTheme = 'theme-dark-blue';
   hovering = false;
@@ -142,8 +145,8 @@ export class personalInfoComponent implements OnInit {
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
       LastOrStill_Working_Date: ['', Validators.required],
-      payslipFile: [null],
-      serviceLetterFile: [null],
+      payslipFile: [null,Validators.required],
+      serviceLetterFile: [null,Validators.required],
       //salary
       currentSalary: ['', Validators.required],
       expectedSalary: ['', Validators.required],
@@ -316,6 +319,9 @@ export class personalInfoComponent implements OnInit {
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
+            
+          this.isExperienceBoolean = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher
+          console.log("experice flag : ",this.isExperienceBoolean)  
 
           this.handleExperienceToggle(isFresher);
 
@@ -687,6 +693,9 @@ export class personalInfoComponent implements OnInit {
     } else if (value == 'address') {
       this.isAllAddressDataPresent = false
       this.addressUpadte = true;
+    } else if (value == 'experience') {
+      this.isExperienceBoolean = false
+      this.experienceUpdate = true;
     }
   }
 
@@ -1114,8 +1123,8 @@ export class personalInfoComponent implements OnInit {
         ? ['joiningTime', 'isFresher']
         : [
           'joiningTime', 'companyName', 'totalExperience',
-          'LastOrStill_Working_Date', 'isFresher', 'currentSalary',
-          'expectedSalary', 'suitableJobDescription'
+          'LastOrStill_Working_Date', 'isFresher', 'currentSalary', 
+          'expectedSalary', 'suitableJobDescription','payslipFile', 'serviceLetterFile'
         ];
 
       experienceFields.forEach((field) => {
@@ -1508,7 +1517,9 @@ export class personalInfoComponent implements OnInit {
   }
 
 
-
+ openTenthFileInput(): void {
+    this.hiddenTenthInput.nativeElement.click();
+  }
 
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];

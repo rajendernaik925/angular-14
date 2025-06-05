@@ -198,16 +198,31 @@
         <div class="row mb-2 align-items-center">
           <div class="col-md-10">
             <div class="d-flex">
-              <span class="fw-bold custom-text mr-3">Candidate Details </span>
-              <span class="text-uppercase mr-4"> Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}</span>
-              <span class="text-uppercase ms-2">Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}</span>
+              <span class="small text-uppercase mr-2">
+              Name: {{ candidateData?.candidatePersonalInformationDetails?.firstName }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <!-- <span class="small text-uppercase mr-2">
+              Email: {{ candidateData?.candidatePersonalInformationDetails?.email }}
+            </span>
+            <span class="small text-muted mr-2">|</span>  -->
+
+            <span class="small text-uppercase mr-2">
+              Job Code: {{ candidateData?.candidatePersonalInformationDetails?.jcReferanceId }}
+            </span>
+            <span class="small text-muted mr-2">|</span>
+
+            <span class="small text-uppercase">
+              Designation: {{ candidateData?.candidatePersonalInformationDetails?.designationName }}
+            </span>
             </div>
   
             <span *ngIf="!candidateData?.candidatePersonalInformationDetails?.firstName"
               class="fw-bold custom-text">Details</span>
           </div>
           <div class="col-md-2 d-flex justify-content-end align-items-center">
-            <span class="cursor-pointer Hover" (click)="close()">
+            <span class="cursor-pointer text-danger Hover" (click)="close()">
               <i class="bi bi-x-circle"></i>
             </span>
           </div>
@@ -233,10 +248,10 @@
               <div class="col-md-2">
                 <strong>DOB:</strong> {{ candidateData?.candidatePersonalInformationDetails?.dob }}
               </div>
-              <div class="col-md-4">
+              <div class="col-md-7 mt-1">
                 <strong>Email:</strong> {{ candidateData?.candidatePersonalInformationDetails?.email }}
               </div>
-              <div class="col-md-4">
+              <div class="col-md-5 mt-1">
                 <strong>Marital Status:</strong> {{ candidateData?.candidatePersonalInformationDetails?.maritalStatusName
                 }}
               </div>
