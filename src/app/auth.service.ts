@@ -46,13 +46,15 @@ export class AuthService {
       errorMessage = error.error;
     }
     Swal.fire({
-      title: 'OOPS',
+      title: 'Server Error',
       text: error.error.message,
       icon: 'error',
-      showConfirmButton: false,
-      timer: 1000,
-      timerProgressBar: true,
+      showConfirmButton: true,           // Show the confirm (close) button
+      confirmButtonText: 'Close',        // Optional: change text from "OK" to "Close"
+      // timer: 1000,                       // Optional: auto close after 1 second
+      // timerProgressBar: true
     });
+
     return throwError(() => errorMessage);
   }
 
@@ -897,7 +899,7 @@ export class AuthService {
   }
 
 
-  private jobCodeUrls: string = "http://192.168.213.50:2025/";
+  private jobCodeUrls: string = "http://192.168.215.73:2025/";
   createJobCode(formData: any): Observable<HttpResponse<any>> {
     return this.http.post<any>(`${this.jobCodeUrls}jobcode/create`, formData, this.getDefaultHttpOptions()).pipe(
       catchError(this.handleError)
@@ -951,7 +953,7 @@ export class AuthService {
   }
 
   listofTeams(): Observable<any> {
-    return this.http.get(`${this.jobCodeUrls}master/team`).pipe(
+    return this.http.get(`${this.jobCodeUrls}master/department`).pipe(
       catchError(this.handleError)
     )
   }

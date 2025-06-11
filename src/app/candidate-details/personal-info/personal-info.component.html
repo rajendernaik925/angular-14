@@ -48,10 +48,11 @@
 
     <!-- Mobile Header -->
     <div class="d-flex d-md-none justify-content-between align-items-center p-2 border-bottom">
-      <span class="font-weight-bold">Job Portal</span>
-      <div (click)="toggleSidebar()" class="cursor-pointer">
-        {{ jobCodeData.name }} <i class="fa fa-bars ml-2"></i>
+      <span class="font-weight-bold" [routerLink]="'/dashboard'">Job Portal</span>
+      <div (click)="toggleSidebar()" class="cursor-pointer custom-text text-uppercase">
+        {{ jobCodeData.name }} <i class="fa fa-bars ml-2 hover-icon"></i>
       </div>
+
     </div>
 
     <!-- Sidebar Overlay -->
@@ -637,7 +638,7 @@
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div class="fw-bold text-start custom-text">{{ 'Education Details' | uppercase }}
                 </div>
-                <span class="fs-custom rounded-pill text-danger ml-2"
+                <span class="fs-custom rounded-pill text-danger ml-2 d-none d-md-block"
                   aria-label="Fields marked with asterisk are required">(Minimum 3 Qualification are Required)
                 </span>
                 <div class="text-end mt-0 align-items-center">
@@ -1096,7 +1097,7 @@
                         Save
                       </button>
 
-                      <button *ngIf="isExperienceBoolean && isFresher" type="submit"
+                      <button *ngIf="isExperienceBoolean && isFresher && editButtonDisplay" type="submit"
                         class="btn bg-success text-white btn-sm shadow-none border-0 mt-2" (click)="edit('experience')">
                         Edit
                       </button>
@@ -1176,6 +1177,12 @@
                         View Service Letter
                       </button>
                     </ng-template>
+                  </div>
+
+                  <div *ngIf="paySlipFilePath" class="col-md-2 mt-4">
+                    <button class="btn btn-sm bg-primary text-white shadow-none" (click)="UpdatePayslip()">
+                      Update Files
+                    </button>
                   </div>
 
                 </div>
@@ -1323,14 +1330,14 @@
                   </div>
 
                   <div class="text-end w-25">
-                    <small class="text-muted"
+                    <small class="text-muted d-none d-md-block"
                       *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage !== '100'; else allDone">
                       {{ (100 - (+loadedData?.candidateTrackingDTO?.totalPercentage || 0)) | number:'1.2-2' }}% to
                       Complete
                     </small>
 
                     <ng-template #allDone>
-                      <small class="text-success fw-semibold">
+                      <small class="text-success fw-semibold d-none d-md-block">
                         ✅ All sections completed
                       </small>
                     </ng-template>
@@ -1462,7 +1469,7 @@
               </div>
 
               <div *ngIf="loadedData?.candidateInterviewDetails?.length" class="container p-3">
-                <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name }})</h6>
+                <h6 class="fw-bold mb-3">Interview Status ({{ jobCodeData.name | uppercase }})</h6>
 
                 <!-- Headings for Desktop -->
                 <div class="row fw-semibold text-muted mb-2 px-2 d-none d-md-flex">

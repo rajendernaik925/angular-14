@@ -145,8 +145,8 @@ export class personalInfoComponent implements OnInit {
       companyName: ['', Validators.required],
       totalExperience: ['', Validators.required],
       LastOrStill_Working_Date: ['', Validators.required],
-      payslipFile: [null,Validators.required],
-      serviceLetterFile: [null,Validators.required],
+      payslipFile: [null],
+      serviceLetterFile: [null],
       //salary
       currentSalary: ['', Validators.required],
       expectedSalary: ['', Validators.required],
@@ -167,7 +167,7 @@ export class personalInfoComponent implements OnInit {
     if (!this.jobCodeData.status) {
       this.router.navigate(['/hiring-login']);
     }
-    this.checkIfLoginExpired();
+    // this.checkIfLoginExpired();
 
 
     if (this.jobCodeData.candidateId) {
@@ -210,7 +210,6 @@ export class personalInfoComponent implements OnInit {
     this.isLoading = true;
     this.authService.registeredData(this.jobCodeData.candidateId).subscribe({
       next: (res: any) => {
-        this.isLoading = false;
         this.loadedData = res;
         if (this.loadedData?.candidateInterviewDetails?.length) {
           this.editButtonDisplay = false;
@@ -249,6 +248,23 @@ export class personalInfoComponent implements OnInit {
 
           this.paySlipFilePath = res?.candidateExperienceDetails?.candidateSalaryDetails?.paySlipFileA || null;
           this.serviceFilePath = res?.candidateExperienceDetails?.candidateSalaryDetails?.serviceFile || null;
+
+          // if (!this.paySlipFilePath) {
+          //   this.registrationForm.get('payslipFile')?.setValidators([Validators.required]);
+          // } else {
+          //   this.registrationForm.get('payslipFile')?.clearValidators();
+          // }
+
+          // if (!this.serviceFilePath) {
+          //   this.registrationForm.get('serviceLetterFile')?.setValidators([Validators.required]);
+          // } else {
+          //   this.registrationForm.get('serviceLetterFile')?.clearValidators();
+          // }
+
+          // // Update validity status after changing validators
+          // this.registrationForm.get('payslipFile')?.updateValueAndValidity();
+          // this.registrationForm.get('serviceLetterFile')?.updateValueAndValidity();
+
           // console.log("file docs name : ",paySlipFile,serviceFile)
 
           const isFresher = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher ? 'fresher' : 'experienced';
@@ -319,9 +335,9 @@ export class personalInfoComponent implements OnInit {
 
           this.isAllAddressDataPresent = [res?.candidateCommunicationAddressDetails?.comAddressA]
             .every(field => typeof field === 'string' && field.trim() !== '');
-            
+
           this.isExperienceBoolean = res?.candidateExperienceDetails?.candidateJoiningDetails?.is_Fresher
-          console.log("experice flag : ",this.isExperienceBoolean)  
+          console.log("experice flag : ", this.isExperienceBoolean)
 
           this.handleExperienceToggle(isFresher);
 
@@ -355,6 +371,7 @@ export class personalInfoComponent implements OnInit {
           this.degreeOrBTechFile = null;
           this.othersFile = null;
         }
+        this.isLoading = false;
       },
       error: (err: HttpErrorResponse) => {
         console.log('HTTP Error:', err);
@@ -446,9 +463,7 @@ export class personalInfoComponent implements OnInit {
               title: 'Deleted!',
               text: 'Successfully Deleted',
               icon: 'success',
-              showConfirmButton: false,
-              timer: 1000,
-              timerProgressBar: true,
+              confirmButtonText: 'OK'
             });
             this.experienceArray.splice(index, 1);
             if (this.experienceArray.length === 0) {
@@ -866,7 +881,7 @@ export class personalInfoComponent implements OnInit {
     if (Action === 'personal') {
       const personalFields = [
         'candidateId', 'email', 'mobileNumber', 'dob', 'titleId',
-        'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId','uan','passport',
+        'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId', 'uan', 'passport',
         'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo'
       ];
 
@@ -1123,8 +1138,8 @@ export class personalInfoComponent implements OnInit {
         ? ['joiningTime', 'isFresher']
         : [
           'joiningTime', 'companyName', 'totalExperience',
-          'LastOrStill_Working_Date', 'isFresher', 'currentSalary', 
-          'expectedSalary', 'suitableJobDescription','payslipFile', 'serviceLetterFile'
+          'LastOrStill_Working_Date', 'isFresher', 'currentSalary',
+          'expectedSalary', 'suitableJobDescription', 'payslipFile', 'serviceLetterFile'
         ];
 
       experienceFields.forEach((field) => {
@@ -1175,9 +1190,15 @@ export class personalInfoComponent implements OnInit {
       if (this.payslipFile) {
         formData.append('paySlips', this.payslipFile);
       }
+      // else {
+      //   formData.append('paySlips', null);
+      // }
       if (this.serviceLetterFile) {
         formData.append('expService', this.serviceLetterFile);
       }
+      //  else {
+      //   formData.append('expService', null);
+      // }
 
       this.finalSave('experience', formData);
     }
@@ -1195,8 +1216,10 @@ export class personalInfoComponent implements OnInit {
       next: (res: HttpResponse<any>) => {
         this.isLoading = false;
         // console.log("personal result : ", res);
+
         if (res.status === 200) {
           this.loadUserData();
+          // this.selectedFiles = {}
           this.personalUpdate = false;
           this.addressUpadte = false;
           Swal.fire({
@@ -1224,7 +1247,11 @@ export class personalInfoComponent implements OnInit {
             this.updateDocumentFlag = false;
             // this.fileInput.nativeElement.value = '';
           } else if (action === 'experience') {
+            this.loadUserData();
             const educationArray = this.registrationForm.get('educationDetails') as FormArray;
+            // this.selectedFiles = {}
+            // this.payslipFile = null;
+            // this.serviceLetterFile = null;
             if (educationArray) {
               educationArray.clear();
               educationArray.push(this.createEducationFormGroup());
@@ -1262,16 +1289,16 @@ export class personalInfoComponent implements OnInit {
   }
 
   title() {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.authService.title().subscribe({
       next: (res: any) => {
 
-        this.isLoading = false;
+        // this.isLoading = false;
         this.titleOptions = res;
       },
       error: (err: HttpErrorResponse) => {
 
-        this.isLoading = false;
+        // this.isLoading = false;
         console.log("error", err);
         Swal.fire({
           title: 'error',
@@ -1517,7 +1544,7 @@ export class personalInfoComponent implements OnInit {
   }
 
 
- openTenthFileInput(): void {
+  openTenthFileInput(): void {
     this.hiddenTenthInput.nativeElement.click();
   }
 
@@ -1558,6 +1585,8 @@ export class personalInfoComponent implements OnInit {
     }
   }
 
-
-
+  UpdatePayslip() {
+    this.paySlipFilePath = null;
+    this.serviceFilePath = null;
+  }
 }

@@ -17,7 +17,7 @@
         <div class="card-body py-1">
           <!-- Header Row -->
           <div class="row mb-2 align-items-center">
-            <div class="col-md-3">
+            <div class="col-md-3 d-none d-md-block">
               <span class="fw-bold">
                 Job Registry
                 <span class="badge badge-light  badge bg-secondary text-white">{{totalRecords}}</span>
@@ -61,7 +61,7 @@
                     </span>
                   </th>
                   <th class="small-header-th  cursor-pointer" (click)="sortTable('teamName')">
-                    Team
+                    Department
                     <span *ngIf="sortColumn === 'teamName'">
                       <i class="ms-1"
                         [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
@@ -105,7 +105,7 @@
                   </th>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.jobTitleName)"></td>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.reportingName)"></td>
-                  <td class="small-header text-uppercase">{{ row.teamName }}</td>
+                  <td class="small-header text-uppercase">{{ row.departmentName }}</td>
                   <td class="small-header text-uppercase">
                     {{ row.expMin }}-{{ row.expMax }} Year's
                   </td>
@@ -206,49 +206,100 @@
 <ng-template #jobDialog>
   <div class="d-flex justify-content-between">
     <span class="fw-bold"> Create new job code</span>
-    <span class="Hover" (click)="closeDialog()">
+    <span class="Hover text-danger" (click)="closeDialog()">
       <i class="bi bi-x-circle fs-4 cursor-pointer"></i>
     </span>
   </div>
 
   <form class="dialog-content" [formGroup]="createJobForm" (ngSubmit)="onSubmit()">
     <div class="row mb-3">
+
+      <div class="col-md-4 ">
+        <label for="teamId">Department <span class="text-danger">*</span></label>
+        <!-- <select id="teamId" formControlName="teamId" (change)="onSelected($event)" class="form-control form-control-sm">
+          <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
+            {{ manager.name }}
+          </option>
+        </select> -->
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm" placeholder="Search department"
+            [value]="departmentSearchText" (input)="onDepartmentSearchChange($event.target.value)"
+            (focus)="showDepartmentDropdown = true" (blur)="hideDepartmentDropdownWithDelay()"
+            (keydown)="onDepartmentKeyDown($event)" />
+
+          <ul *ngIf="showDepartmentDropdown && filteredDepartments.length" class="dropdown-list-static">
+            <li *ngFor="let dept of filteredDepartments" (mousedown)="selectDepartment(dept)">
+              {{ dept.name }}
+            </li>
+          </ul>
+        </div>
+
+        <div
+          *ngIf="submitted && createJobForm.get('teamId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
+          class="text-danger fs-5">
+          Team is required.
+        </div>
+        <div *ngIf="managerMessage" class="text-danger fs-5">
+          {{managerMessage}}
+        </div>
+      </div>
       <!-- First Row (3 form controls) -->
       <div class="col-md-4 ">
-        <label for="">Designation <span class="text-danger">*</span></label>
+        <!-- <label for="">Designation <span class="text-danger">*</span></label>
         <select id="jobTitle" formControlName="jobTitle" class="form-control form-control-sm">
           <option value="">Select</option>
           <option *ngFor="let item of jobTitleList" [value]="item.id">
             {{ item.name }}
           </option>
         </select>
-        <!-- <input
-            id="jobTitle"
-            formControlName="jobTitle"
-            class="form-control form-control-sm text-uppercase"
-            placeholder="Role Title"
-            autocomplete="off"
-            autocapitalize="off"
-            type="text"> -->
+        <div *ngIf="submitted && createJobForm.get('jobTitle').invalid" class="text-danger fs-5">
+          Role Title is required.
+        </div> -->
+
+        <label for="jobTitle">Designation <span class="text-danger">*</span></label>
+
+        <div class="position-relative">
+          <input type="text" id="jobTitle" class="form-control form-control-sm" placeholder="Search designation"
+            [value]="jobTitleSearchText" (input)="onJobTitleSearch($event.target.value)"
+            (focus)="jobTitleDropdownVisible = true" (blur)="hideJobTitleDropdownWithDelay()"
+            (keydown)="onJobTitleKeyDown($event)" autocomplete="off" />
+
+
+          <ul *ngIf="jobTitleDropdownVisible && filteredJobTitles.length" class="dropdown-list-static">
+            <li *ngFor="let item of filteredJobTitles" (mousedown)="selectJobTitle(item)">
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+
         <div *ngIf="submitted && createJobForm.get('jobTitle').invalid" class="text-danger fs-5">
           Role Title is required.
         </div>
+
       </div>
 
       <div class="col-md-4 ">
         <label for="jobReportingManagerId">Reporting Manager <span class="text-danger">*</span></label>
-        <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
+        <!-- <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
           class="form-control form-control-sm">
           <option *ngFor="let manager of managers; let i = index" [value]="manager.id">
             {{manager.id}} - {{ manager.name }}
           </option>
-        </select>
-        <!-- <select class="form-control" id="exampleSelect" name="exampleSelect">
-            <option value="" selected disabled>select Manager</option>
-            <option *ngFor="let manager of managers; let i = index" [ngValue]="manager">
-              {{ manager.name }}
-            </option>
-          </select> -->
+        </select> -->
+        <div class="position-relative">
+          <input type="text" class="form-control form-control-sm" placeholder="Search manager" [value]="searchText"
+            (input)="onSearchChange($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdownWithDelay()"
+            (keydown)="onManagerKeyDown($event)" />
+
+
+          <ul *ngIf="showDropdown && filteredManagers.length" class="dropdown-list-static">
+            <li *ngFor="let manager of filteredManagers" (mousedown)="selectManager(manager)">
+              {{ manager.id }} - {{ manager.name }}
+            </li>
+          </ul>
+        </div>
+
+
         <div
           *ngIf="submitted && createJobForm.get('jobReportingManagerId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
           class="text-danger fs-5">
@@ -259,22 +310,7 @@
         </div>
       </div>
 
-      <div class="col-md-4 ">
-        <label for="teamId">Team <span class="text-muted">(Optional)</span></label>
-        <select id="teamId" formControlName="teamId" (change)="onSelected($event)" class="form-control form-control-sm">
-          <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
-            {{ manager.name }}
-          </option>
-        </select>
-        <div
-          *ngIf="submitted && createJobForm.get('teamId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
-          class="text-danger fs-5">
-          Team is required.
-        </div>
-        <div *ngIf="managerMessage" class="text-danger fs-5">
-          {{managerMessage}}
-        </div>
-      </div>
+      
     </div>
 
     <div class="row mb-3">

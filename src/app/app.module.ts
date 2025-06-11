@@ -129,6 +129,7 @@ import { OrganogramTrackingComponent } from './organogram/organogram-tracking/or
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { UnscheduledComponent } from './hiring-module/unscheduled/unscheduled.component';
+import { ActiveUrlPipe } from './hiring-module/active-url.pipe';
 
  
   
@@ -164,7 +165,7 @@ import { UnscheduledComponent } from './hiring-module/unscheduled/unscheduled.co
     CtcComponent, ApplyLeaveComponent, 
     DebounceClickDirective, 
     MngrAssesmentFormComponent, 
-    AssmntFillFormComponent, ProfilePageComponent, KeysPipe,
+    AssmntFillFormComponent, ProfilePageComponent, KeysPipe, ActiveUrlPipe,
      BlockCopyPasteDirective, SafePipe, NoCommaPipe,
      ProfileRequestsComponent, 
      CommnctnAddrssComponent, 

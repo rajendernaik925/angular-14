@@ -265,4 +265,29 @@ $z-index-offcanvas: 1050
     opacity: 0
     pointer-events: none
 
+.table-responsive-custom
+  width: 100%
+  overflow-x: auto
+  -webkit-overflow-scrolling: touch
+  padding-bottom: 5px // ensure no extra space below table
+  margin-bottom: 10px
+
+  // Scrollbar customization (WebKit browsers)
+  &::-webkit-scrollbar
+    height: 5px
+
+  &::-webkit-scrollbar-track
+    background: transparent
+
+  &::-webkit-scrollbar-thumb
+    //background-color:rgb(180, 176, 176)
+    border-radius: 4px
+
+.table
+  margin-bottom: 0px // remove extra gap below table
+
+  th,
+  td
+    white-space: nowrap
+
 

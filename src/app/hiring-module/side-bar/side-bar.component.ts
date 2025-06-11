@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from 'src/app/auth.service';
+import { ActiveUrlPipe } from '../active-url.pipe';
 
 @Component({
   selector: 'app-asset-manager-side-bar',

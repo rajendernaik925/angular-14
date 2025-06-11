@@ -249,23 +249,25 @@ export class InterviewScheduleComponent implements OnInit {
   isDialogOpen = false;
 
   handleAction(employeeId: any) {
-    if (this.isDialogOpen) return; // prevent double open
-    this.isDialogOpen = true;
+  if (this.isDialogOpen) return; // prevent double open
+  this.isDialogOpen = true;
 
-    this.interviewedByList = [];
-    this.employeeId = employeeId;
-    this.addNewRoundForm.reset();
+  this.interviewedByList = [];
+  this.employeeId = employeeId;
+  this.selectedInterviewerName = ''; // Ensure field is empty when opening dialog
+  this.addNewRoundForm.reset();
 
-    this.dialogRef = this.dialog.open(this.interviewDialog, {
-      width: '400px',
-      height: 'auto',
-      hasBackdrop: true,
-    });
+  this.dialogRef = this.dialog.open(this.interviewDialog, {
+    width: '400px',
+    height: 'auto',
+    hasBackdrop: true,
+  });
 
-    this.dialogRef.afterClosed().subscribe(() => {
-      this.isDialogOpen = false;
-    });
-  }
+  this.dialogRef.afterClosed().subscribe(() => {
+    this.isDialogOpen = false;
+  });
+}
+
 
 
   close() {
@@ -275,7 +277,7 @@ export class InterviewScheduleComponent implements OnInit {
   onSubmit() {
     console.log(this.addNewRoundForm.value);
     if (this.addNewRoundForm.invalid) {
-    this.InterviewerError  = 'please enter valid interviewer'
+      this.InterviewerError = 'please enter valid interviewer'
       Object.keys(this.addNewRoundForm.controls).forEach((field) => {
         const control = this.addNewRoundForm.get(field);
         if (control?.invalid) {
@@ -310,13 +312,12 @@ export class InterviewScheduleComponent implements OnInit {
           this.scheduleCandidates();
           this.roundNo = 0;
           Swal.fire({
-            title: 'Success',
-            text: 'Interview Scheduled Successfully',
+            title: 'Scheduled!',
+            text: 'The interview has been scheduled successfully.',
             icon: 'success',
-            showConfirmButton: false,
-            timer: 1000,
-            timerProgressBar: true,
+            confirmButtonText: 'OK'
           });
+
         }
       },
       error: (err: HttpErrorResponse) => {
@@ -477,26 +478,43 @@ export class InterviewScheduleComponent implements OnInit {
       console.warn("Invalid ID: Cannot cancel interview.");
       return;
     }
-    this.authService.cancelInterview(id).subscribe({
-      next: (res: HttpResponse<any>) => {
-        if (res.status === 200) {
-          this.close();
-          this.scheduleCandidates();
-          Swal.fire({
-            title: 'Success',
-            text: 'Cancelled Successfully',
-            icon: 'success',
-            showConfirmButton: false,
-            timer: 1000,
-            timerProgressBar: true,
-          });
-        }
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error("Error cancelling interview:", err);
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you really want to cancel this interview?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.authService.cancelInterview(id).subscribe({
+          next: (res: HttpResponse<any>) => {
+            if (res.status === 200) {
+              this.close();
+              this.scheduleCandidates();
+              Swal.fire({
+                title: 'Cancelled!',
+                text: 'Interview has been cancelled successfully.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+              });
+            }
+          },
+          error: (err: HttpErrorResponse) => {
+            console.error("Error cancelling interview:", err);
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to cancel the interview. Please try again.',
+              icon: 'error'
+            });
+          }
+        });
       }
     });
   }
+
 
   rescheduleInterview(id: string) {
     this.interviewedByList = [];

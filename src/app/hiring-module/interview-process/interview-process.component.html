@@ -230,7 +230,7 @@
                 {{ candidateData?.candidateCommunicationAddressDetails?.comAddressC }}
               </p>
             </div>
-            
+
             <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidateCommunicationAddressDetails?.stateName
                 }}</p>
@@ -257,7 +257,7 @@
                 {{ candidateData?.candidatePermanentAddressDetails?.perAddressC }}
               </p>
             </div>
-            
+
             <div class="col-md-3">
               <p class="mb-0"><strong>State:</strong> {{ candidateData?.candidatePermanentAddressDetails?.stateName }}
               </p>
@@ -591,7 +591,7 @@
         <div class="col-md-12">
           <label for="textarea" class="form-label">Comments <span class="text-danger">*</span></label>
           <textarea id="textarea" class="form-control form-control-sm" rows="1" formControlName="comments"
-            placeholder="Enter text"></textarea>
+            maxlength="500" placeholder="Enter text"></textarea>
           <div *ngIf="feedbackForm.controls['comments'].invalid && feedbackForm.controls['comments'].touched"
             class="text-danger fs-custom">
             Comment is required.
@@ -676,11 +676,22 @@
                 customTodayClass: 'custom-today-class',
                 dateInputFormat: 'YYYY-MM-DD'
               }" [minDate]="minDate" bsDatepicker required readonly />
+          <div *ngIf="feedbackForm.controls['joiningDate'].invalid && feedbackForm.controls['joiningDate'].touched"
+            class="text-danger fs-custom">
+            Join Date is required.
+          </div>
         </div>
+
+
 
         <div class="col-md-3">
           <label>Proposed CTC:</label>
-          <input type="text" formControlName="expectedCTC" class="form-control" placeholder="₹ amount">
+          <input type="text" formControlName="expectedCTC" class="form-control" placeholder="₹ amount"
+            (keypress)="allowNumericWithDot($event)">
+          <div *ngIf="feedbackForm.controls['expectedCTC'].invalid && feedbackForm.controls['expectedCTC'].touched"
+            class="text-danger fs-custom">
+            Expected CTC is required.
+          </div>
         </div>
 
         <div class="col-md-3">
@@ -691,6 +702,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['division'].invalid && feedbackForm.controls['division'].touched"
+            class="text-danger fs-custom">
+            Division is required.
+          </div>
+
         </div>
 
         <div class="col-md-3">
@@ -701,6 +717,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['designation'].invalid && feedbackForm.controls['designation'].touched"
+            class="text-danger fs-custom">
+            Designation is required.
+          </div>
+
         </div>
 
         <div class="col-md-3">
@@ -711,6 +732,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['department'].invalid && feedbackForm.controls['department'].touched"
+            class="text-danger fs-custom">
+            Department is required.
+          </div>
+
         </div>
 
         <div class="col-md-3">
@@ -721,6 +747,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['state'].invalid && feedbackForm.controls['state'].touched"
+            class="text-danger fs-custom">
+            State is required.
+          </div>
+
         </div>
 
         <div class="col-md-3">
@@ -731,6 +762,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['hq'].invalid && feedbackForm.controls['hq'].touched"
+            class="text-danger fs-custom">
+            HQ is required.
+          </div>
+
         </div>
 
         <div class="col-md-3">
@@ -741,6 +777,11 @@
               {{ state.name }}
             </option>
           </select>
+          <div *ngIf="feedbackForm.controls['region'].invalid && feedbackForm.controls['region'].touched"
+            class="text-danger fs-custom">
+            Region is required.
+          </div>
+
         </div>
 
         <div class="col-md-3 mt-4">

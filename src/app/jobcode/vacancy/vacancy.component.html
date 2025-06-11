@@ -16,19 +16,19 @@
         <div class="card-body pt-2">
           <!-- Header Row -->
           <div class="row mb-2 align-items-center">
-            <div class="col-6">
+            <div class="col-md-6 col-7">
               <span *ngIf="viewMoreValue" class="mr-2 cursor-pointer" (click)="back()">
                 <i class="bi bi-arrow-left  fs-5"></i>
               </span>
               <span *ngIf="!viewMoreValue" class="fw-bold">
-                Vacancy Management
+                Vacancy 
                 <span class="badge badge-light  badge bg-secondary text-white">{{totalRecords}}</span>
               </span>
               <span *ngIf="viewMoreValue" class="fw-bold">
-                {{referenceJobCode}} - Open
+                {{referenceJobCode}} 
               </span>
             </div>
-            <div class="col-6 d-flex justify-content-end align-items-center">
+            <div class="col-md-6 col-5 d-flex justify-content-end align-items-center">
               <!-- <input *ngIf="vacancyValue" type="search" class="form-control form-control-sm search-input"
                 placeholder="Search Job Codes..." [formControl]="searchQuery" aria-level="Search"
                 style="max-width: 250px;"> -->
@@ -106,7 +106,7 @@
                   </th>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.jobTitleName)"></td>
                   <td class="small-header text-uppercase" [innerHTML]="highlightMatch(row.reportingName)"></td>
-                  <td class="small-header text-uppercase">{{ row.teamName }}</td>
+                  <td class="small-header text-uppercase">{{ row.departmentName }}</td>
                   <td class="small-header text-uppercase">
                     {{ row.expMin }}-{{ row.expMax }} Year's
                   </td>
@@ -224,7 +224,7 @@
                   <i class="bi bi-chevron-left"></i>
                 </button>
               </li>
-              <li class="page-item mr-2">
+              <li class="page-item mr-2 d-none d-md-block">
                 <span class="px-3 py-1 small text-dark fw-bold border rounded bg-light">
                   Page {{ currentPage }} of {{ totalPages }}
                 </span>
