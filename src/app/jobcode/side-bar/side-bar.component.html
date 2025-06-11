@@ -44,7 +44,7 @@
 
 
 <div class="d-flex justify-content-between align-items-center d-md-none mb-2">
-  <span class="fw-bold custom-text">{{ activeTab }}</span>
+  <span class="fw-bold custom-text">{{ activeTab | activeUrl }}</span>
   <button class="btn custom-bg text-light mr-3" (click)="toggleSidebar()">☰</button>
 </div>
 <div class="d-flex">

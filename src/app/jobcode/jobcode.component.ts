@@ -40,6 +40,12 @@ export class JobcodeComponent implements OnInit {
   pageSize: number = 10;
   totalRecords: number = 0;
   searchQueryText: string = '';
+  searchText: string = '';
+  filteredManagers: any[] = [];
+  showDropdown: boolean = false;
+  jobTitleSearchText: string = '';
+  filteredJobTitles: any[] = [];
+  jobTitleDropdownVisible: boolean = false;
   dataNotFound: string = 'assets/img/icons/not-found.gif'
   @ViewChild('jobDialog', { static: true }) jobDialog!: TemplateRef<any>;
   @ViewChild('publishDialog', { static: true }) publishDialog!: TemplateRef<any>;
@@ -65,7 +71,7 @@ export class JobcodeComponent implements OnInit {
     this.listOfTeams();
     this.jobTitle();
     this.userData = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem('userData') || '')));
-    console.log("user data : ",this.userData.user.empID);
+    console.log("user data : ", this.userData.user.empID);
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate') || ''));
 
     this.searchQuery.valueChanges
@@ -118,7 +124,7 @@ export class JobcodeComponent implements OnInit {
     this.createJobForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
       jobReportingManagerId: ['', [Validators.required]],
-      teamId: [''],
+      teamId: ['',Validators.required],
       jobExperienceMinYear: [null, Validators.required],
       jobExperienceMaxYear: [null, Validators.required],
       jobCtcMin: [null, Validators.required],
@@ -177,7 +183,7 @@ export class JobcodeComponent implements OnInit {
     const pageNo = this.currentPage || 1;
     const pageSize = this.pageSize || 10;
     const searchQuery = this.searchQueryText?.trim() || '';
-  
+
     this.authService.getTotalJobCodes(pageNo, pageSize, searchQuery).subscribe({
       next: (res: any) => {
         this.isLoading = false;
@@ -185,7 +191,7 @@ export class JobcodeComponent implements OnInit {
         this.filteredJobs = [...this.rows];
         // Set totalRecords based on API response
         this.totalRecords = res.totalCount ?? this.rows.length;
-  
+
         // ✅ Reset Page to 1 if No Data
         if (this.totalRecords === 0) {
           this.currentPage = 1;
@@ -197,8 +203,8 @@ export class JobcodeComponent implements OnInit {
       }
     });
   }
-  
-  
+
+
   onSelected(event: Event) {
     this.selectedManager = this.createJobForm.get('jobReportingManager')?.value;
   }
@@ -209,6 +215,9 @@ export class JobcodeComponent implements OnInit {
     this.ctcMessage = '';
     this.yearMessage = '';
     this.managerMessage = '';
+    this.searchText = '';
+    this.jobTitleSearchText = '';
+    this.departmentSearchText = '';
 
     this.dialogRef = this.dialog.open(this.jobDialog, {
       width: '600px',
@@ -253,108 +262,108 @@ export class JobcodeComponent implements OnInit {
   }
 
   onSubmit() {
-  console.log("Form submitted.");
+    console.log("Form submitted.");
 
-  this.submitted = true;
-  this.isLoading = true;
+    this.submitted = true;
+    this.isLoading = true;
 
-  // Clear previous validation messages
-  this.ctcMessage = '';
-  this.yearMessage = '';
-  this.managerMessage = '';
+    // Clear previous validation messages
+    this.ctcMessage = '';
+    this.yearMessage = '';
+    this.managerMessage = '';
 
-  // Defensive default values
-  const expMin = +this.createJobForm.get('jobExperienceMinYear')?.value || 0;
-  const expMax = +this.createJobForm.get('jobExperienceMaxYear')?.value || 0;
-  const ctcMin = +this.createJobForm.get('jobCtcMin')?.value || 0;
-  const ctcMax = +this.createJobForm.get('jobCtcMax')?.value || 0;
-  const managerSelected = this.createJobForm.get('jobReportingManagerId')?.value;
+    // Defensive default values
+    const expMin = +this.createJobForm.get('jobExperienceMinYear')?.value || 0;
+    const expMax = +this.createJobForm.get('jobExperienceMaxYear')?.value || 0;
+    const ctcMin = +this.createJobForm.get('jobCtcMin')?.value || 0;
+    const ctcMax = +this.createJobForm.get('jobCtcMax')?.value || 0;
+    const managerSelected = this.createJobForm.get('jobReportingManagerId')?.value;
 
-  let isValid = true;
+    let isValid = true;
 
-  // Experience validation
-  if (expMax <= expMin) {
-    this.yearMessage = 'Experience Max must be greater than Experience Min';
-    isValid = false;
-  }
-
-  // CTC validation
-  if (ctcMax <= ctcMin) {
-    this.ctcMessage = 'CTC Max must be greater than CTC Min';
-    isValid = false;
-  }
-
-  // Manager selection validation
-  if (!managerSelected) {
-    this.managerMessage = 'Please select a reporting manager';
-    isValid = false;
-  }
-
-  // Stop if validation fails
-  if (!isValid) {
-    this.isLoading = false;
-    console.warn("Validation failed. Submission stopped.");
-    return;
-  }
-
-  // Prepare the JSON payload
-  const jobPayload = {
-    jobTitle: this.createJobForm.get('jobTitle')?.value || '',
-    teamId: this.createJobForm.get('teamId')?.value || '',
-    reportingId: managerSelected,
-    ctcMin: ctcMin.toString(),
-    ctcMax: ctcMax.toString(),
-    expMin: expMin.toString(),
-    expMax: expMax.toString(),
-    preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
-    description: this.createJobForm.get('jobDescription')?.value || '',
-    createdBy: this.userData?.user?.empID || ''
-  };
-
-  console.log("Prepared JSON Payload:", jobPayload);
-
-  // FormData for submission
-  const formData = new FormData();
-  formData.append('data', JSON.stringify(jobPayload));
-
-  if (this.uploadedFile) {
-    formData.append('file', this.uploadedFile, this.uploadedFile.name);
-    console.log("Attached file:", this.uploadedFile.name);
-  }
-
-  console.log("Submitting job creation request...");
-
-  this.authService.createJobCode(formData).subscribe({
-    next: (res: HttpResponse<any>) => {
-      this.isLoading = false;
-      console.log("API Response status:", res?.status);
-
-      if (res?.status === 200) {
-        this.closeDialog();
-        Swal.fire({
-          title: 'Success',
-          text: 'Job Code Creation is Successful.',
-          icon: 'success',
-          showConfirmButton: false,
-          timer: 1000,
-          timerProgressBar: true,
-        });
-        this.totalJobCodes();
-      }
-    },
-    error: (err: HttpErrorResponse) => {
-      this.isLoading = false;
-      console.error("Error from API:", err);
-
-      Swal.fire({
-        title: 'Error',
-        text: err?.error?.message || 'Something went wrong!',
-        icon: 'error',
-        showConfirmButton: true
-      });
+    // Experience validation
+    if (expMax <= expMin) {
+      this.yearMessage = 'Experience Max must be greater than Experience Min';
+      isValid = false;
     }
-  });
-}
+
+    // CTC validation
+    if (ctcMax <= ctcMin) {
+      this.ctcMessage = 'CTC Max must be greater than CTC Min';
+      isValid = false;
+    }
+
+    // Manager selection validation
+    if (!managerSelected) {
+      this.managerMessage = 'Please select a reporting manager';
+      isValid = false;
+    }
+
+    // Stop if validation fails
+    if (!isValid) {
+      this.isLoading = false;
+      console.warn("Validation failed. Submission stopped.");
+      return;
+    }
+
+    // Prepare the JSON payload
+    const jobPayload = {
+      jobTitle: this.createJobForm.get('jobTitle')?.value || '',
+      departmentId: this.createJobForm.get('teamId')?.value || '',
+      reportingId: managerSelected,
+      ctcMin: ctcMin.toString(),
+      ctcMax: ctcMax.toString(),
+      expMin: expMin.toString(),
+      expMax: expMax.toString(),
+      preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
+      description: this.createJobForm.get('jobDescription')?.value || '',
+      createdBy: this.userData?.user?.empID || ''
+    };
+
+    console.log("Prepared JSON Payload:", jobPayload);
+
+    // FormData for submission
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(jobPayload));
+
+    if (this.uploadedFile) {
+      formData.append('file', this.uploadedFile, this.uploadedFile.name);
+      console.log("Attached file:", this.uploadedFile.name);
+    }
+
+    console.log("Submitting job creation request...");
+
+    this.authService.createJobCode(formData).subscribe({
+      next: (res: HttpResponse<any>) => {
+        this.isLoading = false;
+        console.log("API Response status:", res?.status);
+
+        if (res?.status === 200) {
+          this.closeDialog();
+          Swal.fire({
+            title: 'Success',
+            text: 'Job Code Creation is Successful.',
+            icon: 'success',
+            showConfirmButton: true,  // show close button
+            confirmButtonText: 'Close',   // remove progress bar
+          });
+
+          this.totalJobCodes();
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isLoading = false;
+        console.error("Error from API:", err);
+
+        Swal.fire({
+          title: 'Error',
+          text: err?.error?.message || 'Something went wrong!',
+          icon: 'error',
+          showConfirmButton: true
+        });
+      }
+    });
+  }
 
 
   // onSubmit() {
@@ -530,5 +539,133 @@ export class JobcodeComponent implements OnInit {
   get endIndex() {
     return Math.min(this.currentPage * this.pageSize, this.totalRecords);
   }
+
+
+
+
+  onSearchChange(value: string) {
+    this.searchText = value;
+    const search = value.toLowerCase();
+
+    this.filteredManagers = this.managers.filter(manager =>
+      manager.name.toLowerCase().includes(search) ||
+      manager.id.toString().includes(search)
+    );
+
+    this.showDropdown = true;
+  }
+
+  selectManager(manager: any) {
+    this.searchText = manager.name; // display name in input
+    this.createJobForm.get('jobReportingManagerId')?.setValue(manager.id); // bind ID to form
+    this.filteredManagers = []; // clear dropdown list
+    this.showDropdown = false;
+  }
+
+  hideDropdownWithDelay() {
+    setTimeout(() => {
+      this.showDropdown = false;
+    }, 200); // delay so user can click the option
+  }
+
+
+  onJobTitleSearch(value: string) {
+    this.jobTitleSearchText = value;
+
+    const search = value.toLowerCase();
+
+    this.filteredJobTitles = this.jobTitleList.filter(item =>
+      item.name.toLowerCase().includes(search)
+    );
+
+    this.jobTitleDropdownVisible = true;
+  }
+
+  selectJobTitle(item: any) {
+    this.jobTitleSearchText = item.name; // show name in input
+    this.createJobForm.get('jobTitle')?.setValue(item.id); // set id in form control
+    this.jobTitleDropdownVisible = false;
+    this.filteredJobTitles = [];
+  }
+
+  hideJobTitleDropdownWithDelay() {
+    setTimeout(() => {
+      this.jobTitleDropdownVisible = false;
+    }, 200);
+  }
+
+  onJobTitleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Backspace') {
+      // If the user hits Backspace and current input exactly matches a selected title
+      const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
+      if (matchedItem) {
+        this.jobTitleSearchText = ''; // clear input
+        this.createJobForm.get('jobTitle')?.setValue(null); // clear form control
+        this.filteredJobTitles = this.jobTitleList; // optionally show all again
+        this.jobTitleDropdownVisible = true; // reopen dropdown if needed          
+      }
+    }
+  }
+
+  onManagerKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Backspace') {
+      const matchedManager = this.managers.find(item => item.name === this.searchText);
+      if (matchedManager) {
+        this.searchText = ''; // clear the input text
+        this.createJobForm.get('jobReportingManagerId')?.setValue(null); // clear the selected value in the form
+        this.filteredManagers = this.managers; // optional: reset suggestions
+        this.showDropdown = true; // optionally reopen the dropdown
+      }
+    }
+  }
+
+
+
+  // Fields for departments
+  departmentSearchText: string = '';
+  filteredDepartments: any[] = [];
+  showDepartmentDropdown: boolean = false;
+
+  // Called on input
+  onDepartmentSearchChange(value: string) {
+    this.departmentSearchText = value;
+    const search = value.toLowerCase();
+
+    this.filteredDepartments = this.teams.filter(team =>
+      team.name.toLowerCase().includes(search) || team.id.toString().includes(search)
+    );
+
+    this.showDepartmentDropdown = true;
+  }
+
+  // Select from dropdown
+  selectDepartment(dept: any) {
+    this.departmentSearchText = dept.name;
+    this.createJobForm.get('teamId')?.setValue(dept.id);
+    this.filteredDepartments = [];
+    this.showDepartmentDropdown = false;
+  }
+
+  // Hide with delay for click to register
+  hideDepartmentDropdownWithDelay() {
+    setTimeout(() => {
+      this.showDepartmentDropdown = false;
+    }, 200);
+  }
+
+  // Handle backspace reset
+  onDepartmentKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Backspace') {
+      const matched = this.teams.find(item => item.name === this.departmentSearchText);
+      if (matched) {
+        this.departmentSearchText = '';
+        this.createJobForm.get('teamId')?.setValue(null);
+        this.filteredDepartments = this.teams;
+        this.showDepartmentDropdown = true;
+      }
+    }
+  }
+
+
 
 }

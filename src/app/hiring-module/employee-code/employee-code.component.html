@@ -46,11 +46,12 @@
                             <tbody *ngIf="paginatedRows.length > 0; else noData">
                                 <tr *ngFor="let row of paginatedRows" class="table-hoverr">
                                     <td class="small-header text-uppercase">{{ row.jcReferanceId || '--' }}</td>
+                                    <td class="small-header text-uppercase">{{ row.email || '--' }}</td>
                                     <td class="small-header text-uppercase">{{ row.expectedCtc || '--' }}</td>
                                     <td class="small-header text-uppercase">{{ row.name || '--' }}</td>
                                     <td class="small-header text-uppercase">{{ row.deptName || '--' }}</td>
                                     <td class="small-header text-uppercase">
-                                        {{ row.joiningDate ? (row.joiningDate) : '--' }}
+                                        {{ row.joiningDate || '--' }}
                                     </td>
                                     <td class="small-header text-center">
                                         <button class="border-none custom-action-btn px-2 custom-bg text-white"
@@ -60,6 +61,7 @@
                                     </td>
                                 </tr>
                             </tbody>
+
 
 
 

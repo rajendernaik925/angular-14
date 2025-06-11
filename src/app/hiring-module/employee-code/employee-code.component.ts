@@ -66,17 +66,15 @@ export class EmployeeCodeComponent implements OnInit {
         this.isLoading = false;
 
         this.rows = res.map((item: any, index: number) => ({
-          jobcodeId: item.jobcodeId || 'N/A',              // You had jcReferanceId in columns, but mapping jobcodeId here
-          jcReferanceId: item.jcReferanceId || 'N/A',      // Keep this if you want both or choose one
-          employeeId: item.candidateId || 'N/A',           // candidateId mapped to employeeId for action
-          name: item.candidateName || 'N/A',
-          jobTitleName: item.jobTitleName || 'N/A',
-          deptName: item.deptName || 'N/A',
+          jcReferanceId: item.jcReferanceId || 'N/A',
+          email: item.email || 'N/A',
           expectedCtc: item.expectedCtc || 'N/A',
-          joiningDate: item.joiningDate, // formatted to dd-mm-yyyy
-          status: item.status || 'N/A',
-          offerLink: item.offerLetterFile || 'N/A'
+          name: item.candidateName || 'N/A',
+          deptName: item.deptName || 'N/A',
+          joiningDate: item.joiningDate || 'N/A',  // format if needed
+          employeeId: item.candidateId || 'N/A'
         }));
+
 
         this.originalRows = [...this.rows];
       },
@@ -93,14 +91,16 @@ export class EmployeeCodeComponent implements OnInit {
 
   generateColumns() {
     this.columns = [
-      { key: 'jcReferanceId', label: 'Job Code', uppercase: true },    // Use jcReferanceId if you want Job Code as per columns
+      { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
+      { key: 'email', label: 'Mail Id', uppercase: true },
       { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
       { key: 'name', label: 'Full Name', uppercase: true },
       { key: 'deptName', label: 'Department Name', uppercase: true },
       { key: 'joiningDate', label: 'Date Of Join', uppercase: true },
-      { key: 'employeeId', label: 'Action', center: true, clickable: true }  // action button uses employeeId (candidateId)
+      { key: 'employeeId', label: 'Action', center: true, clickable: true }
     ];
   }
+
 
 
   filterRows(query: string) {

@@ -72,10 +72,10 @@ export class HiringLoginComponent implements OnInit {
           console.log("login time : ", this.loggedInData?.createdDateTime)
 
           // ✅ Check expiration and return early if expired
-          if (this.checkIfLoginExpired(this.loggedInData?.createdDateTime)) {
-            this.isLoginExpired = true;
-            return false; 
-          }
+          // if (this.checkIfLoginExpired(this.loggedInData?.createdDateTime)) {
+          //   this.isLoginExpired = true;
+          //   return false; 
+          // }
 
 
 
@@ -83,10 +83,10 @@ export class HiringLoginComponent implements OnInit {
             localStorage.setItem('hiringLoginData', JSON.stringify(res.body));
 
             // Optional: clear login data after 5 days
-            const fiveDays = 5 * 24 * 60 * 60 * 1000;
-            setTimeout(() => {
-              localStorage.removeItem('hiringLoginData');
-            }, fiveDays);
+            // const fiveDays = 5 * 24 * 60 * 60 * 1000;
+            // setTimeout(() => {
+            //   localStorage.removeItem('hiringLoginData');
+            // }, fiveDays);
 
             Swal.fire({
               title: 'Success',

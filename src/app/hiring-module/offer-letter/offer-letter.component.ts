@@ -73,6 +73,7 @@ export class OfferLetterComponent implements OnInit {
         this.rows = res.map((item: any, index: number) => ({
           jobcodeId: item.jobcodeId || 'N/A',
           jcReferanceId: item.jcReferanceId || 'N/A',
+          email: item.email || 'N/A',
           employeeId: item.employeeId || 'N/A',
           candidateId: item.candidateId || 'N/A',
           name: item.candidateName || 'N/A',
@@ -118,6 +119,7 @@ export class OfferLetterComponent implements OnInit {
   generateColumns() {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
+      { key: 'email', label: 'Mail Id', uppercase: true },
       { key: 'expectedCtc', label: 'Proposed CTC', uppercase: true },
       { key: 'name', label: 'Full Name', uppercase: true },
       { key: 'deptName', label: 'Department Name', uppercase: true },

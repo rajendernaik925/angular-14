@@ -58,7 +58,7 @@ export class InterviewProcessComponent implements OnInit {
   totalCitiesList: any;
   fileURL: SafeResourceUrl | null = null;
   showPDF: boolean = false;
-  interviewStatusCode:Number | null = null;
+  interviewStatusCode: Number | null = null;
   // isSidebarOpen = true;
   // closeButton: boolean = true;
 
@@ -209,9 +209,61 @@ export class InterviewProcessComponent implements OnInit {
     })
   }
 
-  onHrStatusChange(value: string) {
-    this.selectedHrStatus = Number(value);
+  // onHrStatusChange(value: string) {
+  //   this.selectedHrStatus = Number(value);
+  // }
+
+  onHrStatusChange(value: number | string) {
+    const status = +value;
+    this.selectedHrStatus = status;
+    const f = this.feedbackForm;
+
+    // First clear all validators
+    this.clearConditionalValidators();
+
+    // Always validate status and comments
+    f.get('status')?.setValidators([Validators.required]);
+    f.get('comments')?.setValidators([Validators.required]);
+
+    // HR Final Round - Approved
+    if (status === 1004 && this.finalHrRound) {
+      f.get('joiningDate')?.setValidators([Validators.required]);
+      f.get('expectedCTC')?.setValidators([Validators.required, Validators.pattern('^[0-9]*$')]);
+      f.get('division')?.setValidators([Validators.required]);
+      f.get('designation')?.setValidators([Validators.required]);
+      f.get('department')?.setValidators([Validators.required]);
+      f.get('state')?.setValidators([Validators.required]);
+      f.get('hq')?.setValidators([Validators.required]);
+      f.get('region')?.setValidators([Validators.required]);
+    }
+    // TR or other rounds - show interviewer and next round selection
+    else if (status !== 1005 && status !== 1006 && !this.finalHrRound) {
+      f.get('interviewRound')?.setValidators([Validators.required]);
+      f.get('interviewBy')?.setValidators([Validators.required]);
+    }
+
+    // Update all controls validity
+    Object.keys(f.controls).forEach(key => f.get(key)?.updateValueAndValidity());
   }
+
+
+  clearConditionalValidators() {
+    const fieldsToClear = [
+      'joiningDate', 'expectedCTC', 'division', 'designation',
+      'department', 'state', 'hq', 'region',
+      'interviewRound', 'interviewBy'
+    ];
+    fieldsToClear.forEach(field => {
+      const control = this.feedbackForm.get(field);
+      if (control) {
+        control.clearValidators();
+        control.setValue(null); // optional: reset the value
+      }
+    });
+  }
+
+
+
 
   totalInterviewRounds() {
     this.authService.interviewRounds().subscribe({
@@ -300,7 +352,7 @@ export class InterviewProcessComponent implements OnInit {
       next: (res: any) => {
         this.isLoading = false;
         this.candidateData = res;
-        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
+        this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null; this.resumeFile = res?.candidatePersonalInformationDetails?.resumeFile || null;
         this.photoFile = res?.candidatePersonalInformationDetails?.imageFile || null;
         this.aadharFile = res?.candidateDocumentDetails?.aadharFile || null;
         this.pancardFile = res?.candidateDocumentDetails?.panFile || null;
@@ -387,53 +439,57 @@ export class InterviewProcessComponent implements OnInit {
   //   }
   //   return null;
   // }
-
   feedbackSubmit() {
-    // console.log("this.feedbackForm.value", this.feedbackForm.value);
+    const f = this.feedbackForm;
+    const formValue = f.value;
+    const status = +formValue.status;
+
+    // If not Rejected or Hold, check validity
+    if (status !== 1005 && status !== 1006 && f.invalid) {
+      f.markAllAsTouched();
+      return;
+    }
 
     this.isLoading = true;
-    const formValue = this.feedbackForm.value;
-    // Format joiningDate if present
+
+    // Format joining date
     if (formValue.joiningDate) {
       const dateObj = new Date(formValue.joiningDate);
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      formValue.joiningDate = `${year}-${month}-${day}`; 
+      formValue.joiningDate = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
     }
 
-    const statusValue = Number(formValue.status) || 0;
-    let payload: any = {
+    // Build payload
+    const payload: any = {
       ...formValue,
       loginId: this.UserId,
-      status: statusValue,
       candidateId: this.candidateId,
       interviewScheduledId: this.interviewScheduleId,
+      status,
       ...(!this.finalHrRound ? { roundNo: ++this.roundNo } : {})
-
     };
 
-    // Remove `interviewBy` if `finalHrStatus` is true
+    // Remove interviewer/round if it's the final HR round
     if (this.finalHrRound) {
       delete payload.interviewBy;
+      delete payload.interviewRound;
     }
 
-
-
-    // Manually filter out null and undefined properties
-    let filteredPayload: any = {};
-    Object.keys(payload).forEach((key) => {
-      if (payload[key] !== null && payload[key] !== undefined) {
+    // Filter out null/empty/undefined values manually
+    const filteredPayload: any = {};
+    for (const key in payload) {
+      if (
+        payload[key] !== null &&
+        payload[key] !== undefined &&
+        payload[key] !== ''
+      ) {
         filteredPayload[key] = payload[key];
       }
-    });
+    }
 
-    // console.log("Filtered Payload:", filteredPayload);
-
+    // Submit
     this.authService.feedbackSubmitForm(filteredPayload).subscribe({
       next: (res: any) => {
         this.isLoading = false;
-        // console.log(res);
         this.close();
         this.processCandidates();
         this.disableFeedBack = false;
@@ -446,12 +502,16 @@ export class InterviewProcessComponent implements OnInit {
           timerProgressBar: true,
         });
       },
-      error: (err: HttpErrorResponse) => {
+      error: (_: HttpErrorResponse) => {
         this.isLoading = false;
-        // console.log(err);
       }
     });
   }
+
+
+
+
+
 
 
   feedbackView(interview: any, name: any, mail: any) {
@@ -723,6 +783,34 @@ export class InterviewProcessComponent implements OnInit {
   closePDF() {
     this.showPDF = false; // Hide the modal
     this.fileURL = null; // Clear the URL
-    this.handleAction(this.employeeId,this.interviewStatusCode);
+    this.handleAction(this.employeeId, this.interviewStatusCode);
   }
+
+  allowNumericWithDot(event: KeyboardEvent): boolean {
+    const inputChar = String.fromCharCode(event.keyCode || event.which);
+
+    // Allow navigation keys (backspace, arrow keys, delete)
+    if (
+      event.key === 'Backspace' ||
+      event.key === 'Delete' ||
+      event.key === 'ArrowLeft' ||
+      event.key === 'ArrowRight' ||
+      event.key === 'Tab'
+    ) {
+      return true;
+    }
+
+    // Allow digits and one decimal point
+    const currentValue = (event.target as HTMLInputElement).value;
+    const isDigit = /^[0-9]$/.test(inputChar);
+    const isDot = inputChar === '.' && !currentValue.includes('.');
+
+    if (!isDigit && !isDot) {
+      event.preventDefault();
+      return false;
+    }
+
+    return true;
+  }
+
 }

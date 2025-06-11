@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-between align-items-center d-md-none mb-2">
-  <span class="fw-bold custom-text">{{ activeTab }}</span>
-  <button class="btn custom-bg text-light mr-3" (click)="toggleSidebar()">☰</button>
+  <span class="fw-bold custom-text">{{ activeTab | activeUrl }}</span>
+  <button class="btn custom-bg text-light" (click)="toggleSidebar()">☰</button>
 </div>
 <div class="d-flex">
   <div class="card border-0 flex-fill sidebar" [ngClass]="{ 'd-none': !isSidebarOpen, 'd-md-block': true }">

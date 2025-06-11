@@ -18,7 +18,7 @@ export class UnscheduledComponent implements OnInit {
   originalRows: any[] = [];
   searchQuery: FormControl = new FormControl();
   filteredRows: any[] = [];
-  userData:any;
+  userData: any;
   filterOffcanvas: any;
   isOpen = false;
   private dialogRef: any;
@@ -104,7 +104,6 @@ export class UnscheduledComponent implements OnInit {
     });
   }
 
-
   generateColumns() {
     this.columns = [
       { key: 'jcReferanceId', label: 'Job Code', uppercase: true },
@@ -142,9 +141,9 @@ export class UnscheduledComponent implements OnInit {
 
   handleAction(employeeId: any) {
 
-    
+
     this.isLoading = true;
-    this.authService.sendRemainder(employeeId,this.userData.user.empID).subscribe({
+    this.authService.sendRemainder(employeeId, this.userData.user.empID).subscribe({
       next: (res) => {
         this.isLoading = false;
         this.candidateData = res;
@@ -152,10 +151,10 @@ export class UnscheduledComponent implements OnInit {
           title: 'Success',
           text: 'Reminder Sent',
           icon: 'success',
-          timer: 1000,
-          timerProgressBar: true,
-          showConfirmButton: false
+          showConfirmButton: true, 
+          confirmButtonText: 'OK',
         });
+
       },
       error: (err: HttpErrorResponse) => {
         this.isLoading = false;
@@ -170,7 +169,7 @@ export class UnscheduledComponent implements OnInit {
 
   }
 
-  viewDetails(employeeId:any) {
+  viewDetails(employeeId: any) {
 
     if (this.isLoading) return; // prevent double call
 
@@ -198,40 +197,40 @@ export class UnscheduledComponent implements OnInit {
     });
   }
 
-   feedbackView(interview: any, name: any, mail: any) {
-      const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
-      const comments = interview.comments;
-      const statusCode = interview.status;
-  
-      const statusMap: any = {
-        '1001': 'Interview pending',
-        '1002': 'Interview Cancelled',
-        '1004': 'Selected',
-        '1005': 'Rejected',
-        '1006': 'Interview Hold',
-        // Add more statuses as needed
-      };
-  
-      const statusLabel = statusMap[statusCode] || 'Unknown';
-  
-      const scoreMap: any = {
-        'Excellent': 10,
-        'Good': 8,
-        'Average': 6,
-        'Below Average': 4
-      };
-  
-      let totalScore = 0;
-  
-      const feedbackRows = feedBackformat.map((item: any, index: number) => {
-        const getMark = (level: string) =>
-          item.feedBackName === level
-            ? '<span style="color:green;">✔️</span>'
-            : '<span style="color:red;">❌</span>';
-  
-        totalScore += scoreMap[item.feedBackName] || 0;
-  
-        return `
+  feedbackView(interview: any, name: any, mail: any) {
+    const feedBackformat = interview.candidateInterviewFeedBackDTO || [];
+    const comments = interview.comments;
+    const statusCode = interview.status;
+
+    const statusMap: any = {
+      '1001': 'Interview pending',
+      '1002': 'Interview Cancelled',
+      '1004': 'Selected',
+      '1005': 'Rejected',
+      '1006': 'Interview Hold',
+      // Add more statuses as needed
+    };
+
+    const statusLabel = statusMap[statusCode] || 'Unknown';
+
+    const scoreMap: any = {
+      'Excellent': 10,
+      'Good': 8,
+      'Average': 6,
+      'Below Average': 4
+    };
+
+    let totalScore = 0;
+
+    const feedbackRows = feedBackformat.map((item: any, index: number) => {
+      const getMark = (level: string) =>
+        item.feedBackName === level
+          ? '<span style="color:green;">✔️</span>'
+          : '<span style="color:red;">❌</span>';
+
+      totalScore += scoreMap[item.feedBackName] || 0;
+
+      return `
             <tr style="line-height: 1.2;">
               <td>${index + 1}</td>
               <td class="text-start">${item.factorName}</td>
@@ -241,14 +240,14 @@ export class UnscheduledComponent implements OnInit {
               <td>${getMark('Below Average')}</td>
             </tr>
           `;
-      }).join('');
-  
-      const averageScore = (feedBackformat.length > 0)
-        ? (totalScore / feedBackformat.length).toFixed(1)
-        : 'N/A';
-  
-  
-      const detailsHtml = `
+    }).join('');
+
+    const averageScore = (feedBackformat.length > 0)
+      ? (totalScore / feedBackformat.length).toFixed(1)
+      : 'N/A';
+
+
+    const detailsHtml = `
           <div style="font-size:12px; width:100%; padding: 10px; ">
             
             <!-- Header with status label -->
@@ -335,18 +334,18 @@ export class UnscheduledComponent implements OnInit {
              </div>
           </div>
         `;
-  
-      Swal.fire({
-        html: detailsHtml,
-        width: '800px',
-        showConfirmButton: false,
-        showCloseButton: true,
-        customClass: {
-          popup: 'p-2'
-        },
-        buttonsStyling: false
-      });
-    }
+
+    Swal.fire({
+      html: detailsHtml,
+      width: '800px',
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup: 'p-2'
+      },
+      buttonsStyling: false
+    });
+  }
 
   close() {
     this.dialog.closeAll();
