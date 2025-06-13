@@ -68,6 +68,8 @@ export class personalInfoComponent implements OnInit {
   serviceFilePath: string | null = '';
   paySlipFilePath: string | null = '';
   showSidebar = false;
+  today: Date = new Date(); // set maxDate as today's date
+
 
   // private readonly STORAGE_KEY = 'registrationFormData';
 
@@ -103,7 +105,7 @@ export class personalInfoComponent implements OnInit {
       passport: [''],
       uan: [''],
       licence: [''],
-      bloodGroupId: [''],
+      bloodGroupId: ['', Validators.required],
       mobileNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
       district: ['', Validators.required],
       // pan: ['', [Validators.required, Validators.pattern(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/)]],
@@ -159,11 +161,12 @@ export class personalInfoComponent implements OnInit {
     this.handleExperienceToggle('fresher');
     const loginData = JSON.parse(localStorage.getItem('hiringLoginData') || '{}');
     this.jobCodeData = loginData;
-    console.log("loggin time data : ", this.jobCodeData?.createdDateTime);
+    console.log("loggin data : ", this.jobCodeData);
     console.log("hiring login data : ", this.jobCodeData.email)
     this.registrationForm.get('jobCodeId')?.setValue(this.jobCodeData?.jobCodeRefId);
     this.registrationForm.get('email')?.setValue(this.jobCodeData.email);
     this.registrationForm.get('firstName')?.setValue(this.jobCodeData.name);
+    this.registrationForm.get('mobileNumber')?.setValue(this.jobCodeData.mobileNumber);
     if (!this.jobCodeData.status) {
       this.router.navigate(['/hiring-login']);
     }
@@ -349,6 +352,7 @@ export class personalInfoComponent implements OnInit {
           //     this.educationArray.push(this.createEducationFormGroup(educationData));
           //   });
           // }
+
           if (res?.candidateEducationDetails?.length) {
             res.candidateEducationDetails.forEach((educationData: any) => {
               const isDuplicate = this.educationArray.controls.some((control: AbstractControl) =>
@@ -918,7 +922,7 @@ export class personalInfoComponent implements OnInit {
       formData.append('personalResumeFile', this.selectedFiles['resume']);
       formData.append('moduleId', '1');
 
-      this.finalSave('personal', formData);
+      this.finalSave('address', formData);
     } else if (Action === 'address') {
       const communicationAddressFields = [
         'addressA', 'addressB', 'addressC',
@@ -1219,6 +1223,11 @@ export class personalInfoComponent implements OnInit {
 
         if (res.status === 200) {
           this.loadUserData();
+          const educationArray = this.registrationForm.get('educationDetails') as FormArray;
+          if (educationArray) {
+            educationArray.clear();
+            educationArray.push(this.createEducationFormGroup());
+          }
           // this.selectedFiles = {}
           this.personalUpdate = false;
           this.addressUpadte = false;
@@ -1247,6 +1256,7 @@ export class personalInfoComponent implements OnInit {
             this.updateDocumentFlag = false;
             // this.fileInput.nativeElement.value = '';
           } else if (action === 'experience') {
+            console.log("essssssssssssxxx")
             this.loadUserData();
             const educationArray = this.registrationForm.get('educationDetails') as FormArray;
             // this.selectedFiles = {}

@@ -113,6 +113,9 @@
                     ₹{{ (row.ctcMin / 100000) | number:'1.1-1' }}L - ₹{{ (row.ctcMax / 100000) |
                     number:'1.1-1' }}L
                   </td>
+                  <!-- <td class="small-header text-uppercase">
+                    ₹{{ row.ctcMin }} - ₹{{ row.ctcMax }} 
+                  </td> -->
                   <td class="small-header text-uppercase">
                     {{ row.createdDate | date:'dd-MM-yyyy' }}
                   </td>
@@ -222,7 +225,7 @@
           </option>
         </select> -->
         <div class="position-relative">
-          <input type="text" class="form-control form-control-sm" placeholder="Search department"
+          <input type="search" class="form-control form-control-sm" placeholder="Search department"
             [value]="departmentSearchText" (input)="onDepartmentSearchChange($event.target.value)"
             (focus)="showDepartmentDropdown = true" (blur)="hideDepartmentDropdownWithDelay()"
             (keydown)="onDepartmentKeyDown($event)" />
@@ -237,7 +240,7 @@
         <div
           *ngIf="submitted && createJobForm.get('teamId')?.touched && createJobForm.get('jobReportingManager')?.invalid"
           class="text-danger fs-5">
-          Team is required.
+          Department is required.
         </div>
         <div *ngIf="managerMessage" class="text-danger fs-5">
           {{managerMessage}}
@@ -259,7 +262,7 @@
         <label for="jobTitle">Designation <span class="text-danger">*</span></label>
 
         <div class="position-relative">
-          <input type="text" id="jobTitle" class="form-control form-control-sm" placeholder="Search designation"
+          <input type="search" id="jobTitle" class="form-control form-control-sm" placeholder="Search designation"
             [value]="jobTitleSearchText" (input)="onJobTitleSearch($event.target.value)"
             (focus)="jobTitleDropdownVisible = true" (blur)="hideJobTitleDropdownWithDelay()"
             (keydown)="onJobTitleKeyDown($event)" autocomplete="off" />
@@ -287,7 +290,7 @@
           </option>
         </select> -->
         <div class="position-relative">
-          <input type="text" class="form-control form-control-sm" placeholder="Search manager" [value]="searchText"
+          <input type="search" class="form-control form-control-sm" placeholder="Search manager" [value]="searchText"
             (input)="onSearchChange($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdownWithDelay()"
             (keydown)="onManagerKeyDown($event)" />
 
@@ -393,7 +396,7 @@
     <div class="d-flex justify-content-center mt-4">
       <button type="submit" class="btn btn-sm custom-bg text-light me-3 " [disabled]="createJobForm.invalid"
         [ngClass]="{ 'disabled': createJobForm.invalid }">
-        Submit
+        Create
       </button>
       <button type="button" class="btn btn-sm btn-danger" (click)="closeDialog()">Exit</button>
     </div>

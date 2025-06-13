@@ -124,7 +124,7 @@ export class JobcodeComponent implements OnInit {
     this.createJobForm = this.fb.group({
       jobTitle: ['', [Validators.required]],
       jobReportingManagerId: ['', [Validators.required]],
-      teamId: ['',Validators.required],
+      teamId: ['', Validators.required],
       jobExperienceMinYear: [null, Validators.required],
       jobExperienceMaxYear: [null, Validators.required],
       jobCtcMin: [null, Validators.required],
@@ -594,30 +594,52 @@ export class JobcodeComponent implements OnInit {
     }, 200);
   }
 
+  // onJobTitleKeyDown(event: KeyboardEvent) {
+  //   if (event.key === 'Backspace') {
+  //     // If the user hits Backspace and current input exactly matches a selected title
+  //     const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
+  //     if (matchedItem) {
+  //       this.jobTitleSearchText = ''; // clear input
+  //       this.createJobForm.get('jobTitle')?.setValue(null); // clear form control
+  //       this.filteredJobTitles = this.jobTitleList; // optionally show all again
+  //       this.jobTitleDropdownVisible = true; // reopen dropdown if needed          
+  //     }
+  //   }
+  // }
+
+  // onManagerKeyDown(event: KeyboardEvent) {
+  //   if (event.key === 'Backspace') {
+  //     const matchedManager = this.managers.find(item => item.name === this.searchText);
+  //     if (matchedManager) {
+  //       this.searchText = ''; // clear the input text
+  //       this.createJobForm.get('jobReportingManagerId')?.setValue(null); // clear the selected value in the form
+  //       this.filteredManagers = this.managers; // optional: reset suggestions
+  //       this.showDropdown = true; // optionally reopen the dropdown
+  //     }
+  //   }
+  // }
+
   onJobTitleKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Backspace') {
-      // If the user hits Backspace and current input exactly matches a selected title
-      const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
-      if (matchedItem) {
-        this.jobTitleSearchText = ''; // clear input
-        this.createJobForm.get('jobTitle')?.setValue(null); // clear form control
-        this.filteredJobTitles = this.jobTitleList; // optionally show all again
-        this.jobTitleDropdownVisible = true; // reopen dropdown if needed          
-      }
+    const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
+    if (matchedItem) {
+      this.jobTitleSearchText = ''; // Clear input
+      this.createJobForm.get('jobTitle')?.setValue(null); // Clear selected form control
+      this.filteredJobTitles = this.jobTitleList; // Reset suggestions
+      this.jobTitleDropdownVisible = true; // Reopen dropdown
     }
   }
 
+
   onManagerKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Backspace') {
-      const matchedManager = this.managers.find(item => item.name === this.searchText);
-      if (matchedManager) {
-        this.searchText = ''; // clear the input text
-        this.createJobForm.get('jobReportingManagerId')?.setValue(null); // clear the selected value in the form
-        this.filteredManagers = this.managers; // optional: reset suggestions
-        this.showDropdown = true; // optionally reopen the dropdown
-      }
+    const matchedManager = this.managers.find(item => item.name === this.searchText);
+    if (matchedManager) {
+      this.searchText = ''; // Clear input
+      this.createJobForm.get('jobReportingManagerId')?.setValue(null); // Clear form value
+      this.filteredManagers = this.managers; // Reset suggestions
+      this.showDropdown = true; // Show dropdown
     }
   }
+
 
 
 
@@ -654,16 +676,23 @@ export class JobcodeComponent implements OnInit {
   }
 
   // Handle backspace reset
+  // onDepartmentKeyDown(event: KeyboardEvent) {
+  //   if (event.key === 'Backspace') {
+  //     const matched = this.teams.find(item => item.name === this.departmentSearchText);
+  //     if (matched) {
+  //       this.departmentSearchText = '';
+  //       this.createJobForm.get('teamId')?.setValue(null);
+  //       this.filteredDepartments = this.teams;
+  //       this.showDepartmentDropdown = true;
+  //     }
+  //   }
+  // }
+
   onDepartmentKeyDown(event: KeyboardEvent) {
-    if (event.key === 'Backspace') {
-      const matched = this.teams.find(item => item.name === this.departmentSearchText);
-      if (matched) {
-        this.departmentSearchText = '';
-        this.createJobForm.get('teamId')?.setValue(null);
-        this.filteredDepartments = this.teams;
-        this.showDepartmentDropdown = true;
-      }
-    }
+    this.departmentSearchText = '';
+    this.createJobForm.get('teamId')?.setValue(null);
+    this.filteredDepartments = this.teams;
+    this.showDepartmentDropdown = true;
   }
 
 
