@@ -138,7 +138,7 @@
                   </div>
                   <div class="col-md-3">
                     <label>Mobile Number<span class="text-danger">*</span></label>
-                    <input type="text" [readOnly]="isAllDataPresent" formControlName="mobileNumber"
+                    <input type="text" [value]="jobCodeData.email" [readOnly]="isAllDataPresent" formControlName="mobileNumber"
                       placeholder="9876543210" class="form-control form-control-sm" (keydown)="onlyNumbers($event)"
                       maxlength="10" />
                     <div
@@ -159,7 +159,10 @@
                         containerClass: colorTheme,
                         customTodayClass: 'custom-today-class',
                         dateInputFormat: 'DD-MM-YYYY'
-                      }" bsDatepicker required readonly />
+                      }"
+                      [maxDate]="today"
+                      bsDatepicker required readonly />
+
 
                     <div *ngIf="registrationForm.get('dob')?.touched && registrationForm.get('dob')?.invalid"
                       class="text-danger fs-custom">
@@ -265,7 +268,7 @@
 
                 <div class="row mt-2">
                   <div class="col-md-3">
-                    <label>Blood Group <span class="text-muted">(Optional)</span></label>
+                    <label>Blood Group <span class="text-danger">*</span></label>
                     <select formControlName="bloodGroupId" [attr.disabled]="isAllDataPresent ? true : null"
                       class="form-control form-control-sm">
                       <option value="">Select</option>
@@ -395,7 +398,7 @@
                   <button *ngIf="!isAllDataPresent && !personalUpdate" type="submit"
                     class="btn custom-bg text-white btn-sm shadow-none border-0 ms-2"
                     (click)="setValidation('personal')">
-                    Save
+                    Save & Next
                   </button>
                   <button *ngIf="isAllDataPresent && editButtonDisplay" type="submit"
                     class="btn btn-success btn-sm shadow-none border-0 ms-2" (click)="edit('personal')">
