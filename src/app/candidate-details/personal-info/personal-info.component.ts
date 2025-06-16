@@ -16,11 +16,18 @@ export class personalInfoComponent implements OnInit {
 
   @ViewChild('fileInput') fileInput!: ElementRef;
   @ViewChild('hiddenTenthInput') hiddenTenthInput!: ElementRef;
+  @ViewChild('hiddenAadharInput') hiddenAadharInput!: ElementRef;
+  @ViewChild('hiddenPanInput') hiddenPanInput!: ElementRef;
+  @ViewChild('hiddenTwelthInput') hiddenTwelthInput!: ElementRef;
+  @ViewChild('hiddenDegreeOrBTechInput') hiddenDegreeOrBTechInput!: ElementRef;
+  @ViewChild('hiddenDeplomaInput') hiddenDeplomaInput!: ElementRef;
+  @ViewChild('hiddenOthersInput') hiddenOthersInput!: ElementRef;
+
   registrationForm: FormGroup;
   universityOptions: any[] = [];
   qualificationOptions: any[] = [];
   currentYear = new Date().getFullYear();
-  years = Array.from({ length: 20 }, (_, i) => this.currentYear - i);
+  years = Array.from({ length: 100 }, (_, i) => this.currentYear - i);
   activeTab: string = 'personal'
   showCommunicationAddress: boolean = false;
   isFresher: boolean = true;
@@ -68,18 +75,15 @@ export class personalInfoComponent implements OnInit {
   serviceFilePath: string | null = '';
   paySlipFilePath: string | null = '';
   showSidebar = false;
-  today: Date = new Date(); // set maxDate as today's date
+  today: Date = new Date(); 
 
-
-  // private readonly STORAGE_KEY = 'registrationFormData';
-
-  sections = [
-    { key: 'personalInfo', label: 'Personal Info' },
-    { key: 'address', label: 'Address' },
-    { key: 'education', label: 'Education' },
-    { key: 'document', label: 'Documents' },
-    { key: 'experience', label: 'Working Experience' },
-  ];
+  // sections = [
+  //   { key: 'personalInfo', label: 'Personal Info' },
+  //   { key: 'address', label: 'Address' },
+  //   { key: 'education', label: 'Education' },
+  //   { key: 'document', label: 'Documents' },
+  //   { key: 'experience', label: 'Working Experience' },
+  // ];
 
 
   constructor(
@@ -353,10 +357,29 @@ export class personalInfoComponent implements OnInit {
           //   });
           // }
 
+          // if (res?.candidateEducationDetails?.length) {
+          //   res.candidateEducationDetails.forEach((educationData: any) => {
+          //     const isDuplicate = this.educationArray.controls.some((control: AbstractControl) =>
+          //       control.value.qualificationName?.trim().toLowerCase() === educationData.qualificationName?.trim().toLowerCase()
+          //     );
+
+          //     if (!isDuplicate) {
+          //       this.educationArray.push(this.createEducationFormGroup(educationData));
+          //     }
+          //   });
+          // }
+
+          const educationArray = this.educationArray;
+          educationArray.clear();
+
+          // Always add one empty row for new entry
+          educationArray.push(this.createEducationFormGroup());
+
+          // Add existing education entries (disabled)
           if (res?.candidateEducationDetails?.length) {
             res.candidateEducationDetails.forEach((educationData: any) => {
               const isDuplicate = this.educationArray.controls.some((control: AbstractControl) =>
-                control.value.qualificationName?.trim().toLowerCase() === educationData.qualificationName?.trim().toLowerCase()
+                control.value.qualificationId === educationData.qualificationId
               );
 
               if (!isDuplicate) {
@@ -386,13 +409,34 @@ export class personalInfoComponent implements OnInit {
 
 
 
+  // get educationArray(): FormArray {
+  //   return this.registrationForm.get('educationDetails') as FormArray;
+  // }
   get educationArray(): FormArray {
     return this.registrationForm.get('educationDetails') as FormArray;
   }
 
+
+  // createEducationFormGroup(educationData: any = {}): FormGroup {
+  //   const formGroup = this.fb.group({
+  //     educationId: [educationData.educationId || null], // Ensure it's correctly mapped
+  //     educationTypeId: [educationData.educationTypeId || '', Validators.required],
+  //     universityId: [educationData.universityId || '', Validators.required],
+  //     qualificationId: [educationData.qualificationId || '', Validators.required],
+  //     yearOfPassing: [educationData.yearOfPassing || '', Validators.required],
+  //     percentage: [educationData.percentage || '', Validators.required]
+  //   });
+
+  //   if (Object.keys(educationData).length > 0) {
+  //     formGroup.disable();
+  //   }
+
+  //   return formGroup;
+  // }
+
   createEducationFormGroup(educationData: any = {}): FormGroup {
     const formGroup = this.fb.group({
-      educationId: [educationData.educationId || null], // Ensure it's correctly mapped
+      educationId: [educationData.educationId || null],
       educationTypeId: [educationData.educationTypeId || '', Validators.required],
       universityId: [educationData.universityId || '', Validators.required],
       qualificationId: [educationData.qualificationId || '', Validators.required],
@@ -401,7 +445,7 @@ export class personalInfoComponent implements OnInit {
     });
 
     if (Object.keys(educationData).length > 0) {
-      formGroup.disable();
+      formGroup.disable(); // Disable existing data group
     }
 
     return formGroup;
@@ -582,7 +626,7 @@ export class personalInfoComponent implements OnInit {
         this.authService.deleteEducation(educationId).subscribe({
           next: (res: any) => {
             this.isLoading = false;
-            // this.loadUserData();
+            this.loadUserData();
             console.log(res);
             this.educationArray.removeAt(index);
             Swal.fire({
@@ -793,20 +837,104 @@ export class personalInfoComponent implements OnInit {
   }
 
 
+  // onFileSelect(event: Event, fieldName: string): void {
+  //   console.log("file name : ", fieldName)
+  //   const fileInput = event.target as HTMLInputElement;
+  //   const file = fileInput.files?.[0];
+
+  //   if (file) {
+  //     const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
+
+  //     console.log(`Selected file for ${fieldName}:`, selectedFile);
+
+  //     this.selectedFiles[fieldName] = selectedFile;
+  //   } else {
+  //     console.log(`No file selected for ${fieldName}`);
+  //   }
+  //   let hasFile = false;
+  //   let formData = new FormData();
+  //   console.log("file array: ", this.selectedFiles);
+  //   formData.append('jobCodeId', this.jobCodeData?.jobCodeId);
+
+  //   const documentData = {
+  //     candidateId: this.jobCodeData.candidateId
+  //   };
+  //   formData.append('document', JSON.stringify(documentData));
+  //   formData.append('moduleId', '4');
+
+  //   // Check if at least one file is present
+  //   if (this.selectedFiles['tenth']) {
+  //     formData.append('tenthFile', this.selectedFiles['tenth']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['aadharFile']) {
+  //     formData.append('aadharFile', this.selectedFiles['aadharFile']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['panFile']) {
+  //     formData.append('panFile', this.selectedFiles['panFile']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['twelth']) {
+  //     formData.append('interFile', this.selectedFiles['twelth']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['deploma']) {
+  //     formData.append('pgFile', this.selectedFiles['deploma']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['degreeOrBTech']) {
+  //     formData.append('degreeFile', this.selectedFiles['degreeOrBTech']);
+  //     hasFile = true;
+  //   }
+  //   if (this.selectedFiles['others']) {
+  //     formData.append('otherFile', this.selectedFiles['others']);
+  //     hasFile = true;
+  //   }
+
+  //   // Only call finalSave if at least one file is selected
+  //   if (hasFile) {
+  //     this.finalSave('documents', formData);
+  //   }
+  //   // else {
+  //   //   Swal.fire({
+  //   //     title: 'warning',
+  //   //     text: 'Please upload File',
+  //   //     icon: 'warning',
+  //   //     showConfirmButton: false,
+  //   //     timer: 1000,
+  //   //     timerProgressBar: true,
+  //   //   });
+  //   // }
+  // }
+
   onFileSelect(event: Event, fieldName: string): void {
-    console.log("file name : ", fieldName)
+    console.log("file name : ", fieldName);
     const fileInput = event.target as HTMLInputElement;
     const file = fileInput.files?.[0];
 
     if (file) {
+      const maxSizeInMB = 5;
+      const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
+
+      if (file.size > maxSizeInBytes) {
+        Swal.fire({
+          title: 'File Too Large',
+          text: 'File size must be less than 5 MB.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        fileInput.value = ''; // Clear the input
+        return;
+      }
+
       const selectedFile = new File([file], file.name, { type: file.type, lastModified: Date.now() });
-
       console.log(`Selected file for ${fieldName}:`, selectedFile);
-
       this.selectedFiles[fieldName] = selectedFile;
     } else {
       console.log(`No file selected for ${fieldName}`);
     }
+
     let hasFile = false;
     let formData = new FormData();
     console.log("file array: ", this.selectedFiles);
@@ -818,7 +946,6 @@ export class personalInfoComponent implements OnInit {
     formData.append('document', JSON.stringify(documentData));
     formData.append('moduleId', '4');
 
-    // Check if at least one file is present
     if (this.selectedFiles['tenth']) {
       formData.append('tenthFile', this.selectedFiles['tenth']);
       hasFile = true;
@@ -848,21 +975,11 @@ export class personalInfoComponent implements OnInit {
       hasFile = true;
     }
 
-    // Only call finalSave if at least one file is selected
     if (hasFile) {
       this.finalSave('documents', formData);
     }
-    // else {
-    //   Swal.fire({
-    //     title: 'warning',
-    //     text: 'Please upload File',
-    //     icon: 'warning',
-    //     showConfirmButton: false,
-    //     timer: 1000,
-    //     timerProgressBar: true,
-    //   });
-    // }
   }
+
 
 
   setActiveSection(section: string) {
@@ -882,6 +999,48 @@ export class personalInfoComponent implements OnInit {
     let isValid = true;
     const sectionData: any = {};
 
+    // if (Action === 'personal') {
+    //   const personalFields = [
+    //     'candidateId', 'email', 'mobileNumber', 'dob', 'titleId',
+    //     'firstName', 'middleName', 'lastName', 'maritalStatusId', 'bloodGroupId', 'uan', 'passport',
+    //     'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo'
+    //   ];
+
+    //   let sectionData: any = {}; // Object to store user data
+    //   let isValid = true;
+
+    //   personalFields.forEach((field) => {
+    //     const control = this.registrationForm.get(field);
+    //     if (control?.invalid) {
+    //       control.markAsTouched();
+    //       isValid = false;
+    //     } else {
+    //       sectionData[field] = control?.value; // Store values dynamically
+    //     }
+    //   });
+
+    //   if (!isValid) {
+    //     // alert('Please fill out all required fields in the Personal section.');
+    //     this.formFillMessageAlert();
+    //     console.log("Fill data: ", sectionData);
+    //     return;
+    //   }
+
+    //   let formData = new FormData();
+
+    //   // Ensure candidateId is properly assigned
+    //   sectionData.candidateId = this.jobCodeData?.candidateId;
+
+    //   // Append JSON data as a single object instead of nested structure
+    //   formData.append('personalInfo', JSON.stringify(sectionData));
+
+    //   // Append resume and photo separately
+    //   formData.append('personalImageFile', this.selectedFiles['photo']);
+    //   formData.append('personalResumeFile', this.selectedFiles['resume']);
+    //   formData.append('moduleId', '1');
+
+    //   this.finalSave('address', formData);
+    // }
     if (Action === 'personal') {
       const personalFields = [
         'candidateId', 'email', 'mobileNumber', 'dob', 'titleId',
@@ -889,7 +1048,7 @@ export class personalInfoComponent implements OnInit {
         'genderId', 'fatherName', 'district', 'licence', 'pan', 'adhar', 'resume', 'photo'
       ];
 
-      let sectionData: any = {}; // Object to store user data
+      let sectionData: any = {};
       let isValid = true;
 
       personalFields.forEach((field) => {
@@ -898,29 +1057,34 @@ export class personalInfoComponent implements OnInit {
           control.markAsTouched();
           isValid = false;
         } else {
-          sectionData[field] = control?.value; // Store values dynamically
+          sectionData[field] = control?.value;
         }
       });
 
       if (!isValid) {
-        // alert('Please fill out all required fields in the Personal section.');
         this.formFillMessageAlert();
-        console.log("Fill data: ", sectionData);
+        console.log("Form incomplete: ", sectionData);
         return;
       }
 
-      let formData = new FormData();
+      // ✅ Format DOB (from dd-mm-yyyy or dd-MMM-yyyy to yyyy-mm-dd)
+      if (sectionData.dob) {
+        const formattedDob = this.convertToStandardDateFormat(sectionData.dob);
+        if (formattedDob) {
+          sectionData.dob = formattedDob;
+        } else {
+          console.error('Invalid DOB format:', sectionData.dob);
+        }
+      }
 
-      // Ensure candidateId is properly assigned
+      let formData = new FormData();
       sectionData.candidateId = this.jobCodeData?.candidateId;
 
-      // Append JSON data as a single object instead of nested structure
       formData.append('personalInfo', JSON.stringify(sectionData));
-
-      // Append resume and photo separately
       formData.append('personalImageFile', this.selectedFiles['photo']);
       formData.append('personalResumeFile', this.selectedFiles['resume']);
       formData.append('moduleId', '1');
+
 
       this.finalSave('address', formData);
     } else if (Action === 'address') {
@@ -980,7 +1144,7 @@ export class personalInfoComponent implements OnInit {
       formData.append('candidateId', this.jobCodeData?.candidateId);
       formData.append('moduleId', '2');
 
-      this.finalSave('address', formData);
+      this.finalSave('education', formData);
     } else if (Action === 'education') {
       let isValid = true;
       let educationData: any[] = [];
@@ -1223,11 +1387,13 @@ export class personalInfoComponent implements OnInit {
 
         if (res.status === 200) {
           this.loadUserData();
-          const educationArray = this.registrationForm.get('educationDetails') as FormArray;
-          if (educationArray) {
-            educationArray.clear();
-            educationArray.push(this.createEducationFormGroup());
-          }
+          // const educationArray = this.registrationForm.get('educationDetails') as FormArray;
+          // if (educationArray) {
+          //   educationArray.clear();
+          //   educationArray.push(this.createEducationFormGroup());
+          // }
+
+
           // this.selectedFiles = {}
           this.personalUpdate = false;
           this.addressUpadte = false;
@@ -1235,9 +1401,7 @@ export class personalInfoComponent implements OnInit {
             title: 'Success',
             text: 'Successfully completed',
             icon: 'success',
-            showConfirmButton: false,
-            timer: 1000,
-            timerProgressBar: true,
+            showConfirmButton: true,
           });
           this.setActiveSection(action);
           if (action === 'education') {
@@ -1558,6 +1722,29 @@ export class personalInfoComponent implements OnInit {
     this.hiddenTenthInput.nativeElement.click();
   }
 
+  openAadharFileInput(): void {
+    this.hiddenAadharInput.nativeElement.click();
+  }
+
+  openPanFileInput(): void {
+    this.hiddenPanInput.nativeElement.click();
+  }
+
+  openTwelthFileInput(): void {
+    this.hiddenTwelthInput.nativeElement.click();
+  }
+
+  openDegreeOrBTechInput(): void {
+    this.hiddenDegreeOrBTechInput.nativeElement.click();
+  }
+  openDeplomaInput(): void {
+    this.hiddenDeplomaInput.nativeElement.click();
+  }
+  openOthersInput(): void {
+    this.hiddenOthersInput.nativeElement.click();
+  }
+
+
   onFileChange(event: any, controlName: string) {
     const file = event.target.files[0];
     if (file) {
@@ -1599,4 +1786,27 @@ export class personalInfoComponent implements OnInit {
     this.paySlipFilePath = null;
     this.serviceFilePath = null;
   }
+
+  // Place this function outside your component method for reuse
+  convertToStandardDateFormat(inputDate: string): string | null {
+    if (!inputDate || typeof inputDate !== 'string') return null;
+
+    const monthMap: { [key: string]: string } = {
+      Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+      Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12'
+    };
+
+    const parts = inputDate.split('-');
+    if (parts.length !== 3) return null;
+
+    const [day, monthRaw, year] = parts;
+    const month = isNaN(Number(monthRaw))
+      ? monthMap[monthRaw] // "Jun" → "06"
+      : ('0' + monthRaw).slice(-2); // "6" → "06"
+
+    if (!month) return null;
+
+    return `${year}-${month}-${day}`;
+  }
+
 }

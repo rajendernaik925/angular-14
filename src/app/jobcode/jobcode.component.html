@@ -81,6 +81,13 @@
                         [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
                     </span>
                   </th>
+                  <th class="small-header-th  cursor-pointer" (click)="sortTable('businessunitId')">
+                    Business Unit
+                    <span *ngIf="sortColumn === 'businessunitId'">
+                      <i class="ms-1"
+                        [ngClass]="sortDirection === 'asc' ? 'bi bi-chevron-up text-danger' : 'bi bi-chevron-down text-danger'"></i>
+                    </span>
+                  </th>
                   <th class="small-header-th  cursor-pointer" (click)="sortTable('createdDate')">
                     Created Date
                     <span *ngIf="sortColumn === 'createdDate'">
@@ -113,6 +120,7 @@
                     ₹{{ (row.ctcMin / 100000) | number:'1.1-1' }}L - ₹{{ (row.ctcMax / 100000) |
                     number:'1.1-1' }}L
                   </td>
+                  <td class="small-header text-uppercase">{{ row.buName }}</td>
                   <!-- <td class="small-header text-uppercase">
                     ₹{{ row.ctcMin }} - ₹{{ row.ctcMax }} 
                   </td> -->
@@ -217,13 +225,8 @@
   <form class="dialog-content" [formGroup]="createJobForm" (ngSubmit)="onSubmit()">
     <div class="row mb-3">
 
-      <div class="col-md-4 ">
+      <div class="col-md-6 ">
         <label for="teamId">Department <span class="text-danger">*</span></label>
-        <!-- <select id="teamId" formControlName="teamId" (change)="onSelected($event)" class="form-control form-control-sm">
-          <option *ngFor="let manager of teams; let i = index" [value]="manager.id">
-            {{ manager.name }}
-          </option>
-        </select> -->
         <div class="position-relative">
           <input type="search" class="form-control form-control-sm" placeholder="Search department"
             [value]="departmentSearchText" (input)="onDepartmentSearchChange($event.target.value)"
@@ -247,17 +250,7 @@
         </div>
       </div>
       <!-- First Row (3 form controls) -->
-      <div class="col-md-4 ">
-        <!-- <label for="">Designation <span class="text-danger">*</span></label>
-        <select id="jobTitle" formControlName="jobTitle" class="form-control form-control-sm">
-          <option value="">Select</option>
-          <option *ngFor="let item of jobTitleList" [value]="item.id">
-            {{ item.name }}
-          </option>
-        </select>
-        <div *ngIf="submitted && createJobForm.get('jobTitle').invalid" class="text-danger fs-5">
-          Role Title is required.
-        </div> -->
+      <div class="col-md-6">
 
         <label for="jobTitle">Designation <span class="text-danger">*</span></label>
 
@@ -280,15 +273,10 @@
         </div>
 
       </div>
-
-      <div class="col-md-4 ">
+    </div>
+    <div class="row mb-3">
+      <div class="col-md-6">
         <label for="jobReportingManagerId">Reporting Manager <span class="text-danger">*</span></label>
-        <!-- <select id="jobReportingManagerId" formControlName="jobReportingManagerId" (change)="onSelected($event)"
-          class="form-control form-control-sm">
-          <option *ngFor="let manager of managers; let i = index" [value]="manager.id">
-            {{manager.id}} - {{ manager.name }}
-          </option>
-        </select> -->
         <div class="position-relative">
           <input type="search" class="form-control form-control-sm" placeholder="Search manager" [value]="searchText"
             (input)="onSearchChange($event.target.value)" (focus)="showDropdown = true" (blur)="hideDropdownWithDelay()"
@@ -312,14 +300,32 @@
           {{managerMessage}}
         </div>
       </div>
+      <div class="col-md-6">
+        <label for="businessunitId" class="form-label">
+          Business Unit <span class="text-danger">*</span>
+        </label>
 
-      
+        <div *ngIf="businessUnits?.length">
+          <select formControlName="businessunitId" class="form-control form-control-sm" id="businessunitId">
+            <option *ngFor="let item of businessUnits" [value]="item.id">{{ item.name }}</option>
+          </select>
+
+
+        </div>
+
+
+        <div
+          *ngIf="submitted && (createJobForm.get('businessunitId')?.touched || submitted) && createJobForm.get('businessunitId')?.invalid"
+          class="text-danger fs-5">
+          Business Unit is required.
+        </div>
+      </div>
     </div>
 
     <div class="row mb-3">
       <!-- CTC Range -->
       <div class="col-md-6">
-        <label for="CTC">CTC (Min-Max) <span class="text-danger">*</span></label>
+        <label for="CTC">CTC (Min-Max (INR)) <span class="text-danger">*</span></label>
         <div class="d-flex gap-3">
           <input id="jobCtcMin" formControlName="jobCtcMin" class="form-control form-control-sm bg-white"
             placeholder="Min CTC" type="number" min="0"

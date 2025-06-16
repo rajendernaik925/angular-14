@@ -45,6 +45,7 @@ export class JobcodeComponent implements OnInit {
   showDropdown: boolean = false;
   jobTitleSearchText: string = '';
   filteredJobTitles: any[] = [];
+  businessUnits: any[] = [];
   jobTitleDropdownVisible: boolean = false;
   dataNotFound: string = 'assets/img/icons/not-found.gif'
   @ViewChild('jobDialog', { static: true }) jobDialog!: TemplateRef<any>;
@@ -70,6 +71,7 @@ export class JobcodeComponent implements OnInit {
     this.listOfManagers();
     this.listOfTeams();
     this.jobTitle();
+    this.masterBu();
     this.userData = JSON.parse(decodeURIComponent(window.atob(localStorage.getItem('userData') || '')));
     console.log("user data : ", this.userData.user.empID);
     this.myDate = decodeURIComponent(window.atob(localStorage.getItem('currentDate') || ''));
@@ -125,6 +127,7 @@ export class JobcodeComponent implements OnInit {
       jobTitle: ['', [Validators.required]],
       jobReportingManagerId: ['', [Validators.required]],
       teamId: ['', Validators.required],
+      businessunitId: ['', Validators.required],
       jobExperienceMinYear: [null, Validators.required],
       jobExperienceMaxYear: [null, Validators.required],
       jobCtcMin: [null, Validators.required],
@@ -140,11 +143,11 @@ export class JobcodeComponent implements OnInit {
     this.isLoading = true;
     this.authService.ReportingManagers().subscribe({
       next: (res) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         this.managers = res;
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         console.log("Error fetching managers:", err);
       }
     });
@@ -154,25 +157,42 @@ export class JobcodeComponent implements OnInit {
     this.isLoading = true;
     this.authService.listofTeams().subscribe({
       next: (res) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         this.teams = res;
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         console.log("Error fetching managers:", err);
       }
     });
   }
 
+  masterBu() {
+    this.authService.masterBu().subscribe({
+      next: (res: any[]) => {
+        // Add 'Select' option at the beginning
+        const selectOption = { id: '', name: 'Select' };
+        this.businessUnits = [selectOption, ...res];
+
+        // Set default selection to 'Select' (empty string)
+        this.createJobForm.get('businessunitId')?.setValue('');
+      },
+      error: (err) => {
+        console.error('Error fetching business unit data:', err);
+      },
+    });
+  }
+
+
   jobTitle(): void {
     this.isLoading = true;
     this.authService.jobTitle().subscribe({
       next: (res) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         this.jobTitleList = res;
       },
       error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
+        // this.isLoading = false;
         console.log("Error fetching managers:", err);
       }
     });
@@ -317,7 +337,8 @@ export class JobcodeComponent implements OnInit {
       expMax: expMax.toString(),
       preferredCompany: this.createJobForm.get('jobPreferableCompanies')?.value || '',
       description: this.createJobForm.get('jobDescription')?.value || '',
-      createdBy: this.userData?.user?.empID || ''
+      createdBy: this.userData?.user?.empID || '',
+      businessunitId: this.createJobForm.get('businessunitId')?.value || ''
     };
 
     console.log("Prepared JSON Payload:", jobPayload);
@@ -594,51 +615,51 @@ export class JobcodeComponent implements OnInit {
     }, 200);
   }
 
-  // onJobTitleKeyDown(event: KeyboardEvent) {
-  //   if (event.key === 'Backspace') {
-  //     // If the user hits Backspace and current input exactly matches a selected title
-  //     const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
-  //     if (matchedItem) {
-  //       this.jobTitleSearchText = ''; // clear input
-  //       this.createJobForm.get('jobTitle')?.setValue(null); // clear form control
-  //       this.filteredJobTitles = this.jobTitleList; // optionally show all again
-  //       this.jobTitleDropdownVisible = true; // reopen dropdown if needed          
-  //     }
-  //   }
-  // }
-
-  // onManagerKeyDown(event: KeyboardEvent) {
-  //   if (event.key === 'Backspace') {
-  //     const matchedManager = this.managers.find(item => item.name === this.searchText);
-  //     if (matchedManager) {
-  //       this.searchText = ''; // clear the input text
-  //       this.createJobForm.get('jobReportingManagerId')?.setValue(null); // clear the selected value in the form
-  //       this.filteredManagers = this.managers; // optional: reset suggestions
-  //       this.showDropdown = true; // optionally reopen the dropdown
-  //     }
-  //   }
-  // }
-
   onJobTitleKeyDown(event: KeyboardEvent) {
-    const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
-    if (matchedItem) {
-      this.jobTitleSearchText = ''; // Clear input
-      this.createJobForm.get('jobTitle')?.setValue(null); // Clear selected form control
-      this.filteredJobTitles = this.jobTitleList; // Reset suggestions
-      this.jobTitleDropdownVisible = true; // Reopen dropdown
+    if (event.key === 'Backspace') {
+      // If the user hits Backspace and current input exactly matches a selected title
+      const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
+      if (matchedItem) {
+        this.jobTitleSearchText = ''; // clear input
+        this.createJobForm.get('jobTitle')?.setValue(null); // clear form control
+        this.filteredJobTitles = this.jobTitleList; // optionally show all again
+        this.jobTitleDropdownVisible = true; // reopen dropdown if needed          
+      }
     }
   }
-
 
   onManagerKeyDown(event: KeyboardEvent) {
-    const matchedManager = this.managers.find(item => item.name === this.searchText);
-    if (matchedManager) {
-      this.searchText = ''; // Clear input
-      this.createJobForm.get('jobReportingManagerId')?.setValue(null); // Clear form value
-      this.filteredManagers = this.managers; // Reset suggestions
-      this.showDropdown = true; // Show dropdown
+    if (event.key === 'Backspace') {
+      const matchedManager = this.managers.find(item => item.name === this.searchText);
+      if (matchedManager) {
+        this.searchText = ''; // clear the input text
+        this.createJobForm.get('jobReportingManagerId')?.setValue(null); // clear the selected value in the form
+        this.filteredManagers = this.managers; // optional: reset suggestions
+        this.showDropdown = true; // optionally reopen the dropdown
+      }
     }
   }
+
+  // onJobTitleKeyDown(event: KeyboardEvent) {
+  //   const matchedItem = this.jobTitleList.find(item => item.name === this.jobTitleSearchText);
+  //   if (matchedItem) {
+  //     this.jobTitleSearchText = ''; // Clear input
+  //     this.createJobForm.get('jobTitle')?.setValue(null); // Clear selected form control
+  //     this.filteredJobTitles = this.jobTitleList; // Reset suggestions
+  //     this.jobTitleDropdownVisible = true; // Reopen dropdown
+  //   }
+  // }
+
+
+  // onManagerKeyDown(event: KeyboardEvent) {
+  //   const matchedManager = this.managers.find(item => item.name === this.searchText);
+  //   if (matchedManager) {
+  //     this.searchText = ''; // Clear input
+  //     this.createJobForm.get('jobReportingManagerId')?.setValue(null); // Clear form value
+  //     this.filteredManagers = this.managers; // Reset suggestions
+  //     this.showDropdown = true; // Show dropdown
+  //   }
+  // }
 
 
 
@@ -676,24 +697,24 @@ export class JobcodeComponent implements OnInit {
   }
 
   // Handle backspace reset
-  // onDepartmentKeyDown(event: KeyboardEvent) {
-  //   if (event.key === 'Backspace') {
-  //     const matched = this.teams.find(item => item.name === this.departmentSearchText);
-  //     if (matched) {
-  //       this.departmentSearchText = '';
-  //       this.createJobForm.get('teamId')?.setValue(null);
-  //       this.filteredDepartments = this.teams;
-  //       this.showDepartmentDropdown = true;
-  //     }
-  //   }
-  // }
-
   onDepartmentKeyDown(event: KeyboardEvent) {
-    this.departmentSearchText = '';
-    this.createJobForm.get('teamId')?.setValue(null);
-    this.filteredDepartments = this.teams;
-    this.showDepartmentDropdown = true;
+    if (event.key === 'Backspace') {
+      const matched = this.teams.find(item => item.name === this.departmentSearchText);
+      if (matched) {
+        this.departmentSearchText = '';
+        this.createJobForm.get('teamId')?.setValue(null);
+        this.filteredDepartments = this.teams;
+        this.showDepartmentDropdown = true;
+      }
+    }
   }
+
+  // onDepartmentKeyDown(event: KeyboardEvent) {
+  //   this.departmentSearchText = '';
+  //   this.createJobForm.get('teamId')?.setValue(null);
+  //   this.filteredDepartments = this.teams;
+  //   this.showDepartmentDropdown = true;
+  // }
 
 
 

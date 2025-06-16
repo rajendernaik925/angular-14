@@ -249,24 +249,24 @@ export class InterviewScheduleComponent implements OnInit {
   isDialogOpen = false;
 
   handleAction(employeeId: any) {
-  if (this.isDialogOpen) return; // prevent double open
-  this.isDialogOpen = true;
+    if (this.isDialogOpen) return; // prevent double open
+    this.isDialogOpen = true;
 
-  this.interviewedByList = [];
-  this.employeeId = employeeId;
-  this.selectedInterviewerName = ''; // Ensure field is empty when opening dialog
-  this.addNewRoundForm.reset();
+    this.interviewedByList = [];
+    this.employeeId = employeeId;
+    this.selectedInterviewerName = ''; // Ensure field is empty when opening dialog
+    this.addNewRoundForm.reset();
 
-  this.dialogRef = this.dialog.open(this.interviewDialog, {
-    width: '400px',
-    height: 'auto',
-    hasBackdrop: true,
-  });
+    this.dialogRef = this.dialog.open(this.interviewDialog, {
+      width: '400px',
+      height: 'auto',
+      hasBackdrop: true,
+    });
 
-  this.dialogRef.afterClosed().subscribe(() => {
-    this.isDialogOpen = false;
-  });
-}
+    this.dialogRef.afterClosed().subscribe(() => {
+      this.isDialogOpen = false;
+    });
+  }
 
 
 
@@ -276,8 +276,9 @@ export class InterviewScheduleComponent implements OnInit {
 
   onSubmit() {
     console.log(this.addNewRoundForm.value);
+
     if (this.addNewRoundForm.invalid) {
-      this.InterviewerError = 'please enter valid interviewer'
+      this.InterviewerError = 'please enter valid interviewer';
       Object.keys(this.addNewRoundForm.controls).forEach((field) => {
         const control = this.addNewRoundForm.get(field);
         if (control?.invalid) {
@@ -287,12 +288,12 @@ export class InterviewScheduleComponent implements OnInit {
       return;
     }
 
-    const formData = this.addNewRoundForm.value;
+    const formData = { ...this.addNewRoundForm.value };
+
+    // Format interviewDate without using moment
     if (formData.interviewDate) {
       const date = new Date(formData.interviewDate);
-      formData.interviewDate = date.getFullYear() + '-' +
-        String(date.getMonth() + 1).padStart(2, '0') + '-' +
-        String(date.getDate()).padStart(2, '0');
+      formData.interviewDate = this.formatDateToYMD(date);
     }
 
     const payload = {
@@ -306,7 +307,7 @@ export class InterviewScheduleComponent implements OnInit {
     this.authService.addInterviewRound(payload).subscribe({
       next: (res: HttpResponse<any>) => {
         this.isLoading = false;
-        if (res.status == 200) {
+        if (res.status === 200) {
           this.close();
           this.interviewScheduleTo = '';
           this.scheduleCandidates();
@@ -317,7 +318,6 @@ export class InterviewScheduleComponent implements OnInit {
             icon: 'success',
             confirmButtonText: 'OK'
           });
-
         }
       },
       error: (err: HttpErrorResponse) => {
@@ -327,27 +327,36 @@ export class InterviewScheduleComponent implements OnInit {
   }
 
 
-  searchInterviewer(query: string): void {
-    this.InterviewerError = ''
-    this.selectedInterviewerName = query;
-    this.addNewRoundForm.patchValue({ interviewBy: '' }); // clear ID unless selected
-    if (query.trim().length < 1) {
-      this.interviewedByList = [];
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("name", query);
-    this.authService.interviewedBy(formData).subscribe({
-      next: (res: any[]) => {
-        this.interviewedByList = Array.isArray(res) ? res : [];
-        this.showDropdown = this.interviewedByList.length > 0;
-      },
-      error: () => {
-        this.interviewedByList = [];
-      }
-    });
+  formatDateToYMD(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
+
+
+
+  // searchInterviewer(query: string): void {
+  //   this.InterviewerError = ''
+  //   this.selectedInterviewerName = query;
+  //   this.addNewRoundForm.patchValue({ interviewBy: '' }); // clear ID unless selected
+  //   if (query.trim().length < 1) {
+  //     this.interviewedByList = [];
+  //     return;
+  //   }
+
+  //   const formData = new FormData();
+  //   formData.append("name", query);
+  //   this.authService.interviewedBy(formData).subscribe({
+  //     next: (res: any[]) => {
+  //       this.interviewedByList = Array.isArray(res) ? res : [];
+  //       this.showDropdown = this.interviewedByList.length > 0;
+  //     },
+  //     error: () => {
+  //       this.interviewedByList = [];
+  //     }
+  //   });
+  // }
 
 
 
@@ -363,6 +372,33 @@ export class InterviewScheduleComponent implements OnInit {
   //     }
   //   }
   // }
+  searchInterviewer(query: string): void {
+    this.InterviewerError = '';
+    this.selectedInterviewerName = query;
+    this.addNewRoundForm.patchValue({ interviewBy: '' }); // clear ID unless selected
+
+    // Only trigger API if 2 or more characters are typed
+    if (query.trim().length < 3) {
+      this.interviewedByList = [];
+      this.showDropdown = false;
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", query);
+
+    this.authService.interviewedBy(formData).subscribe({
+      next: (res: any[]) => {
+        this.interviewedByList = Array.isArray(res) ? res : [];
+        this.showDropdown = this.interviewedByList.length > 0;
+      },
+      error: () => {
+        this.interviewedByList = [];
+        this.showDropdown = false;
+      }
+    });
+  }
+
 
   generateTimeSlots() {
     this.timeSlots = [];
@@ -716,6 +752,13 @@ export class InterviewScheduleComponent implements OnInit {
     const isValid = this.interviewedByList.some(item => item.id === selectedId);
     return isValid ? null : { invalidSelection: true };
   }
+
+  convertToDateObject(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('-');
+    return new Date(+year, +month - 1, +day); // month is 0-indexed
+  }
+
 
 
 

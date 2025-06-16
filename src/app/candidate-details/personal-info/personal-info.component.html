@@ -138,9 +138,9 @@
                   </div>
                   <div class="col-md-3">
                     <label>Mobile Number<span class="text-danger">*</span></label>
-                    <input type="text" [value]="jobCodeData.email" [readOnly]="isAllDataPresent" formControlName="mobileNumber"
-                      placeholder="9876543210" class="form-control form-control-sm" (keydown)="onlyNumbers($event)"
-                      maxlength="10" />
+                    <input type="text" [value]="jobCodeData.email" [readOnly]="isAllDataPresent"
+                      formControlName="mobileNumber" placeholder="9876543210" class="form-control form-control-sm"
+                      (keydown)="onlyNumbers($event)" maxlength="10" />
                     <div
                       *ngIf="registrationForm.get('mobileNumber')?.touched && registrationForm.get('mobileNumber')?.invalid"
                       class="text-danger fs-custom">
@@ -158,10 +158,9 @@
                         isAnimated: true,
                         containerClass: colorTheme,
                         customTodayClass: 'custom-today-class',
-                        dateInputFormat: 'DD-MM-YYYY'
-                      }"
-                      [maxDate]="today"
-                      bsDatepicker required readonly />
+                        dateInputFormat: 'DD-MMM-YYYY'
+                      }" [maxDate]="today" bsDatepicker required readonly />
+
 
 
                     <div *ngIf="registrationForm.get('dob')?.touched && registrationForm.get('dob')?.invalid"
@@ -261,10 +260,7 @@
                   </div>
                 </div>
 
-
-
                 <!-- New adding -->
-
 
                 <div class="row mt-2">
                   <div class="col-md-3">
@@ -619,7 +615,7 @@
                 <div class="d-flex justify-content-end mt-2">
                   <button *ngIf="!isAllAddressDataPresent && !addressUpadte" type="submit"
                     class="btn custom-bg text-white  btn-sm shadow-none border-0" (click)="setValidation('address')">
-                    Save
+                    Save & Next
                   </button>
 
                   <button *ngIf="isAllAddressDataPresent && editButtonDisplay" type="submit"
@@ -782,7 +778,7 @@
                 <tbody>
 
                   <!-- Aadhar card   -->
-                  <tr>
+                  <!-- <tr>
                     <td class="fw-bold py-1 px-2">Aadhar card
                       <span class="text-danger">*</span>
                     </td>
@@ -804,18 +800,51 @@
                         <button *ngIf="aadharFile  && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile('6')">Delete</button>
-                        <!-- <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">Save</button> -->
                         <button *ngIf="aadharFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('aadharFile')">Update</button>
+                      </div>
+                    </td>
+                  </tr> -->
+
+                  <tr>
+                    <td class="fw-bold py-1 px-2">Aadhar card <span class="text-danger">*</span></td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="aadharFile; else aadharFileInput">
+                          <button class="btn btn-info badge badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(aadharFile)">
+                            View Document
+                          </button>
+                        </ng-container>
+                        <ng-template #aadharFileInput>
+                          <input type="file" formControlName="aadharFile" accept=".pdf" id="aadharFile" #aadharFileInput
+                            (change)="onFileSelect($event, 'aadharFile')"
+                            class="form-control form-control-sm file-input" />
+                        </ng-template>
+
+                        <!-- Hidden input for triggering file dialog on update -->
+                        <input type="file" formControlName="aadharFile" accept=".pdf" #hiddenAadharInput
+                          (change)="onFileSelect($event, 'aadharFile')" class="d-none" />
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="aadharFile && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2" (click)="deleteFile('6')">
+                          Delete
+                        </button>
+                        <button *ngIf="aadharFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0" (click)="openAadharFileInput()">
+                          Update
+                        </button>
                       </div>
                     </td>
                   </tr>
 
 
                   <!-- pan card -->
-
+                  <!-- 
                   <tr>
                     <td class="fw-bold py-1 px-2">Pan card
                       <span class="text-danger">*</span>
@@ -838,13 +867,47 @@
                         <button *ngIf="panFile  && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile('7')">Delete</button>
-                        <!-- <button *ngIf="!tenthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">Save</button> -->
                         <button *ngIf="panFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('panFile')">Update</button>
                       </div>
                     </td>
+                  </tr> -->
+
+                  <tr>
+                    <td class="fw-bold py-1 px-2">Pan card <span class="text-danger">*</span></td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="panFile; else panFileInput">
+                          <button class="btn btn-info badge badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(panFile)">
+                            View Document
+                          </button>
+                        </ng-container>
+                        <ng-template #panFileInput>
+                          <input type="file" formControlName="panFile" accept=".pdf" id="panFile" #panFileInput
+                            (change)="onFileSelect($event, 'panFile')"
+                            class="form-control form-control-sm file-input" />
+                        </ng-template>
+
+                        <!-- Hidden input to trigger file dialog on Update -->
+                        <input type="file" formControlName="panFile" accept=".pdf" #hiddenPanInput
+                          (change)="onFileSelect($event, 'panFile')" class="d-none" />
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="panFile && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2" (click)="deleteFile('7')">
+                          Delete
+                        </button>
+                        <button *ngIf="panFile && editButtonDisplay" class="btn btn-primary btn-sm shadow-none border-0"
+                          (click)="openPanFileInput()">
+                          Update
+                        </button>
+                      </div>
+                    </td>
                   </tr>
+
                   <!-- 10th Document -->
                   <!-- <tr>
                     <td class="fw-bold py-1 px-2">SSC (10th)
@@ -912,7 +975,7 @@
                   </tr>
 
                   <!-- 12th Document -->
-                  <tr>
+                  <!-- <tr>
                     <td class="fw-bold py-1 px-2">Intermediate <span class="text-danger">*</span></td>
                     <td class="py-1 px-2">
                       <div class="file-upload px-2 pt-1 rounded-4">
@@ -931,13 +994,40 @@
                         <button *ngIf="twelthFile  && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(2)">Delete</button>
-                        <!-- <button *ngIf="!twelthFile" class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">
-                          Save
-                        </button> -->
                         <button *ngIf="twelthFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
                           (click)="updateDocument('twelth')">Update</button>
+                      </div>
+                    </td>
+                  </tr> -->
+
+
+                  <tr>
+                    <td class="fw-bold py-1 px-2">Intermediate <span class="text-danger">*</span></td>
+                    <td class="py-1 px-2">
+                      <div class="file-upload px-2 pt-1 rounded-4">
+                        <ng-container *ngIf="twelthFile; else twelthFileInput">
+                          <button class="btn btn-info badge badge-pil badge-info py-2 btn-sm shadow-none border-0 w-100"
+                            (click)="viewFile(twelthFile)">View Document</button>
+                        </ng-container>
+                        <ng-template #twelthFileInput>
+                          <input type="file" formControlName="twelth" accept=".pdf" id="twelth" #twelthFileInput
+                            (change)="onFileSelect($event, 'twelth')" class="form-control form-control-sm file-input" />
+                        </ng-template>
+
+                        <!-- Hidden input for Update click -->
+                        <input type="file" formControlName="twelth" accept=".pdf" #hiddenTwelthInput
+                          (change)="onFileSelect($event, 'twelth')" class="d-none" />
+                      </div>
+                    </td>
+                    <td class="py-1 px-2">
+                      <div class="d-flex gap-1">
+                        <button *ngIf="twelthFile && editButtonDisplay"
+                          class="btn btn-danger btn-sm shadow-none border-0 mr-2"
+                          (click)="deleteFile(2)">Delete</button>
+                        <button *ngIf="twelthFile && editButtonDisplay"
+                          class="btn btn-primary btn-sm shadow-none border-0"
+                          (click)="openTwelthFileInput()">Update</button>
                       </div>
                     </td>
                   </tr>
@@ -958,23 +1048,23 @@
                             #degreeOrBTechFileInput (change)="onFileSelect($event, 'degreeOrBTech')"
                             class="form-control form-control-sm file-input" />
                         </ng-template>
+
+                        <!-- Hidden input to be triggered on update -->
+                        <input type="file" formControlName="degreeOrBTech" accept=".pdf" #hiddenDegreeOrBTechInput
+                          (change)="onFileSelect($event, 'degreeOrBTech')" class="d-none" />
                       </div>
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="degreeOrBTechFile  && editButtonDisplay"
+                        <button *ngIf="degreeOrBTechFile && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border- mr-2" (click)="deleteFile(3)">Delete</button>
-                        <!-- <button *ngIf="!degreeOrBTechFile"
-                          class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">
-                          Save
-                        </button> -->
                         <button *ngIf="degreeOrBTechFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
-                          (click)="updateDocument('degreeOrBTech')">Update</button>
+                          (click)="openDegreeOrBTechInput()">Update</button>
                       </div>
                     </td>
                   </tr>
+
 
                   <!-- M.Tech/PG Document -->
                   <tr>
@@ -990,6 +1080,10 @@
                             (change)="onFileSelect($event, 'deploma')"
                             class="form-control form-control-sm file-input" />
                         </ng-template>
+
+                        <!-- Hidden input for Update -->
+                        <input type="file" formControlName="deploma" accept=".pdf" #hiddenDeplomaInput
+                          (change)="onFileSelect($event, 'deploma')" class="d-none" />
                       </div>
                     </td>
                     <td class="py-1 px-2">
@@ -997,15 +1091,13 @@
                         <button *ngIf="deplomaFile && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(4)">Delete</button>
-                        <!-- <button *ngIf="!deplomaFile  && editButtonDisplay"
-                          class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">Save</button> -->
-                        <button *ngIf="deplomaFile  && editButtonDisplay"
+                        <button *ngIf="deplomaFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
-                          (click)="updateDocument('deploma')">Update</button>
+                          (click)="openDeplomaInput()">Update</button>
                       </div>
                     </td>
                   </tr>
+
 
                   <!-- Others Document -->
                   <tr>
@@ -1020,22 +1112,24 @@
                           <input type="file" formControlName="others" accept=".pdf" id="others" #othersFileInput
                             (change)="onFileSelect($event, 'others')" class="form-control form-control-sm file-input" />
                         </ng-template>
+
+                        <!-- Hidden input to trigger on Update -->
+                        <input type="file" formControlName="others" accept=".pdf" #hiddenOthersInput
+                          (change)="onFileSelect($event, 'others')" class="d-none" />
                       </div>
                     </td>
                     <td class="py-1 px-2">
                       <div class="d-flex gap-1">
-                        <button *ngIf="othersFile  && editButtonDisplay"
+                        <button *ngIf="othersFile && editButtonDisplay"
                           class="btn btn-danger btn-sm shadow-none border-0 mr-2"
                           (click)="deleteFile(5)">Delete</button>
-                        <!-- <button *ngIf="!othersFile && editButtonDisplay"
-                          class="btn custom-bg text-white btn-sm shadow-none border-0 w-100"
-                          (click)="setValidation('documents')">Save</button> -->
-                        <button *ngIf="othersFile  && editButtonDisplay"
+                        <button *ngIf="othersFile && editButtonDisplay"
                           class="btn btn-primary btn-sm shadow-none border-0"
-                          (click)="updateDocument('others')">Update</button>
+                          (click)="openOthersInput()">Update</button>
                       </div>
                     </td>
                   </tr>
+
                 </tbody>
               </table>
 
@@ -1130,7 +1224,7 @@
                     </div>
                   </div>
                   <div *ngIf="!isFresher" class="col-md-3">
-                    <label>Description <span class="text-danger">*</span></label>
+                    <label>Job responsibilities <span class="text-danger">*</span></label>
                     <textarea [attr.disabled]="!editButtonDisplay ? true : null" rows="1" maxlength="500"
                       formControlName="suitableJobDescription" class="form-control form-control-sm"
                       placeholder="Description"></textarea>
@@ -1166,7 +1260,8 @@
                   <!-- Service Letter Upload or View -->
                   <div class="col-md-3">
                     <ng-container *ngIf="!serviceFilePath; else viewServiceLetter">
-                      <label *ngIf="editButtonDisplay">Service Letter <span class="text-danger">*</span></label>
+                      <label *ngIf="editButtonDisplay">Service Letter <span
+                          class="text-muted">(Optional)</span></label>
                       <input *ngIf="editButtonDisplay" type="file" class="form-control form-control-sm"
                         (change)="onFileChange($event, 'serviceLetterFile')" />
                     </ng-container>
@@ -1182,11 +1277,11 @@
                     </ng-template>
                   </div>
 
-                  <div *ngIf="paySlipFilePath" class="col-md-2 mt-4">
+                  <!-- <div *ngIf="paySlipFilePath" class="col-md-2 mt-4">
                     <button class="btn btn-sm bg-primary text-white shadow-none" (click)="UpdatePayslip()">
                       Update Files
                     </button>
-                  </div>
+                  </div> -->
 
                 </div>
 
@@ -1229,8 +1324,10 @@
                           isAnimated: true,
                           containerClass: colorTheme,
                           customTodayClass: 'custom-today-class',
-                          dateInputFormat: 'DD-MM-YYYY'
+                          dateInputFormat: 'DD-MM-YYYY',
+                          maxDate: today
                         }" bsDatepicker required readonly />
+
 
 
                       <div
@@ -1277,6 +1374,7 @@
                       <div class="col-md-2">
                         <input type="text" class="form-control" [value]="exp.lastWorkingDate" readonly>
                       </div>
+
                       <div class="col-md-1 d-flex align-items-end" *ngIf="editButtonDisplay">
                         <button class="btn btn-danger btn-sm w-100 custom-disabled-btn"
                           [disabled]="experienceArray.length <= 1" (click)="deleteExperience(exp.experienceMapId, i)">
@@ -1468,6 +1566,29 @@
                       </a>
                     </div>
                   </div>
+
+                  <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    class="alert alert-success text-center mt-3">
+                    ✅ All sections are completed 🎉. Please wait while we schedule your interview. You will be notified
+                    shortly.
+                  </div>
+                  <!-- <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    class="alert alert-info text-center mt-3">
+                    🎉 Great job! You've completed all sections. We'll get back to you soon with your interview
+                    schedule.
+                  </div>
+                  <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    class="alert alert-secondary text-center mt-3">
+                    All form sections have been successfully completed. Please wait for further communication regarding
+                    the interview process.
+                  </div>
+                  <div *ngIf="loadedData?.candidateTrackingDTO?.totalPercentage == '100'"
+                    style="color: green; font-weight: bold; text-align: center; margin-top: 1rem;">
+                    All sections completed. Awaiting interview confirmation.
+                  </div> -->
+
+
+
                 </div>
               </div>
 
