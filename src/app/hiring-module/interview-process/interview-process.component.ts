@@ -316,8 +316,8 @@ export class InterviewProcessComponent implements OnInit {
     // this.feedbackForm.reset();
     this.selectedHrStatus = null
     this.dialogRef = this.dialog.open(this.feedbackform, {
-      width: '900px',
-      height: '550px',
+      width: '1000px',
+      height: '500px',
       hasBackdrop: true,
     });
   }
@@ -506,6 +506,12 @@ export class InterviewProcessComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  convertToDateObject(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [day, month, year] = dateStr.split('-');
+    return new Date(+year, +month - 1, +day); // month is 0-indexed
   }
 
 

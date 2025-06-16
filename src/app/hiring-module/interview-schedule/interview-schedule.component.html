@@ -183,7 +183,7 @@
         <div class="row mt-3 mb-3">
           <div class="col-md-6 position-relative">
             <label for="interviewBy" class="form-label">
-              Interviewed By <span class="text-danger">*</span>
+              Interviewer <span class="text-danger">*</span>
             </label>
 
             <input type="text" placeholder="Search interviewer" class="form-control form-control-sm"
@@ -235,16 +235,15 @@
         <div class="row mb-3">
           <div class="col-md-6">
             <label for="date" class="form-label">Date <span class="text-danger">*</span></label>
-            <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="yyyy-mm-dd"
+            <input type="text" id="interviewDate" class="form-control form-control-sm" placeholder="dd-mmm-yyyy"
               formControlName="interviewDate" autocomplete="off" [bsConfig]="{
                 adaptivePosition: true,
                 showWeekNumbers: false,
                 isAnimated: true,
                 containerClass: colorTheme,
                 customTodayClass: 'custom-today-class',
-                dateInputFormat: 'YYYY-MM-DD'
+                dateInputFormat: 'DD-MMM-YYYY'
               }" [minDate]="minDate" bsDatepicker required readonly />
-
             <div class="fs-custom text-danger"
               *ngIf="addNewRoundForm.get('interviewDate')?.hasError('required') && addNewRoundForm.get('interviewDate')?.touched">
               Date is required.
@@ -389,7 +388,7 @@
                   <th class="custom-th small-header">Interview Time</th>
                   <th class="custom-th small-header">Interviewer </th>
                   <th class="custom-th small-header">Round Name</th>
-                  <!-- <th class="custom-th small-header">Location</th> -->
+                  <th class="custom-th small-header">interview Mode</th>
                   <th class="custom-th small-header">Status</th>
                   <th class="custom-th small-header">Feedback</th>
                 </tr>
@@ -398,12 +397,12 @@
                 <tr *ngFor="let exp of candidateData.candidateInterviewDetails">
                   <td class="custom-td small-header">{{ exp?.roundNo }}</td>
                   <td class="custom-td small-header">
-                    {{ exp?.interviewDate ? (exp.interviewDate ) : '--' }}
+                    {{ exp?.interviewDate ? (convertToDateObject(exp.interviewDate) | date:'dd-MMM-yyyy') : '--' }}
                   </td>
                   <td class="custom-td small-header">{{ exp?.interviewTime || '--' }}</td>
                   <td class="custom-td small-header">{{exp?.interviewByName}} - {{ exp?.interviewBy }}</td>
                   <td class="custom-td small-header">{{ exp?.level }} ({{exp?.interviewRoundName || 'Initial'}})</td>
-                  <!-- <td class="custom-td small-header text-break">{{ exp.locationName }}</td> -->
+                  <td class="custom-td small-header text-break">{{ exp.modeName }}</td>
                   <td class="custom-td small-header text-single-line">
                     <button (click)="cancelInterview(exp?.interviewScheduleId)"
                       *ngIf="exp.status === 1001  && exp.interviewTime"

@@ -366,7 +366,7 @@
             </div>
           </div>
 
-          <div class="row g-2">
+          <div *ngIf="resumeFile" class="row g-2">
             <div class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="resumeFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(resumeFile)">
@@ -374,70 +374,70 @@
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div *ngIf="photoFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="photoFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(photoFile)">
                   Photo
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div *ngIf="aadharFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="aadharFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(aadharFile)">
                   Aadhar
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div *ngIf="pancardFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="pancardFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(pancardFile)">
                   PAN Card
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div *ngIf="tenthFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="tenthFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(tenthFile)">
                   10th
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+            <div *ngIf="InterFile" class="col-6 col-sm-4 col-md-3 col-lg-2">
               <ng-container *ngIf="InterFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(InterFile)">
                   Intermediate
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="BTechFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
               <ng-container *ngIf="BTechFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(BTechFile)">
                   B.Tech/Degree
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
               <ng-container *ngIf="paySlipFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(paySlipFile)">
                   Payslip
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="ServiceLetterFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
               <ng-container *ngIf="ServiceLetterFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(ServiceLetterFile)">
                   Service Letter
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
               <ng-container *ngIf="mTechFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(mTechFile)">
                   M.Tech/PG
                 </button>
               </ng-container>
             </div>
-            <div class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
+            <div *ngIf="paySlipFile" class="col-6 col-sm-4 col-md-3 col-lg-2 mt-2">
               <ng-container *ngIf="otherFile">
                 <button class="btn btn-outline-custom btn-sm w-100  small" (click)="viewFile(otherFile)">
                   Other File
@@ -472,7 +472,7 @@
                   <tr *ngIf="exp.interviewScheduleId">
                     <td class="custom-td small-header">{{ exp.roundNo || 'NA' }}</td>
                     <td class="custom-td small-header">
-                      {{ exp.interviewDate ? (exp.interviewDate ) : 'NA' }}
+                      {{ exp?.interviewDate ? (convertToDateObject(exp.interviewDate) | date:'dd-MMM-yyyy') : '--' }}
                     </td>
 
                     <td class="custom-td small-header">{{ exp.interviewTime || 'NA' }}</td>
@@ -636,8 +636,7 @@
 
         <div class="col-md-4 position-relative"
           *ngIf="selectedHrStatus !== 1005 && selectedHrStatus !== 1006 && !finalHrRound">
-          <label for="interview_employeeid" class="form-label">Interviewer Name <span
-              class="text-danger">*</span></label>
+          <label for="interview_employeeid" class="form-label">Interviewer <span class="text-danger">*</span></label>
 
           <!-- Dropdown -->
           <ul *ngIf="showDropdown && interviewedByList.length > 0"
